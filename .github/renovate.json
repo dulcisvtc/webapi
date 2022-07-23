@@ -1,0 +1,15 @@
+{
+    "extends": [
+        "config:base",
+        ":preserveSemverRanges"
+    ],
+    "additionalReviewers": [
+        "itzJOHv"
+    ],
+    "timezone": "Europe/Kiev",
+    "schedule": "before 6am every day",
+    "lockFileMaintenance": {
+        "enabled": true,
+        "schedule": "before 6am every day"
+    }
+}
