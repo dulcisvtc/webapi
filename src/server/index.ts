@@ -28,7 +28,7 @@ app.post("/webhook/navio", async (req, res) => {
     console.log("hmac", hmacSHA256(config.navio_secrets[0], (req.body as any).raw));
 
     if (req.headers["navio-signature"] !== hmacSHA256(config.navio_secrets[0], (req.body as any).raw)) return;
-    if ((req.body as any).type !== "job.delivered") return;
+    if ((req.body as any).parsed.type !== "job.delivered") return;
 
     console.log(req.body);
 });
