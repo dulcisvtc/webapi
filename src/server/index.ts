@@ -3,6 +3,7 @@ import axios from "axios";
 import crypto from "crypto";
 import { config } from "..";
 import { logger } from "../handlers/logger";
+import { Jobs } from "../database/Jobs";
 const app = fastify();
 
 app.addHook("preHandler", (req, res, done) => {
@@ -24,8 +25,8 @@ app.get("/vtc/news", async (req, res) => (await axios.get("https://api.truckersm
 app.get("/vtc/members", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/members")).data);
 
 app.post("/webhook/navio", async (req, res) => {
-    if (req.headers["navio-signature"] !== hmacSHA256(config.navio_secrets[0], (req.body as any).raw)) return;
-    if ((req.body as any).parsed.type !== "job.delivered") return;
+    if (req.headers["navio-signature"] !== hmacSHA256(config.navio_secrets[0], (req.body as any).raw)) return res.code(401);
+    if ((req.body as any).parsed.type !== "job.delivered") return res.code(400);
 
     const parsed = (req.body as any).parsed;
     const job = parsed.data.object;
@@ -54,7 +55,9 @@ app.post("/webhook/navio", async (req, res) => {
         top_speed: job.truck.top_speed * 3.6
     };
 
-    console.log(newJobObject);
+    if (await Jobs.findOne({ id: newJobObject.id })) {
+        logger.warn(`[WEB] Job ${newJobObject.id} already exists in database.`);
+    } else await Jobs.create(newJobObject);
 
     return res.status(200).send();
 });
