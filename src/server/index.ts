@@ -23,6 +23,15 @@ app.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, 
 
 app.get("/vtc/news", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/news")).data);
 app.get("/vtc/members", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/members")).data);
+app.get("/jobs", (req, res) => {
+    Jobs.find().lean().exec((err, docs) => {
+        if (err) {
+            logger.error(err);
+            return res.code(500);
+        };
+        return res.status(200).send(docs);
+    });
+});
 
 app.post("/webhook/navio", async (req, res) => {
     if (req.headers["navio-signature"] !== hmacSHA256(config.navio_secrets[0], (req.body as any).raw)) return res.code(401);
