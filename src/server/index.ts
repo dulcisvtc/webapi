@@ -29,6 +29,11 @@ app.get("/jobs", (req, res) => {
             logger.error(err);
             return res.code(500);
         };
+        for (const doc of docs) {
+            delete doc._id;
+            // @ts-ignore
+            delete doc.__v;
+        };
         return res.status(200).send(docs);
     });
 });
