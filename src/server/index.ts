@@ -55,6 +55,8 @@ app.post("/webhook/navio", async (req, res) => {
     };
 
     console.log(newJobObject);
+
+    return res.status(200).send();
 });
 
 app.get("*", async (req, res) => {
