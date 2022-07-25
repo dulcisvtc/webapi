@@ -10,14 +10,24 @@ app.addHook("preHandler", (req, res, done) => {
     done();
 });
 
+app.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, done) => {
+    try {
+        const newBody = {
+            raw: body,
+            parsed: JSON.parse(body as string),
+        };
+        done(null, newBody);
+    } catch (e) { logger.error(e); };
+});
+
 app.get("/vtc/news", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/news")).data);
 app.get("/vtc/members", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/members")).data);
 
 app.post("/webhook/navio", async (req, res) => {
     console.log("header", req.headers["navio-signature"]);
-    console.log("hmac", hmacSHA256(config.navio_secrets[0], Buffer.from(req.body as any, 'utf-8')));
+    console.log("hmac", hmacSHA256(config.navio_secrets[0], (req.body as any).raw));
 
-    if (req.headers["navio-signature"] !== hmacSHA256(config.navio_secrets[0], JSON.stringify(req.body))) return;
+    if (req.headers["navio-signature"] !== hmacSHA256(config.navio_secrets[0], (req.body as any).raw)) return;
     if ((req.body as any).type !== "job.delivered") return;
 
     console.log(req.body);
