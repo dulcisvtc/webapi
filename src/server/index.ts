@@ -50,8 +50,8 @@ app.post("/webhook/navio", async (req, res) => {
         destination_city: job.destination_city.name,
         destination_company: job.destination_company.name,
         truck: `${job.truck.brand.name} ${job.truck.name}`,
-        average_speed: job.truck.average_speed,
-        top_speed: job.truck.top_speed,
+        average_speed: job.truck.average_speed * 3.6,
+        top_speed: job.truck.top_speed * 3.6
     };
 
     console.log(newJobObject);
