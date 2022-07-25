@@ -4,8 +4,12 @@ import { config } from "..";
 import { logger } from "../handlers/logger";
 const app = fastify();
 
-app.get("/vtc/news", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/news")).data);
+app.addHook("preHandler", (req, res, done) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    done();
+});
 
+app.get("/vtc/news", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/news")).data);
 app.get("/vtc/members", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/members")).data);
 
 app.get("*", async (req, res) => {
