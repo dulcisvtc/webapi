@@ -24,13 +24,37 @@ app.get("/vtc/news", async (req, res) => (await axios.get("https://api.truckersm
 app.get("/vtc/members", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/members")).data);
 
 app.post("/webhook/navio", async (req, res) => {
-    console.log("header", req.headers["navio-signature"]);
-    console.log("hmac", hmacSHA256(config.navio_secrets[0], (req.body as any).raw));
-
     if (req.headers["navio-signature"] !== hmacSHA256(config.navio_secrets[0], (req.body as any).raw)) return;
     if ((req.body as any).parsed.type !== "job.delivered") return;
 
-    console.log(req.body);
+    const parsed = (req.body as any).parsed;
+    const job = parsed.data.object;
+    const newJobObject = {
+        id: job.id,
+        driver: {
+            id: job.driver.id,
+            steam_id: job.driver.steam_id,
+            username: job.driver.username
+        },
+        start_timestamp: new Date(job.start_time).getTime(),
+        stop_timestamp: new Date(job.stop_time).getTime(),
+        driven_distance: job.driven_distance,
+        fuel_used: job.fuel_used,
+        cargo: {
+            name: job.cargo.name,
+            mass: job.cargo.mass,
+            damage: job.cargo.damage
+        },
+        source_city: job.source_city.name,
+        source_company: job.source_company.name,
+        destination_city: job.destination_city.name,
+        destination_company: job.destination_company.name,
+        truck: `${job.truck.brand.name} ${job.truck.name}`,
+        average_speed: job.truck.average_speed,
+        top_speed: job.truck.top_speed,
+    };
+
+    console.log(newJobObject);
 });
 
 app.get("*", async (req, res) => {
