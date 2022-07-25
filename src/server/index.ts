@@ -15,12 +15,12 @@ app.get("/vtc/members", async (req, res) => (await axios.get("https://api.trucke
 
 app.post("/webhook/navio", async (req, res) => {
     console.log("header", req.headers["navio-signature"]);
-    console.log("hmac", hmacSHA256(config.navio_secrets[0], req.body));
+    console.log("hmac", hmacSHA256(config.navio_secrets[0], JSON.stringify(req.body)));
 
     console.log("body", req.body);
     console.log(typeof req.body);
 
-    if (req.headers["navio-signature"] !== hmacSHA256(config.navio_secrets[0], req.body)) return;
+    if (req.headers["navio-signature"] !== hmacSHA256(config.navio_secrets[0], JSON.stringify(req.body))) return;
     if ((req.body as any).type !== "job.delivered") return;
 });
 
