@@ -31,7 +31,7 @@ app.post("/webhook/navio", async (req, res) => {
     const parsed = (req.body as any).parsed;
     const job = parsed.data.object;
     const newJobObject = {
-        id: job.id,
+        job_id: job.id,
         driver: {
             id: job.driver.id,
             steam_id: job.driver.steam_id,
@@ -55,8 +55,8 @@ app.post("/webhook/navio", async (req, res) => {
         top_speed: job.truck.top_speed * 3.6
     };
 
-    if (await Jobs.findOne({ id: newJobObject.id })) {
-        logger.warn(`[WEB] Job ${newJobObject.id} already exists in database.`);
+    if (await Jobs.findOne({ job_id: newJobObject.job_id })) {
+        logger.warn(`[WEB] Job ${newJobObject.job_id} already exists in database.`);
     } else await Jobs.create(newJobObject);
 
     return res.status(200).send();
