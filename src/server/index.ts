@@ -4,6 +4,7 @@ import crypto from "crypto";
 import { config } from "..";
 import { logger } from "../handlers/logger";
 import { Jobs } from "../database/Jobs";
+import { JobSchema } from "../../types";
 const app = fastify();
 
 app.addHook("preHandler", (req, res, done) => {
@@ -23,19 +24,24 @@ app.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, 
 
 app.get("/vtc/news", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/news")).data);
 app.get("/vtc/members", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/members")).data);
-app.get("/jobs", (req, res) => {
-    Jobs.find().lean().exec((err, docs) => {
-        if (err) {
-            logger.error(err);
-            return res.code(500);
-        };
+
+let cachedDocs: Array<JobSchema> = [];
+let cacheExpire = Date.now();
+app.get("/jobs", async (req, res) => {
+    if (Date.now() >= cacheExpire) {
+        const docs = await Jobs.find().lean().exec();
         for (const doc of docs) {
+            // @ts-ignore
             delete doc._id;
             // @ts-ignore
             delete doc.__v;
         };
-        return res.status(200).send(docs);
-    });
+
+        cachedDocs = docs;
+        cacheExpire = Date.now() + 10_000;
+    };
+
+    return res.status(200).send(cachedDocs);
 });
 
 app.post("/webhook/navio", async (req, res) => {
