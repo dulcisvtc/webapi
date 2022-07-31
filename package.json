@@ -6,6 +6,7 @@
     "start": "node ."
   },
   "devDependencies": {
+    "@types/json-bigint": "^1.0.1",
     "@types/node": "^18.0.6",
     "typescript": "^4.7.4"
   },
@@ -14,6 +15,7 @@
     "axios": "^0.27.2",
     "discord-oauth2": "^2.10.0",
     "fastify": "^4.3.0",
+    "json-bigint": "^1.0.0",
     "mongoose": "^6.4.6",
     "winston": "^3.8.1",
     "winston-daily-rotate-file": "^4.7.1"

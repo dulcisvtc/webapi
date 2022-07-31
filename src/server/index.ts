@@ -1,6 +1,7 @@
 import fastify from "fastify";
 import axios from "axios";
 import crypto from "crypto";
+import JSONbigint from "json-bigint";
 import { config } from "..";
 import { logger } from "../handlers/logger";
 import { Jobs, Users } from "../database/";
@@ -24,7 +25,9 @@ app.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, 
 });
 
 app.get("/vtc/news", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/news")).data);
-app.get("/vtc/members", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/members")).data);
+app.get("/vtc/members", async (req, res) =>
+    JSONbigint.parse((await axios.get("https://api.truckersmp.com/v2/vtc/55939/members", { transformResponse: [data => data] })).data)
+);
 
 let cachedDocs: JobSchema[] = [];
 let docsCacheExpire = Date.now();
