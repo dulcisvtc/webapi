@@ -4,6 +4,7 @@ import type { UserSchema } from "../../../types";
 const UserObject: UserSchema = {
     steam_id: "",
     discord_id: "",
+    username: "",
     leaderboard: {
         monthly_mileage: 0
     }

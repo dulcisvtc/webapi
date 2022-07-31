@@ -32,6 +32,7 @@ export interface JobSchema {
 export interface UserSchema {
     steam_id: string,
     discord_id: string,
+    username: "",
     leaderboard: {
         monthly_mileage: number
     }

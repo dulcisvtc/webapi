@@ -11,11 +11,12 @@ export const handleDelivery = async (job: JobSchema): Promise<number> => {
     if (!user) {
         await Users.create({
             steam_id: job.driver.steam_id,
+            username: job.driver.username,
             leaderboard: {
                 monthly_mileage: job.driven_distance
             }
         });
-    } else await user.updateOne({ $inc: { "leaderboard.monthly_mileage": job.driven_distance } });
+    } else await user.updateOne({ $inc: { "leaderboard.monthly_mileage": job.driven_distance }, $set: { username: job.driver.username } });
 
     return 200;
 };
