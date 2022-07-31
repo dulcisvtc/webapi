@@ -3,8 +3,9 @@ import axios from "axios";
 import crypto from "crypto";
 import { config } from "..";
 import { logger } from "../handlers/logger";
-import { Jobs } from "../database/Jobs";
+import { Jobs } from "../database/";
 import { JobSchema } from "../../types";
+import { handleDelivery } from "../handlers/jobs";
 const app = fastify();
 
 app.addHook("preHandler", (req, res, done) => {
@@ -50,7 +51,7 @@ app.post("/webhook/navio", async (req, res) => {
 
     const parsed = (req.body as any).parsed;
     const job = parsed.data.object;
-    const newJobObject = {
+    const newJobObject: JobSchema = {
         job_id: job.id,
         driver: {
             id: job.driver.id,
@@ -75,11 +76,9 @@ app.post("/webhook/navio", async (req, res) => {
         top_speed: job.truck.top_speed * 3.6
     };
 
-    if (await Jobs.findOne({ job_id: newJobObject.job_id })) {
-        logger.warn(`[WEB] Job ${newJobObject.job_id} already exists in database.`);
-    } else await Jobs.create(newJobObject);
+    const status = await handleDelivery(newJobObject);
 
-    return res.status(200).send();
+    return res.status(status).send();
 });
 
 app.get("*", async (req, res) => {

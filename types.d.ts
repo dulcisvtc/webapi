@@ -28,3 +28,11 @@ export interface JobSchema {
     average_speed: number,
     top_speed: number
 };
+
+export interface UserSchema {
+    steam_id: string,
+    discord_id: string,
+    leaderboard: {
+        monthly_mileage: number
+    }
+};
