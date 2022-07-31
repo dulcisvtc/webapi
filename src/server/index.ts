@@ -3,8 +3,8 @@ import axios from "axios";
 import crypto from "crypto";
 import { config } from "..";
 import { logger } from "../handlers/logger";
-import { Jobs } from "../database/";
-import { JobSchema } from "../../types";
+import { Jobs, Users } from "../database/";
+import { JobSchema, UserSchema } from "../../types";
 import { handleDelivery } from "../handlers/jobs";
 const app = fastify();
 
@@ -26,10 +26,10 @@ app.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, 
 app.get("/vtc/news", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/news")).data);
 app.get("/vtc/members", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/members")).data);
 
-let cachedDocs: Array<JobSchema> = [];
-let cacheExpire = Date.now();
+let cachedDocs: JobSchema[] = [];
+let docsCacheExpire = Date.now();
 app.get("/jobs", async (req, res) => {
-    if (Date.now() >= cacheExpire) {
+    if (Date.now() >= docsCacheExpire) {
         const docs = await Jobs.find().lean().exec();
         for (const doc of docs) {
             // @ts-ignore
@@ -39,10 +39,29 @@ app.get("/jobs", async (req, res) => {
         };
 
         cachedDocs = docs;
-        cacheExpire = Date.now() + 10_000;
+        docsCacheExpire = Date.now() + 10_000;
     };
 
-    return res.status(200).send(cachedDocs);
+    res.status(200).send(cachedDocs);
+});
+
+let cachedUsers: UserSchema[] = [];
+let usersCacheExpire = Date.now();
+app.get("/users", async (req, res) => {
+    if (Date.now() >= usersCacheExpire) {
+        const docs = await Users.find().lean().exec();
+        for (const doc of docs) {
+            // @ts-ignore
+            delete doc._id;
+            // @ts-ignore
+            delete doc.__v;
+        };
+
+        cachedUsers = docs;
+        usersCacheExpire = Date.now() + 10_000;
+    };
+
+    res.status(200).send(cachedUsers);
 });
 
 app.post("/webhook/navio", async (req, res) => {
