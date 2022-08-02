@@ -6,10 +6,9 @@
     "additionalReviewers": [
         "itzJOHv"
     ],
-    "timezone": "Europe/Kiev",
-    "schedule": "before 6am every day",
+    "schedule": "at any time",
     "lockFileMaintenance": {
         "enabled": true,
-        "schedule": "before 6am every day"
+        "schedule": "at any time"
     }
 }
