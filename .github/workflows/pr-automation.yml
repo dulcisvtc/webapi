@@ -12,6 +12,8 @@ jobs:
     name: Pull Request automation
     runs-on: ubuntu-latest
 
+    if: ${{ github.actor == "renovate[bot]" }}
+
     steps:
       - name: Enable auto-merge
         run: gh pr merge --auto --squash "$PR_URL"
