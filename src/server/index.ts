@@ -7,6 +7,7 @@ import { logger } from "../handlers/logger";
 import { Jobs, Users } from "../database/";
 import { JobSchema, UserSchema } from "../../types";
 import { handleDelivery } from "../handlers/jobs";
+import { guild } from "../bot";
 const app = fastify();
 
 app.addHook("preHandler", (req, res, done) => {
@@ -66,6 +67,29 @@ app.get("/users", async (req, res) => {
 
     res.status(200).send(cachedUsers);
 });
+app.get("/users/:id", async (req, res) => {
+    const id = (req.params as { id: string }).id;
+    const user = await Users.findOne({ discord_id: id }).lean().exec();
+
+    if (!user) {
+        res.status(404).send({ error: "User not found" });
+        return;
+    };
+
+    // @ts-ignore
+    delete user._id;
+    // @ts-ignore
+    delete user.__v;
+
+    res.status(200).send(user);
+});
+app.get("/isdriver/:id", async (req, res) => {
+    const id = (req.params as { id: string }).id;
+
+    return {
+        isdriver: guild?.members.cache.get(id)?.roles.cache.has("992843245463818270") ?? false
+    };
+});
 
 app.post("/webhook/navio", async (req, res) => {
     if (req.headers["navio-signature"] !== hmacSHA256(config.navio_secrets[0], (req.body as any).raw)) return res.code(401);
@@ -108,7 +132,7 @@ app.get("*", async (req, res) => {
 });
 
 app.listen({ port: config.port, host: "0.0.0.0" }, (err, address) => {
-    logger.info(`[WEB] Server live on ${address}`);
+    logger.info(`Server live on ${address}`);
 });
 
 function hmacSHA256(key: string, data: any) {

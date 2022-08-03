@@ -2,6 +2,8 @@ export interface Config {
     port: number;
     database_uri: string;
     navio_secrets: string[];
+    secret: string;
+    token: string;
 };
 
 export interface JobSchema {
@@ -32,6 +34,7 @@ export interface JobSchema {
 export interface UserSchema {
     steam_id: string,
     discord_id: string,
+    permission: number,
     username: "",
     leaderboard: {
         monthly_mileage: number

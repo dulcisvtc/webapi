@@ -5,6 +5,7 @@ const UserObject: UserSchema = {
     steam_id: "",
     discord_id: "",
     username: "",
+    permission: 0,
     leaderboard: {
         monthly_mileage: 0
     }
