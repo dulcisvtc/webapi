@@ -43,7 +43,7 @@ app.get("/jobs", async (req, res) => {
         };
 
         cachedDocs = docs;
-        docsCacheExpire = Date.now() + 10_000;
+        docsCacheExpire = Date.now() + 30_000;
     };
 
     res.status(200).send(cachedDocs);
@@ -62,7 +62,7 @@ app.get("/users", async (req, res) => {
         };
 
         cachedUsers = docs;
-        usersCacheExpire = Date.now() + 10_000;
+        usersCacheExpire = Date.now() + 30_000;
     };
 
     res.status(200).send(cachedUsers);
