@@ -4,6 +4,7 @@ export interface Config {
     navio_secrets: string[];
     secret: string;
     token: string;
+    dev?: 1;
 };
 
 export interface JobSchema {
