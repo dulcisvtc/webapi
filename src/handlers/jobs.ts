@@ -3,6 +3,8 @@ import { Jobs, Users } from "../database";
 import { logger } from "./logger";
 
 export const handleDelivery = async (job: JobSchema): Promise<number> => {
+    if (job.driven_distance < 1) return 200;
+
     if (await Jobs.findOne({ job_id: job.job_id })) {
         logger.warn(`[WEB] Job ${job.job_id} already exists in database.`);
     } else await Jobs.create(job);
