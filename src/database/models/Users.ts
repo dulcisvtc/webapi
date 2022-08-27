@@ -7,7 +7,8 @@ const UserObject: UserSchema = {
     username: "",
     permission: 0,
     leaderboard: {
-        monthly_mileage: 0
+        monthly_mileage: 0,
+        alltime_mileage: 0
     }
 };
 

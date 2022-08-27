@@ -15,6 +15,7 @@ export const handleDelivery = async (job: JobSchema): Promise<number> => {
         const channel = client.channels.cache.get("992906515809828914") as GuildTextBasedChannel;
         const embed = new EmbedBuilder()
             .setTitle("Job delivered!")
+            .setURL("https://www.dulcisvtc.com/hub/jobs")
             .setDescription(`${job.driver.username} | ${job.driven_distance.toFixed(2)}km`)
             .addFields({
                 name: "Source",
@@ -51,10 +52,17 @@ export const handleDelivery = async (job: JobSchema): Promise<number> => {
             steam_id: job.driver.steam_id,
             username: job.driver.username,
             leaderboard: {
-                monthly_mileage: job.driven_distance
+                monthly_mileage: job.driven_distance,
+                alltime_mileage: job.driven_distance
             }
         });
-    } else await user.updateOne({ $inc: { "leaderboard.monthly_mileage": job.driven_distance }, $set: { username: job.driver.username } });
+    } else await user.updateOne({
+        $inc: {
+            "leaderboard.monthly_mileage": job.driven_distance,
+            "leaderboard.alltime_mileage": job.driven_distance
+        },
+        $set: { username: job.driver.username }
+    });
 
     return 200;
 };
