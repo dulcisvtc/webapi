@@ -42,3 +42,12 @@ export interface UserSchema {
         alltime_mileage: number;
     };
 }
+
+export interface WordchannelSchema {
+    word: string;
+    user: string;
+    message: string;
+    leaderboard: {
+        [id: string]: number;
+    };
+}
