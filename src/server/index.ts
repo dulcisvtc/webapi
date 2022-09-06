@@ -90,6 +90,17 @@ app.get("/isdriver/:id", async (req, res) => {
         isdriver: guild?.members.cache.get(id)?.roles.cache.has("992843245463818270") ?? false
     };
 });
+app.get("/setdiscordid", async (req, res) => {
+    const { discord_id, steam_id, secret } = req.query as { discord_id?: string; steam_id?: string; secret: string };
+    if (!discord_id || !steam_id || !secret) return;
+
+    if (secret !== config.secret) return;
+
+    const user = await Users.findOne({ steam_id });
+    if (!user) return res.status(404);
+    await user.update({ $set: { discord_id } });
+    return res.status(200);
+});
 
 app.post("/webhook/navio", async (req, res) => {
     if (req.headers["navio-signature"] !== hmacSHA256(config.navio_secrets[0], (req.body as any).raw)) return res.code(401);
@@ -125,17 +136,6 @@ app.post("/webhook/navio", async (req, res) => {
     const status = await handleDelivery(newJobObject);
 
     return res.status(status).send();
-});
-app.post("/setdiscordid", async (req, res) => {
-    const { discord_id, steam_id, secret } = req.query as { discord_id?: string; steam_id?: string; secret: string };
-    if (!discord_id || !steam_id || !secret) return;
-
-    if (secret !== config.secret) return;
-
-    const user = await Users.findOne({ steam_id });
-    if (!user) return res.status(404);
-    await user.update({ $set: { discord_id } });
-    return res.status(200);
 });
 
 app.get("*", async (req, res) => {
