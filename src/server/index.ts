@@ -98,7 +98,7 @@ app.get("/setdiscordid", async (req, res) => {
 
     const user = await Users.findOne({ steam_id });
     if (!user) return res.status(404);
-    await user.update({ $set: { discord_id } });
+    await user.updateOne({ $set: { discord_id } });
     return res.status(200);
 });
 
