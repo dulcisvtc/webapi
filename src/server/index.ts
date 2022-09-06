@@ -126,6 +126,17 @@ app.post("/webhook/navio", async (req, res) => {
 
     return res.status(status).send();
 });
+app.post("/setdiscordid", async (req, res) => {
+    const { discord_id, steam_id, secret } = req.query as { discord_id?: string; steam_id?: string; secret: string };
+    if (!discord_id || !steam_id || !secret) return;
+
+    if (secret !== config.secret) return;
+
+    const user = await Users.findOne({ steam_id });
+    if (!user) return res.status(404);
+    await user.update({ $set: { discord_id } });
+    return res.status(200);
+});
 
 app.get("*", async (req, res) => {
     return { message: "Hello World!", path: Object.values(req.params as object)[0] };
