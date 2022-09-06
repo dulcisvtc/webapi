@@ -97,9 +97,9 @@ app.get("/setdiscordid", async (req, res) => {
     if (secret !== config.secret) return;
 
     const user = await Users.findOne({ steam_id });
-    if (!user) return res.status(404);
+    if (!user) return res.status(404).send("a");
     await user.updateOne({ $set: { discord_id } });
-    return res.status(200);
+    return res.status(200).send("a");
 });
 
 app.post("/webhook/navio", async (req, res) => {
