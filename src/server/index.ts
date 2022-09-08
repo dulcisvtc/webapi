@@ -91,7 +91,7 @@ app.get("/isdriver/:id", async (req, res) => {
     };
 });
 app.get("/setdiscordid", async (req, res) => {
-    const { discord_id, steam_id, secret } = req.query as { discord_id?: string; steam_id?: string; secret: string };
+    const { discord_id, steam_id, secret } = req.query as { discord_id?: string; steam_id?: string; secret?: string };
     if (!discord_id || !steam_id || !secret) return;
 
     if (secret !== config.secret) return;
