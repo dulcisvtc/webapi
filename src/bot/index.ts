@@ -30,28 +30,28 @@ client.on("messageCreate", async (message) => {
     if (message.author.bot) return;
     if (
         message.channel.id === "1013146174120804413"
-        // && !config.dev
+        && !config.dev
     ) return handler(message);
 
     let ae = "";
     if (config.dev) ae = "1";
-    if (message.content.split(/\s/g)[0] !== `${client.user!}${ae}`) return;
+    if (message.content.split(/\s/g)[0] === `${client.user!}${ae}`) {
+        const [cmd, ...args] = message.content.slice(`${client.user!}${ae}`.length).trim().split(/\s/g);
 
-    const [cmd, ...args] = message.content.slice(`${client.user!}${ae}`.length).trim().split(/\s/g);
+        if (cmd === "eval" && admens.includes(message.author.id)) {
+            const _ = message;
+            let evaled;
+            try {
+                evaled = await eval(args.join(" "));
+            } catch (e) {
+                evaled = e;
+            };
+            const clean = inspect(evaled, { depth: 1 });
 
-    if (cmd === "eval" && admens.includes(message.author.id)) {
-        const _ = message;
-        let evaled;
-        try {
-            evaled = await eval(args.join(" "));
-        } catch (e) {
-            evaled = e;
+            const text = clean.length > 1980 ? `\`\`\`js\n${clean.slice(0, 1980) + "..."}\n\`\`\`` : `\`\`\`js\n${clean}\n\`\`\``;
+
+            return void message.reply(text);
         };
-        const clean = inspect(evaled, { depth: 1 });
-
-        const text = clean.length > 1980 ? `\`\`\`js\n${clean.slice(0, 1980) + "..."}\n\`\`\`` : `\`\`\`js\n${clean}\n\`\`\``;
-
-        return void message.reply(text);
     };
     if (
         [
@@ -63,8 +63,8 @@ client.on("messageCreate", async (message) => {
             && message.member?.roles.cache.has("992928986189549709")
         )
     ) {
-        await message.react("<a:Greentick:1005154785982431423>");
-        await message.react("<a:RedCross:1005154849555501126>");
+        await message.react("1005154785982431423"); // yes
+        await message.react("1005154849555501126"); // no
     };
 });
 
