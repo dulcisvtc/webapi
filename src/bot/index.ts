@@ -53,15 +53,26 @@ client.on("messageCreate", async (message) => {
 
         return void message.reply(text);
     };
+    if (
+        [
+            "992837899559125107",   // suggestions
+            "992921519812509828"    // driver suggestions
+        ].includes(message.channelId)
+        && !(
+            message.content.startsWith(".")
+            && message.member?.roles.cache.has("992928986189549709")
+        )
+    ) {
+        await message.react("<a:Greentick:1005154785982431423>");
+        await message.react("<a:RedCross:1005154849555501126>");
+    };
 });
 
 client.on("messageDelete", (message) => {
     if (
         message.channel.id === "1013146174120804413"
         && message.id === data.message
-    ) {
-        message.channel.send(`<@${data.user}>: ${data.word}`);
-    };
+    ) message.channel.send(`<@${data.user}>: ${data.word}`);
 });
 
 client.on("messageUpdate", async (oldMessage, newMessage) => {
