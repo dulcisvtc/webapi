@@ -55,8 +55,7 @@ client.on("messageCreate", async (message) => {
     };
     if (
         [
-            "992837899559125107",   // suggestions
-            "992921519812509828"    // driver suggestions
+            "1020074805795496026"    // dev suggestions
         ].includes(message.channelId)
         && !(
             message.content.startsWith(".")
