@@ -74,7 +74,7 @@ client.on("messageCreate", async (message) => {
             "994366699627356250"    // staff photo of the month
         ].includes(message.channelId)
         && message.attachments.size
-    ) await message.react("✅️");
+    ) await message.react("✅");
 });
 
 client.on("messageDelete", (message) => {
