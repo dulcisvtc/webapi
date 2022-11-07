@@ -53,6 +53,7 @@ client.on("messageCreate", async (message) => {
             return void message.reply(text);
         };
     };
+
     if (
         [
             "1020074805795496026",  // dev suggestions
@@ -66,6 +67,14 @@ client.on("messageCreate", async (message) => {
         await message.react("1005154785982431423"); // yes
         await message.react("1005154849555501126"); // no
     };
+
+    if (
+        [
+            "992906643392180344",  // driver photo of the month
+            "994366699627356250"    // staff photo of the month
+        ].includes(message.channelId)
+        && message.attachments.size
+    ) await message.react("✅️");
 });
 
 client.on("messageDelete", (message) => {
