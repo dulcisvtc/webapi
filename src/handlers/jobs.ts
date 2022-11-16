@@ -15,7 +15,7 @@ export const handleDelivery = async (job: JobSchema): Promise<number> => {
         const channel = client.channels.cache.get("992906515809828914") as GuildTextBasedChannel;
         const embed = new EmbedBuilder()
             .setTitle("Job delivered!")
-            .setURL("https://www.dulcisvtc.com/hub/jobs")
+            .setURL("https://dulcis.org/hub/jobs")
             .setDescription(`${job.driver.username} | ${job.driven_distance.toFixed(2)}km`)
             .addFields({
                 name: "Source",
