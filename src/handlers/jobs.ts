@@ -1,21 +1,21 @@
 import { EmbedBuilder, GuildTextBasedChannel } from "discord.js";
+import { client } from "..";
 import { JobSchema } from "../../types";
-import { client } from "../bot";
-import { Jobs, Users } from "../database";
+import { getUserDocument, Jobs } from "../database";
 import { logger } from "./logger";
 
-export const handleDelivery = async (job: JobSchema): Promise<number> => {
+export const handleDelivery = async (job: JobSchema): Promise<200> => {
     if (job.driven_distance < 1) return 200;
 
     if (await Jobs.findOne({ job_id: job.job_id })) {
-        logger.warn(`[WEB] Job ${job.job_id} already exists in database.`);
+        logger.warn(`Job ${job.job_id} already exists in database.`);
     } else {
         await Jobs.create(job);
 
         const channel = client.channels.cache.get("992906515809828914") as GuildTextBasedChannel;
         const embed = new EmbedBuilder()
             .setTitle("Job delivered!")
-            .setURL("https://dulcis.org/hub/jobs")
+            .setURL("https://dulcis.org/hub/jobs?utm_source=discord&utm_medium=job_delivered_message")
             .setDescription(`${job.driver.username} | ${job.driven_distance.toFixed(2)}km`)
             .addFields({
                 name: "Source",
@@ -46,17 +46,9 @@ export const handleDelivery = async (job: JobSchema): Promise<number> => {
         await channel.send({ embeds: [embed] }).catch(() => logger.error("cannot send delivery message"));
     };
 
-    const user = await Users.findOne({ steam_id: job.driver.steam_id });
-    if (!user) {
-        await Users.create({
-            steam_id: job.driver.steam_id,
-            username: job.driver.username,
-            leaderboard: {
-                monthly_mileage: job.driven_distance,
-                alltime_mileage: job.driven_distance
-            }
-        });
-    } else await user.updateOne({
+    const user = await getUserDocument(job.driver.steam_id);
+
+    await user.updateOne({
         $inc: {
             "leaderboard.monthly_mileage": job.driven_distance,
             "leaderboard.alltime_mileage": job.driven_distance
