@@ -16,7 +16,7 @@
         "fastify": "^4.10.2",
         "json-bigint": "^1.0.0",
         "mongoose": "~6.7.2",
-        "pretty-ms": "7",
+        "pretty-ms": "8",
         "text-table": "^0.2.0",
         "winston": "^3.8.2",
         "winston-daily-rotate-file": "^4.7.1"
