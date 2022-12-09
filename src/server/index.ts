@@ -17,16 +17,6 @@ app.addHook("preHandler", (req, res, done) => {
     done();
 });
 
-app.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, done) => {
-    try {
-        const newBody = {
-            raw: body,
-            parsed: JSON.parse(body as string),
-        };
-        done(null, newBody);
-    } catch (e) { logger.error(e); };
-});
-
 app.get("/vtc/news", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/news")).data);
 app.get("/vtc/members", async (req, res) =>
     JSONbigint.parse((await axios.get("https://api.truckersmp.com/v2/vtc/55939/members", { transformResponse: (data) => data })).data)
