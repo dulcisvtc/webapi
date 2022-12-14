@@ -1,4 +1,4 @@
-import { GuildTextBasedChannel, Message } from "discord.js";
+import { GuildTextBasedChannel, Message, TextChannel } from "discord.js";
 
 const bulks = new Map<string, Message[]>();
 export function queueDelete(messages: Message[]): void {
@@ -27,4 +27,16 @@ function bulkDelete(channel: GuildTextBasedChannel): void {
 
     bulks.set(channel.id, newBulk);
     return void setTimeout(() => bulkDelete(channel), 3500);
+};
+
+export async function getWebhook(channel: TextChannel, name: string) {
+    const webhooks = await channel.fetchWebhooks();
+
+    let webhook = webhooks.find((w) => w.name === name);
+    if (!webhook) webhook = await channel.createWebhook({
+        name,
+        avatar: channel.client.user.displayAvatarURL()
+    });
+
+    return webhook;
 };

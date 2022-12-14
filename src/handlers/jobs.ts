@@ -1,8 +1,8 @@
 import { EmbedBuilder, GuildTextBasedChannel } from "discord.js";
-import { client } from "..";
+import { getUserDocumentBySteamId, Jobs } from "../database";
 import { JobSchema } from "../../types";
-import { getUserDocument, Jobs } from "../database";
 import { logger } from "./logger";
+import { client } from "..";
 
 export const handleDelivery = async (job: JobSchema): Promise<200> => {
     if (job.driven_distance < 1) return 200;
@@ -46,7 +46,7 @@ export const handleDelivery = async (job: JobSchema): Promise<200> => {
         await channel.send({ embeds: [embed] }).catch(() => logger.error("cannot send delivery message"));
     };
 
-    const user = await getUserDocument(job.driver.steam_id);
+    const user = await getUserDocumentBySteamId(job.driver.steam_id);
 
     await user.updateOne({
         $inc: {

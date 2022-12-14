@@ -8,7 +8,7 @@ import fastify from "fastify";
 import crypto from "crypto";
 import axios from "axios";
 import { User, UserDocument } from "../database/models/User";
-import config from "../constants/config";
+import config from "../config";
 
 const app = fastify();
 
