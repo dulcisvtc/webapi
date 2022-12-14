@@ -99,7 +99,7 @@ app.get("/setdiscordid", async (req, res) => {
 app.post("/webhook/navio", async (req, res) => {
     try {
         if (!config.navio_secrets.some((secret) =>
-            req.headers["navio-signature"] === hmacSHA256(secret, (req.body as any).raw ?? "")
+            req.headers["navio-signature"] === hmacSHA256(secret, (req.body as any).raw || "{}")
         )) return res.code(401);
         if ((req.body as any).parsed.type !== "job.delivered") return res.code(400);
 
