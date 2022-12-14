@@ -196,7 +196,7 @@ export default {
                 const { append } = await appendGenerator(interaction);
                 await append("Driver removed from Navio. Deleting database document...");
 
-                // await resetUserDocument(steamId);
+                await resetUserDocument(steamId);
                 await append("Database document deleted. Trying to remove driver role...");
 
                 const role = await member?.roles.remove(
