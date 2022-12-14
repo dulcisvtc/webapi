@@ -97,41 +97,43 @@ app.get("/setdiscordid", async (req, res) => {
 });
 
 app.post("/webhook/navio", async (req, res) => {
-    if (!config.navio_secrets.some((secret) =>
-        req.headers["navio-signature"] === hmacSHA256(secret, (req.body as any).raw)
-    )) return res.code(401);
-    if ((req.body as any).parsed.type !== "job.delivered") return res.code(400);
+    try {
+        if (!config.navio_secrets.some((secret) =>
+            req.headers["navio-signature"] === hmacSHA256(secret, (req.body as any).raw ?? "")
+        )) return res.code(401);
+        if ((req.body as any).parsed.type !== "job.delivered") return res.code(400);
 
-    const parsed = (req.body as any).parsed;
-    const job = parsed.data.object;
-    const newJobObject: JobSchema = {
-        job_id: job.id,
-        driver: {
-            id: job.driver.id,
-            steam_id: job.driver.steam_id,
-            username: job.driver.username
-        },
-        start_timestamp: new Date(job.start_time).getTime(),
-        stop_timestamp: new Date(job.stop_time).getTime(),
-        driven_distance: job.driven_distance,
-        fuel_used: job.fuel_used,
-        cargo: {
-            name: job.cargo.name,
-            mass: job.cargo.mass,
-            damage: job.cargo.damage
-        },
-        source_city: job.source_city.name,
-        source_company: job.source_company.name,
-        destination_city: job.destination_city.name,
-        destination_company: job.destination_company.name,
-        truck: `${job.truck.brand.name} ${job.truck.name}`,
-        average_speed: job.truck.average_speed * 3.6,
-        top_speed: job.truck.top_speed * 3.6
-    };
+        const parsed = (req.body as any).parsed;
+        const job = parsed.data.object;
+        const newJobObject: JobSchema = {
+            job_id: job.id,
+            driver: {
+                id: job.driver.id,
+                steam_id: job.driver.steam_id,
+                username: job.driver.username
+            },
+            start_timestamp: new Date(job.start_time).getTime(),
+            stop_timestamp: new Date(job.stop_time).getTime(),
+            driven_distance: job.driven_distance,
+            fuel_used: job.fuel_used,
+            cargo: {
+                name: job.cargo.name,
+                mass: job.cargo.mass,
+                damage: job.cargo.damage
+            },
+            source_city: job.source_city.name,
+            source_company: job.source_company.name,
+            destination_city: job.destination_city.name,
+            destination_company: job.destination_company.name,
+            truck: `${job.truck.brand.name} ${job.truck.name}`,
+            average_speed: job.truck.average_speed * 3.6,
+            top_speed: job.truck.top_speed * 3.6
+        };
 
-    const status = await handleDelivery(newJobObject);
+        const status = await handleDelivery(newJobObject);
 
-    return res.status(status).send();
+        return res.status(status).send();
+    } catch (e) { logger.error(e); };
 });
 
 app.listen({ port: config.port, host: "0.0.0.0" }, (err, address) => {
