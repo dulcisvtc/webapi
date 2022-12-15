@@ -3,8 +3,8 @@ import { Snowflake } from "discord.js";
 
 @modelOptions({ schemaOptions: { _id: false }, options: { allowMixed: Severity.ALLOW } })
 class LeaderboardSchema {
-    @prop({ type: String, default: 0 }) monthly_mileage!: number;
-    @prop({ type: String, default: 0 }) alltime_mileage!: number;
+    @prop({ type: Number, default: 0 }) monthly_mileage!: number;
+    @prop({ type: Number, default: 0 }) alltime_mileage!: number;
 };
 
 const saveQueue = new Map<Snowflake, 1 | 2>();

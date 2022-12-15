@@ -1,14 +1,15 @@
-import { JobSchema, UserSchema } from "../../types";
+import { User, UserDocument } from "../database/models/User";
 import { handleDelivery } from "../handlers/jobs";
 import { logger } from "../handlers/logger";
+import { JobSchema } from "../../types";
 import { Jobs } from "../database/";
+import { inspect } from "util";
 import { guild } from "..";
 import JSONbigint from "json-bigint";
+import config from "../config";
 import fastify from "fastify";
 import crypto from "crypto";
 import axios from "axios";
-import { User, UserDocument } from "../database/models/User";
-import config from "../config";
 
 const app = fastify();
 
@@ -99,8 +100,9 @@ app.get("/setdiscordid", async (req, res) => {
 app.post("/webhook/navio", async (req, res) => {
     try {
         if (!config.navio_secrets.some((secret) =>
-            req.headers["navio-signature"] === hmacSHA256(secret, (req.body as any).raw || "{}")
+            req.headers["navio-signature"] === hmacSHA256(secret, (req.body as any).raw)
         )) return res.code(401);
+
         if ((req.body as any).parsed.type !== "job.delivered") return res.code(400);
 
         const parsed = (req.body as any).parsed;
@@ -133,7 +135,7 @@ app.post("/webhook/navio", async (req, res) => {
         const status = await handleDelivery(newJobObject);
 
         return res.status(status).send();
-    } catch (e) { logger.error(e); };
+    } catch (e) { logger.error(inspect(e)); };
 });
 
 app.listen({ port: config.port, host: "0.0.0.0" }, (err, address) => {
