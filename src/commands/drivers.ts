@@ -1,9 +1,9 @@
+import { getUserDocumentByDiscordId, getUserDocumentBySteamId, resetUserDocument } from "../database";
 import { ChatInputCommandInteraction, SlashCommandBuilder, TextChannel } from "discord.js";
 import { getWebhook } from "../constants/functions";
-import { getUserDocumentByDiscordId, getUserDocumentBySteamId, resetUserDocument } from "../database";
+import { botlogs } from "..";
 import Navio from "../lib/navio";
 import config from "../config";
-import { botlogs } from "..";
 
 export default {
     data: new SlashCommandBuilder()
@@ -101,7 +101,8 @@ export default {
                     await webhook.send({
                         embeds: [{
                             title: "Member Update",
-                            description: `**[${interaction.options.getString("position")}]** ${member} has joined Dulcis Logistics as driver.`
+                            description: `**[${interaction.options.getString("position")}]** ${member} has joined Dulcis Logistics as driver.`,
+                            color: 0x7d7a7a
                         }]
                     })
                 } catch {
@@ -218,7 +219,8 @@ export default {
                         embeds: [{
                             title: "Member Update",
                             description: `**[Driver]** ${user} has been removed from driver position.`
-                                + (reason ? `\n**Reason:** ${reason}` : "")
+                                + (reason ? `\n**Reason:** ${reason}` : ""),
+                            color: 0x7d7a7a
                         }]
                     })
                 } catch {
