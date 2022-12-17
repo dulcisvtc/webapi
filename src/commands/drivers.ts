@@ -21,9 +21,16 @@ export default {
             c
                 .setName("remove")
                 .setDescription("Remove a driver.")
-                .addUserOption((o) => o.setName("user").setDescription("Driver's Discord account. TO AVOID ISSUES PLEASE PROVIDE THIS"))
-                .addStringOption((o) => o.setName("steamid").setDescription("Driver's SteamID."))
-                .addStringOption((o) => o.setName("reason").setDescription("Reason for removal."))
+                .addUserOption((o) => o.setName("user").setDescription("Driver's Discord account.").setRequired(true))
+                .addStringOption((o) => o.setName("steamid").setDescription("Driver's SteamID.").setRequired(true))
+                .addStringOption((o) => o.setName("type").setDescription("removed or left").addChoices({
+                    name: "left",
+                    value: "left"
+                }, {
+                    name: "removed",
+                    value: "removed"
+                }).setRequired(true))
+                .addStringOption((o) => o.setName("reason").setDescription("Reason for removal. dont write 'due to'").setRequired(true))
         )
         .setDefaultMemberPermissions(8)
         .toJSON(),
@@ -146,7 +153,7 @@ export default {
                 ephemeral: true
             });
 
-            if (!steamId) steamId = (await getUserDocumentByDiscordId(user!.id))?.steam_id ?? null;
+            if (!steamId && user) steamId = (await getUserDocumentByDiscordId(user.id))?.steam_id ?? null;
             if (!steamId) return interaction.editReply({
                 embeds: [{
                     title: "Error!",
@@ -158,6 +165,12 @@ export default {
 
                 if (document.discord_id) user = await interaction.client.users.fetch(document.discord_id).catch(() => null);
             };
+            if (!user) return interaction.editReply({
+                embeds: [{
+                    title: "Error!",
+                    description: "Can't find user's Discord account."
+                }]
+            });
 
             const result = await navio.removeDriver(steamId);
 
@@ -193,7 +206,8 @@ export default {
 
                     if (document.discord_id) member = await interaction.guild.members.fetch(document.discord_id).catch(() => null);
                 };
-                const reason = interaction.options.getString("reason");
+                const reason = interaction.options.getString("reason", true);
+                const type = interaction.options.getString("type", true);
                 const { append } = await appendGenerator(interaction);
                 await append("Driver removed from Navio. Deleting database document...");
 
@@ -218,8 +232,9 @@ export default {
                     await webhook.send({
                         embeds: [{
                             title: "Member Update",
-                            description: `**[Driver]** ${user} has been removed from driver position.`
-                                + (reason ? `\n**Reason:** ${reason}` : ""),
+                            description: `**[Driver]** ${user} has `
+                                + (type === "removed" ? "been removed from" : "left")
+                                + ` Dulcis Logistics due to ${reason}`,
                             color: 0x7d7a7a
                         }]
                     })
@@ -243,6 +258,9 @@ export default {
                         }, {
                             name: "steamid",
                             value: `\`${steamId}\``
+                        }, {
+                            name: "type",
+                            value: type
                         }, {
                             name: "reason",
                             value: reason ?? "none"
