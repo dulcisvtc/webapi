@@ -57,7 +57,12 @@ let cachedUsers: UserDocument[] = [];
 let usersCacheExpire = Date.now();
 app.get("/users", async (req, res) => {
     if (Date.now() >= usersCacheExpire) {
-        const documents = await User.find();
+        const documents = JSON.parse(JSON.stringify(await User.find()));
+
+        for (const document of documents) {
+            delete document.__v;
+            delete document._id;
+        };
 
         cachedUsers = documents;
         usersCacheExpire = Date.now() + 30_000;
