@@ -1,5 +1,6 @@
 import { User, UserDocument } from "../database/models/User";
 import { handleDelivery } from "../handlers/jobs";
+import { paginate } from "../constants/functions";
 import { logger } from "../handlers/logger";
 import { JobSchema } from "../../types";
 import { Jobs } from "../database/";
@@ -33,10 +34,10 @@ app.get("/vtc/members", async (req, res) =>
     JSONbigint.parse((await axios.get("https://api.truckersmp.com/v2/vtc/55939/members", { transformResponse: (data) => data })).data)
 );
 
-let cachedDocs: JobSchema[] = [];
-let docsCacheExpire = Date.now();
+let cachedJobs: JobSchema[] = [];
+let jobsCacheExpire = Date.now();
 app.get("/jobs", async (req, res) => {
-    if (Date.now() >= docsCacheExpire) {
+    if (Date.now() >= jobsCacheExpire) {
         const docs = await Jobs.find().lean();
 
         for (const doc of docs) {
@@ -46,11 +47,21 @@ app.get("/jobs", async (req, res) => {
             delete doc.__v;
         };
 
-        cachedDocs = docs;
-        docsCacheExpire = Date.now() + 30_000;
+        cachedJobs = docs;
+        jobsCacheExpire = Date.now() + 60_000;
     };
 
-    res.status(200).send(cachedDocs);
+    const { page, perPage } = req.query as { page?: string; perPage?: string; };
+    const pageNum = parseInt(page ?? "");
+    const pageSize = parseInt(perPage ?? "");
+
+    if (pageNum || pageNum === 0) {
+        const pages = paginate(cachedJobs.sort((a, b) => b.stop_timestamp - a.stop_timestamp), pageSize || 25);
+
+        return res.send(pages[pageNum]);
+    };
+
+    res.send(cachedJobs);
 });
 
 let cachedUsers: UserDocument[] = [];

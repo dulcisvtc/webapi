@@ -40,3 +40,13 @@ export async function getWebhook(channel: TextChannel, name: string) {
 
     return webhook;
 };
+
+export const paginate = <T>(arr: T[], itemsPerPage: number): T[][] => {
+    return arr.reduce<T[][]>((acc, val, i) => {
+        const idx = Math.floor(i / itemsPerPage);
+        const page = acc[idx] || (acc[idx] = []);
+        page.push(val);
+
+        return acc;
+    }, []);
+};
