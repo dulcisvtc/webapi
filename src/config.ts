@@ -8,6 +8,7 @@ export default {
 
     guild: String(process.env["GUILD_ID"]),
     driver_role: String(process.env["DRIVER_ROLE_ID"]),
+    retired_driver_role: String(process.env["RETIRED_DRIVER_ROLE_ID"]),
 
     botlogs_channel: String(process.env["BOT_LOGS_CHANNEL"]),
     member_updates_channel: String(process.env["MEMBER_UPDATES_CHANNEL"]),

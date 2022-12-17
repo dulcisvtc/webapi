@@ -31,6 +31,7 @@ export default {
                     value: "removed"
                 }).setRequired(true))
                 .addStringOption((o) => o.setName("reason").setDescription("Reason for removal. dont write 'due to'").setRequired(true))
+                .addBooleanOption((o) => o.setName("giveretiredrole").setDescription("yes").setRequired(true))
         )
         .setDefaultMemberPermissions(8)
         .toJSON(),
@@ -86,19 +87,19 @@ export default {
                 });
             } else {
                 const { append } = await appendGenerator(interaction);
-                await append("Driver added to Navio. Creating database document...");
+                await append("✅ Driver added to Navio. Creating database document...");
 
                 const document = await getUserDocumentBySteamId(steamId);
                 document.discord_id = member.id;
                 document.safeSave();
-                await append("Database entry created. Trying to give driver role...");
+                await append("✅ Database entry created. Trying to give driver role...");
 
                 const role = await member.roles.add(config.driver_role, `Driver added by ${interaction.user.tag}`).catch(() => false as const);
-                let roletext = "Role given.";
-                if (!role) roletext = "Failed to give role.";
+                let roletext = "✅ Driver role given.";
+                if (!role) roletext = "❌ Failed to give driver role.";
                 await append(roletext + " Trying to send member updates webhook...");
 
-                let webhooktext = "Member updates webhook sent.";
+                let webhooktext = "✅ Member updates webhook sent.";
                 try {
                     const webhook = await getWebhook(
                         interaction.guild.channels.cache.get(config.member_updates_channel) as TextChannel,
@@ -113,7 +114,7 @@ export default {
                         }]
                     })
                 } catch {
-                    webhooktext = "Failed to send member updates webhook."
+                    webhooktext = "❌ Failed to send member updates webhook."
                 };
                 await append(webhooktext);
 
@@ -209,20 +210,20 @@ export default {
                 const reason = interaction.options.getString("reason", true);
                 const type = interaction.options.getString("type", true);
                 const { append } = await appendGenerator(interaction);
-                await append("Driver removed from Navio. Deleting database document...");
+                await append("✅ Driver removed from Navio. Deleting database document...");
 
                 await resetUserDocument(steamId);
-                await append("Database document deleted. Trying to remove driver role...");
+                await append("✅ Database document deleted. Trying to remove driver role...");
 
                 const role = await member?.roles.remove(
                     config.driver_role,
                     `Driver removed by ${interaction.user.tag}`
                 ).catch(() => false as const);
-                let roletext = "Role removed.";
-                if (!role) roletext = "Failed to remove role.";
+                let roletext = "✅ Driver role removed.";
+                if (!role) roletext = "❌ Failed to remove driver role.";
                 await append(roletext + " Trying to send member updates webhook...");
 
-                let webhooktext = "Member updates webhook sent.";
+                let webhooktext = "✅ Member updates webhook sent.";
                 try {
                     const webhook = await getWebhook(
                         interaction.guild.channels.cache.get(config.member_updates_channel) as TextChannel,
@@ -239,9 +240,15 @@ export default {
                         }]
                     })
                 } catch {
-                    webhooktext = "Failed to send member updates webhook."
+                    webhooktext = "❌ Failed to send member updates webhook."
                 };
                 await append(webhooktext);
+
+                if (interaction.options.getBoolean("giveretiredrole", true) && member) {
+                    await member.roles.add(config.retired_driver_role)
+                        .then(() => append("✅ Gave retired driver role"))
+                        .catch(() => append("❌ Failed to give retired driver role."))
+                };
 
                 await append("✨ Done.", "Success!");
 
