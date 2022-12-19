@@ -109,7 +109,7 @@ export default {
                     await webhook.send({
                         embeds: [{
                             title: "Member Update",
-                            description: `**[${interaction.options.getString("position")}]** ${member} has joined Dulcis Logistics as driver.`,
+                            description: `**[${interaction.options.getString("position")}]** ${member} has joined Dulcis Logistics as a driver.`,
                             color: 0x7d7a7a
                         }]
                     })
