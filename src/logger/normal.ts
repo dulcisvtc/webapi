@@ -1,9 +1,9 @@
-import { join } from "path";
 import { createLogger, format, transports } from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
+import path from "path";
 
 const transport = new DailyRotateFile({
-    filename: join(__dirname, "../../logs/%DATE%.log"),
+    filename: path.join(__dirname, "..", "..", "logs", "%DATE%.log"),
     datePattern: "YYYY-MM-DD",
     zippedArchive: false,
     maxSize: "32m",

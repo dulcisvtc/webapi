@@ -1,7 +1,7 @@
 import { User, UserDocument } from "../database/models/User";
 import { handleDelivery } from "../handlers/jobs";
 import { paginate } from "../constants/functions";
-import { logger } from "../handlers/logger";
+import { logger } from "../logger/normal";
 import { JobSchema } from "../../types";
 import { Jobs } from "../database/";
 import { inspect } from "util";

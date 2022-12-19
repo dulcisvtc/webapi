@@ -3,11 +3,12 @@ import "./server";
 import { Client, GatewayIntentBits, Guild, TextChannel } from "discord.js";
 import { connection } from "./database";
 import { registerCommands } from "./handlers/commands";
-import { logger } from "./handlers/logger";
+import { logger } from "./logger/normal";
 import { readdirSync } from "fs";
 import { inspect } from "util";
 import { join } from "path";
 import config from "./config";
+import { debug } from "./logger/debug";
 
 export const admens = ["419892040726347776"];
 export const client = new Client({
@@ -47,6 +48,10 @@ for (const eventFileName of readdirSync(join(__dirname, "events")).filter((name)
 connection.then(() => {
     logger.info("Connected to database.");
     return client.login(config.token);
+});
+
+client.on("debug", (m) => {
+    debug.info(m);
 });
 
 process.on("unhandledRejection", (e) => logger.error("unhandledRejection:\n" + inspect(e)));

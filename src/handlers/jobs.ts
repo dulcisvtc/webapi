@@ -1,7 +1,7 @@
 import { EmbedBuilder, GuildTextBasedChannel } from "discord.js";
 import { getUserDocumentBySteamId, Jobs } from "../database";
+import { logger } from "../logger/normal";
 import { JobSchema } from "../../types";
-import { logger } from "./logger";
 import { client } from "..";
 
 export const handleDelivery = async (job: JobSchema): Promise<200> => {
