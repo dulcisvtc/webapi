@@ -14,7 +14,7 @@ class UserSchema {
     @prop({ type: String, unique: true, required: true }) steam_id!: string;
     @prop({ type: String, unique: true }) discord_id?: string;
     @prop({ type: String }) username?: string;
-    @prop({ type: Number, default: 0 }) permission!: number;
+    @prop({ type: Number, default: 0 }) permissions!: number;
     @prop({ type: LeaderboardSchema, default: {} }) leaderboard!: LeaderboardSchema;
 
     safeSave(this: UserDocument): void {
