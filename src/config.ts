@@ -13,5 +13,10 @@ export default {
     botlogs_channel: String(process.env["BOT_LOGS_CHANNEL"]),
     member_updates_channel: String(process.env["MEMBER_UPDATES_CHANNEL"]),
 
+    event_channels: {
+        calendar: String(process.env["EVENTS_CALENDAR_CHANNEL"]),
+        attending: String(process.env["EVENTS_ATTENDING_CHANNEL"])
+    },
+
     port: parseInt(process.env["PORT"] ?? "") || 3000
 };

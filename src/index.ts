@@ -1,14 +1,14 @@
 import "dotenv/config";
 import "./server";
 import { Client, GatewayIntentBits, Guild, TextChannel } from "discord.js";
-import { connection } from "./database";
 import { registerCommands } from "./handlers/commands";
 import { logger } from "./logger/normal";
+import { connection } from "./database";
+import { debug } from "./logger/debug";
 import { readdirSync } from "fs";
 import { inspect } from "util";
 import { join } from "path";
 import config from "./config";
-import { debug } from "./logger/debug";
 
 export const admens = ["419892040726347776"];
 export const client = new Client({
@@ -19,12 +19,16 @@ export const client = new Client({
         GatewayIntentBits.MessageContent
     ]
 });
+// import "./handlers/events";
+// import { eventsTicker } from "./handlers/events";
 
 export let guild: Guild | null = null;
 export let botlogs: TextChannel | null = null;
 
 client.once("ready", () => {
     logger.info(`Logged in as ${client.user!.tag}`);
+
+    // eventsTicker.start();
 
     guild = client.guilds.cache.get(config.guild)!;
     botlogs = guild.channels.cache.get(config.botlogs_channel)! as TextChannel;

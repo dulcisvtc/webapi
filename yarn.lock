@@ -833,6 +833,11 @@
   resolved "https://registry.yarnpkg.com/@tokenizer/token/-/token-0.3.0.tgz#fe98a93fe789247e998c75e74e9c7c63217aa276"
   integrity sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==
 
+"@truckersmp_official/api-types@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@truckersmp_official/api-types/-/api-types-1.0.1.tgz#062d1cb2e3a3c64003f55ab572f059cb6774132d"
+  integrity sha512-WVG4LDc8fOnVsslixZtqBvKbd2Wr6l+tv3PI9GcKd0lYV4RRH6IE+gDRjGRED8a4H8jCSz0KwACsc8vK3ByFHw==
+
 "@typegoose/typegoose@^9.13.2":
   version "9.13.2"
   resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-9.13.2.tgz#0f066fdcb114decdd390ed0ab63e1f4e8df71315"
@@ -1139,11 +1144,6 @@ discord-api-types@^0.37.20:
   version "0.37.21"
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.37.21.tgz#122d571dfed2dce95be8fac34a0f1985ddc021b4"
   integrity sha512-GB4ThibZEzWXcvgL2QfjKoDX5j1sNLWtgibodiJ9M9PM0u9bdR2t3vZ24oQWLKlksJehSJmZDtRsAibhcr46vw==
-
-discord-oauth2@^2.10.1:
-  version "2.10.1"
-  resolved "https://registry.yarnpkg.com/discord-oauth2/-/discord-oauth2-2.10.1.tgz#ca48de91252aef3194b859d5df659682f3d3ba5a"
-  integrity sha512-UsjkqCCn/hJpcT2GrygghNyYHc7ahuF4UJ/9zNXw9Q31pecn1cQhk674LulGC+no3nP4pxP2MR4ksCLGpiA0lg==
 
 discord.js@^14.7.1:
   version "14.7.1"
