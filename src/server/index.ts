@@ -34,6 +34,12 @@ app.get("/vtc/news", async (req, res) => (await axios.get("https://api.truckersm
 app.get("/vtc/members", async (req, res) =>
     JSONbigint.parse((await axios.get("https://api.truckersmp.com/v2/vtc/55939/members", { transformResponse: (data) => data })).data)
 );
+app.get("/tmp/event/:id", async (req, res) =>
+    JSONbigint.parse((await axios.get(
+        `https://api.truckersmp.com/v2/events/${(req.params as any).id}`,
+        { transformResponse: (data) => data }
+    )).data)
+);
 
 let cachedJobs: JobSchema[] = [];
 let jobsCacheExpire = Date.now();
