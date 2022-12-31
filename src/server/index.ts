@@ -1,3 +1,4 @@
+import { Event, EventDocument } from "../database/models/Event";
 import { User, UserDocument } from "../database/models/User";
 import { handleDelivery } from "../handlers/jobs";
 import { paginate } from "../constants/functions";
@@ -111,6 +112,24 @@ app.get("/setdiscordid", async (req, res) => {
     await user.updateOne({ $set: { discord_id } });
 
     return res.status(200).send("a");
+});
+
+let cachedEvents: EventDocument[] = [];
+let eventsCacheExpire = Date.now();
+app.get("/events", async (req, res) => {
+    if (Date.now() >= eventsCacheExpire) {
+        const documents = JSON.parse(JSON.stringify(await Event.find()));
+
+        for (const document of documents) {
+            delete document.__v;
+            delete document._id;
+        };
+
+        cachedEvents = documents.sort((a: any, b: any) => a.departure - b.departure);
+        eventsCacheExpire = Date.now() + 30_000;
+    };
+
+    res.send(cachedEvents);
 });
 
 app.post("/webhook/navio", async (req, res) => {
