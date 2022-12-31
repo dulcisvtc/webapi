@@ -838,10 +838,10 @@
   resolved "https://registry.yarnpkg.com/@truckersmp_official/api-types/-/api-types-1.0.1.tgz#062d1cb2e3a3c64003f55ab572f059cb6774132d"
   integrity sha512-WVG4LDc8fOnVsslixZtqBvKbd2Wr6l+tv3PI9GcKd0lYV4RRH6IE+gDRjGRED8a4H8jCSz0KwACsc8vK3ByFHw==
 
-"@typegoose/typegoose@^9.13.2":
-  version "9.13.2"
-  resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-9.13.2.tgz#0f066fdcb114decdd390ed0ab63e1f4e8df71315"
-  integrity sha512-yEP+Ai+xASUnRR2ZSz2cf7QC4QqhkDPyt42Gt5yfn6dOFMGNFew+4L1BDRbexaeKBQYYrgxtD7yM8kzuceeJ9Q==
+"@typegoose/typegoose@^10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-10.0.0.tgz#644118b4ce6789a7fcf7a3b3a40a119e5180bfb6"
+  integrity sha512-40Y2yZYbyeTYFJBWucBovJlopgtKyEvyNYK2zNgw/NXOUkvijkyHeWsyPGKOXEaXqhrku/cjrVIWMbdKx2YiuA==
   dependencies:
     lodash "^4.17.20"
     loglevel "^1.8.1"
