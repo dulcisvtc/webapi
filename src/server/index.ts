@@ -1,5 +1,6 @@
 import { Event, EventDocument } from "../database/models/Event";
 import { User, UserDocument } from "../database/models/User";
+import { getEventDocument } from "../database/event";
 import { handleDelivery } from "../handlers/jobs";
 import { paginate } from "../constants/functions";
 import { logger } from "../logger/normal";
@@ -136,6 +137,46 @@ app.get("/events", async (req, res) => {
     };
 
     res.send(cachedEvents);
+});
+
+app.post("/events", async (req, res) => {
+    if (req.headers["secret"] !== config.messaging_secret) return res.status(403);
+
+    const eventObject = (req.body as any).parsed as {
+        eventId: number;
+        location: string;
+        destination: string;
+        meetup: number;
+        departure: number;
+        slotId: number;
+        slotImage: string;
+    };
+    const event = await getEventDocument(eventObject.eventId);
+
+    event.location = eventObject.location;
+    event.destination = eventObject.destination;
+    event.meetup = eventObject.meetup;
+    event.departure = eventObject.departure;
+    event.slot_id = eventObject.slotId;
+    event.slot_image = eventObject.slotImage;
+
+    event.safeSave();
+
+    console.log(event);
+
+    return res.status(200).send(event);
+});
+
+app.delete("/events/:id", async (req, res) => {
+    if (req.headers["secret"] !== config.messaging_secret) return res.status(403);
+
+    const eventId = parseInt((req.params as { id: string; }).id);
+    const event = await getEventDocument(eventId);
+    await event.delete();
+
+    console.log(event);
+
+    return res.status(200).send(event);
 });
 
 app.post("/webhook/navio", async (req, res) => {
