@@ -133,7 +133,7 @@ app.get("/events", async (req, res) => {
         };
 
         cachedEvents = documents.sort((a: any, b: any) => a.departure - b.departure);
-        eventsCacheExpire = Date.now() + 30_000;
+        eventsCacheExpire = Date.now() + 5_000;
     };
 
     res.send(cachedEvents);
