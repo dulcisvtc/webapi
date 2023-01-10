@@ -162,8 +162,6 @@ app.post("/events", async (req, res) => {
 
     event.safeSave();
 
-    console.log(event);
-
     return res.status(200).send(event);
 });
 
