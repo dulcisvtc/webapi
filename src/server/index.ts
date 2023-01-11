@@ -170,9 +170,8 @@ app.delete("/events/:id", async (req, res) => {
 
     const eventId = parseInt((req.params as { id: string; }).id);
     const event = await getEventDocument(eventId);
-    await event.delete();
 
-    console.log(event);
+    await event.delete();
 
     return res.status(200).send(event);
 });
