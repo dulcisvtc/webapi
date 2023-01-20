@@ -3,8 +3,8 @@ import { User, UserDocument } from "../database/models/User";
 import { getEventDocument } from "../database/event";
 import { handleDelivery } from "../handlers/jobs";
 import { paginate } from "../constants/functions";
-import { logger } from "../logger/normal";
 import { JobSchema } from "../../types";
+import { getLogger } from "../logger";
 import { Jobs } from "../database/";
 import { inspect } from "util";
 import { guild } from "..";
@@ -14,6 +14,7 @@ import fastify from "fastify";
 import crypto from "crypto";
 import axios from "axios";
 
+const webLogger = getLogger("web", true);
 const app = fastify();
 
 app.addHook("preHandler", (req, res, done) => {
@@ -28,7 +29,7 @@ app.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, 
             parsed: JSON.parse(body as string),
         };
         done(null, newBody);
-    } catch (e) { logger.error(e); };
+    } catch (e) { webLogger.error(e); };
 });
 
 app.get("/vtc/news", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/news")).data);
@@ -46,16 +47,16 @@ let cachedJobs: JobSchema[] = [];
 let jobsCacheExpire = Date.now();
 app.get("/jobs", async (req, res) => {
     if (Date.now() >= jobsCacheExpire) {
-        const docs = await Jobs.find().lean();
+        const documents = JSON.parse(JSON.stringify(await Jobs.find()));
 
-        for (const doc of docs) {
+        for (const doc of documents) {
             // @ts-ignore
             delete doc._id;
             // @ts-ignore
             delete doc.__v;
         };
 
-        cachedJobs = docs;
+        cachedJobs = documents;
         jobsCacheExpire = Date.now() + 60_000;
     };
 
@@ -91,8 +92,7 @@ app.get("/users", async (req, res) => {
 });
 app.get("/users/:id", async (req, res) => {
     const id = (req.params as { id: string }).id;
-
-    let user = cachedUsers.find((x) => x.discord_id === id) ?? await User.findOne({ discord_id: id });
+    const user = cachedUsers.find((x) => x.discord_id === id) ?? await User.findOne({ discord_id: id });
 
     if (!user) {
         res.status(404).send({ message: "User not found" });
@@ -214,11 +214,13 @@ app.post("/webhook/navio", async (req, res) => {
         const status = await handleDelivery(newJobObject);
 
         return res.status(status).send();
-    } catch (e) { logger.error(inspect(e)); };
+    } catch (e) {
+        webLogger.error(`Failed to handle delivery:\n${inspect(e, { depth: Infinity })}`);
+    };
 });
 
 app.listen({ port: config.port, host: "0.0.0.0" }, (err, address) => {
-    logger.info(`Server live on ${address}`);
+    webLogger.info(`Server live on ${address}`);
 });
 
 function hmacSHA256(key: string, data: any) {

@@ -1,16 +1,15 @@
 {
     "main": "dist/",
     "scripts": {
-        "build": "tsc && yarn copy",
+        "build": "tsc",
         "build:run": "yarn build && yarn start",
         "start": "node --no-warnings .",
-        "copy": "copyfiles .env dist",
         "watch": "tsc -w"
     },
     "dependencies": {
         "@truckersmp_official/api-types": "^1.0.1",
         "@typegoose/typegoose": "^10.0.0",
-        "axios": "1.2.2",
+        "axios": "1.2.3",
         "discord.js": "^14.7.1",
         "dotenv": "^16.0.3",
         "fastify": "^4.11.0",

@@ -1,14 +1,18 @@
 import "dotenv/config";
 import "./server";
+import "./handlers/metrics";
 import { Client, GatewayIntentBits, Guild, TextChannel } from "discord.js";
 import { registerCommands } from "./handlers/commands";
-import { logger } from "./logger/normal";
 import { connection } from "./database";
-import { debug } from "./logger/debug";
+import { getLogger } from "./logger";
 import { readdirSync } from "fs";
 import { inspect } from "util";
 import { join } from "path";
 import config from "./config";
+
+const discordLogger = getLogger("discord", true);
+const databaseLogger = getLogger("database", true);
+const generalLogger = getLogger("general", true);
 
 export const admens = ["419892040726347776"];
 export const client = new Client({
@@ -26,7 +30,7 @@ export let guild: Guild | null = null;
 export let botlogs: TextChannel | null = null;
 
 client.once("ready", () => {
-    logger.info(`Logged in as ${client.user!.tag}`);
+    discordLogger.info(`Logged in as ${client.user!.tag}`);
 
     // eventsTicker.start();
 
@@ -34,10 +38,10 @@ client.once("ready", () => {
     botlogs = guild.channels.cache.get(config.botlogs_channel)! as TextChannel;
 
     guild.members.fetch({ force: true }).then(() => {
-        logger.info("Fetched members.");
+        discordLogger.info("Fetched members.");
     });
     registerCommands(guild).then((commands) => {
-        logger.info(`Registered ${commands.size} commands.`)
+        discordLogger.info(`Registered ${commands.size} commands.`)
     });
 });
 
@@ -50,14 +54,9 @@ for (const eventFileName of readdirSync(join(__dirname, "events")).filter((name)
 };
 
 connection.then(() => {
-    logger.info("Connected to database.");
+    databaseLogger.info("Connected to database.");
     return client.login(config.token);
 });
 
-client.on("debug", (m) => {
-    debug.info(m);
-});
-
-process.on("unhandledRejection", (e) => logger.error("unhandledRejection:\n" + inspect(e)));
-process.on("uncaughtException", (e) => logger.error("uncaughtException:\n" + inspect(e)));
-logger.info("=".repeat(55));
+process.on("unhandledRejection", (e) => generalLogger.error(`unhandledRejection:\n${inspect(e, { depth: Infinity })}`));
+process.on("uncaughtException", (e) => generalLogger.error(`uncaughtException:\n${inspect(e, { depth: Infinity })}`));

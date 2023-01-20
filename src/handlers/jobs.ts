@@ -1,16 +1,21 @@
 import { EmbedBuilder, GuildTextBasedChannel } from "discord.js";
 import { getUserDocumentBySteamId, Jobs } from "../database";
-import { logger } from "../logger/normal";
 import { JobSchema } from "../../types";
+import { getLogger } from "../logger";
+import { inspect } from "util";
 import { client } from "..";
+
+const jobsLogger = getLogger("jobs", true);
 
 export const handleDelivery = async (job: JobSchema): Promise<200> => {
     if (job.driven_distance < 1) return 200;
 
     if (await Jobs.findOne({ job_id: job.job_id })) {
-        logger.warn(`Job ${job.job_id} already exists in database.`);
+        jobsLogger.warn(`Job ${job.job_id} already exists in database.`);
     } else {
         await Jobs.create(job);
+
+        jobsLogger.debug(`Job delivered:\n${inspect(job, { depth: Infinity })}`);
 
         const channel = client.channels.cache.get("992906515809828914") as GuildTextBasedChannel;
         const embed = new EmbedBuilder()
@@ -43,7 +48,8 @@ export const handleDelivery = async (job: JobSchema): Promise<200> => {
                 inline: true
             });
 
-        await channel.send({ embeds: [embed] }).catch(() => logger.error("cannot send delivery message"));
+        await channel.send({ embeds: [embed] })
+            .catch((e) => jobsLogger.error(`Failed to send job delivered message:\n${inspect(e, { depth: Infinity })}`));
     };
 
     const user = await getUserDocumentBySteamId(job.driver.steam_id);
