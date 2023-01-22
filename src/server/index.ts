@@ -196,7 +196,7 @@ app.get("/staff", async (req, res) => {
                 };
             }))
         })));
-        staffCacheExpire = Date.now() + 60 * 60 * 60 * 1000;
+        staffCacheExpire = Date.now() + 60 * 60 * 1000;
     };
 
     res.send(cachedStaff);
