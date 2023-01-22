@@ -1,13 +1,10 @@
-import { Event, EventDocument } from "../database/models/Event";
-import { User, UserDocument } from "../database/models/User";
-import { getEventDocument } from "../database/event";
+import { Event, EventDocument, getEventDocument, getGlobalDocument, Jobs, User, UserDocument } from "../database/";
 import { handleDelivery } from "../handlers/jobs";
 import { paginate } from "../constants/functions";
 import { JobSchema } from "../../types";
 import { getLogger } from "../logger";
-import { Jobs } from "../database/";
+import { client, guild } from "..";
 import { inspect } from "util";
-import { guild } from "..";
 import JSONbigint from "json-bigint";
 import config from "../config";
 import fastify from "fastify";
@@ -138,7 +135,6 @@ app.get("/events", async (req, res) => {
 
     res.send(cachedEvents);
 });
-
 app.post("/events", async (req, res) => {
     if (req.headers["secret"] !== config.messaging_secret) return res.status(403);
 
@@ -164,7 +160,6 @@ app.post("/events", async (req, res) => {
 
     return res.status(200).send(event);
 });
-
 app.delete<{ Params: { id: string; }; }>("/events/:id", async (req, res) => {
     if (req.headers["secret"] !== config.messaging_secret) return res.status(403);
 
@@ -174,6 +169,37 @@ app.delete<{ Params: { id: string; }; }>("/events/:id", async (req, res) => {
     await event.delete();
 
     return res.status(200).send(event);
+});
+
+let cachedStaff: {
+    name: string;
+    color: string;
+    members: {
+        name: string;
+        avatar: string;
+    }[];
+}[] = [];
+let staffCacheExpire = Date.now();
+app.get("/staff", async (req, res) => {
+    if (Date.now() >= staffCacheExpire) {
+        const document = await getGlobalDocument();
+
+        cachedStaff = await Promise.all([...document.staff.values()].map(async (r) => ({
+            name: r.name,
+            color: r.color,
+            members: await Promise.all([...r.members.values()].map(async (m) => {
+                const user = await client.users.fetch(m.id);
+
+                return {
+                    name: m.name ?? user.username,
+                    avatar: user.displayAvatarURL({ extension: "png" })
+                };
+            }))
+        })));
+        staffCacheExpire = Date.now() + 60 * 60 * 60 * 1000;
+    };
+
+    res.send(cachedStaff);
 });
 
 app.post("/webhook/navio", async (req, res) => {
