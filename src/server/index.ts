@@ -36,9 +36,9 @@ app.get("/vtc/news", async (req, res) => (await axios.get("https://api.truckersm
 app.get("/vtc/members", async (req, res) =>
     JSONbigint.parse((await axios.get("https://api.truckersmp.com/v2/vtc/55939/members", { transformResponse: (data) => data })).data)
 );
-app.get("/tmp/event/:id", async (req, res) =>
+app.get<{ Params: { id: string; }; }>("/tmp/event/:id", async (req, res) =>
     JSONbigint.parse((await axios.get(
-        `https://api.truckersmp.com/v2/events/${(req.params as any).id}`,
+        `https://api.truckersmp.com/v2/events/${req.params.id}`,
         { transformResponse: (data) => data }
     )).data)
 );
@@ -90,8 +90,8 @@ app.get("/users", async (req, res) => {
 
     res.status(200).send(cachedUsers);
 });
-app.get("/users/:id", async (req, res) => {
-    const id = (req.params as { id: string }).id;
+app.get<{ Params: { id: string; }; }>("/users/:id", async (req, res) => {
+    const { id } = req.params;
     const user = cachedUsers.find((x) => x.discord_id === id) ?? await User.findOne({ discord_id: id });
 
     if (!user) {
@@ -101,8 +101,8 @@ app.get("/users/:id", async (req, res) => {
 
     res.status(200).send(user);
 });
-app.get("/isdriver/:id", async (req, res) => {
-    const id = (req.params as { id: string }).id;
+app.get<{ Params: { id: string; }; }>("/isdriver/:id", async (req, res) => {
+    const { id } = req.params;
 
     return {
         isdriver: guild?.members.cache.get(id)?.roles.cache.has(config.driver_role) ?? false
@@ -165,10 +165,10 @@ app.post("/events", async (req, res) => {
     return res.status(200).send(event);
 });
 
-app.delete("/events/:id", async (req, res) => {
+app.delete<{ Params: { id: string; }; }>("/events/:id", async (req, res) => {
     if (req.headers["secret"] !== config.messaging_secret) return res.status(403);
 
-    const eventId = parseInt((req.params as { id: string; }).id);
+    const eventId = parseInt(req.params.id);
     const event = await getEventDocument(eventId);
 
     await event.delete();
