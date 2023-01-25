@@ -1,4 +1,4 @@
-import { Event, EventDocument, getEventDocument, getGlobalDocument, Jobs, User, UserDocument } from "../database/";
+import { Event, EventDocument, getEventDocument, getGlobalDocument, GlobalDocument, Jobs, User, UserDocument } from "../database/";
 import { handleDelivery } from "../handlers/jobs";
 import { paginate } from "../constants/functions";
 import { JobSchema } from "../../types";
@@ -200,6 +200,19 @@ app.get("/staff", async (req, res) => {
     };
 
     res.send(cachedStaff);
+});
+
+let cachedMetrics: GlobalDocument["metrics"];
+let metricsCacheExpire = Date.now();
+app.get("/metrics", async (req, res) => {
+    if (Date.now() >= metricsCacheExpire) {
+        const document = await getGlobalDocument();
+
+        cachedMetrics = document.metrics;
+        staffCacheExpire = Date.now() + 10 * 60 * 1000;
+    };
+
+    res.send(cachedMetrics);
 });
 
 app.post("/webhook/navio", async (req, res) => {
