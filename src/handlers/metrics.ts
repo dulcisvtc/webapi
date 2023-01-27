@@ -1,6 +1,6 @@
 import { getGlobalDocument } from "../database/global";
 import { getLogger } from "../logger";
-import { Jobs } from "../database";
+import { Jobs, User } from "../database";
 import { inspect } from "util";
 import axios from "axios";
 
@@ -18,7 +18,7 @@ const task = async () => {
                 driven_distance: { $sum: "$driven_distance" },
                 fuel_used: { $sum: "$fuel_used" }
             }
-        }]))[0] as { driven_distance: number, fuel_used: number };
+        }]))[0] as { driven_distance: number; fuel_used: number };
 
         const drivers = await axios.get("https://api.dulcis.org/vtc/members").then(res => res.data.response.members_count) as number;
         const jobs = await Jobs.count();
@@ -40,5 +40,35 @@ const task = async () => {
     };
 };
 
-task();
-setInterval(task, 2 * 60 * 60 * 1000);
+// task();
+// setInterval(task, 2 * 60 * 60 * 1000);
+
+const task2 = async () => {
+    try {
+        const start = Date.now();
+
+        const timestamp = Date.now().toString();
+
+        const dbjobs = (await User.aggregate([{
+            $group: {
+                _id: null,
+                distance: { $sum: "$leaderboard.monthly_mileage" }
+            }
+        }]))[0] as { distance: number };
+
+        const distance = Math.round(dbjobs.distance);
+
+        const document = await getGlobalDocument();
+
+        document.metrics.mdistance.set(timestamp, distance);
+
+        document.safeSave();
+
+        metricsLogger.debug(`Logged metrics (${Date.now() - start}ms): mdistance=${distance}`);
+    } catch (err) {
+        metricsLogger.error(`Metrics error: ${inspect(err, { depth: Infinity })}`);
+    };
+};
+
+task2();
+setInterval(task2, 24 * 60 * 60 * 1000);

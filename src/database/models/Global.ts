@@ -5,6 +5,7 @@ class MetricsSchema {
     @prop({ type: Map, default: {} }, PropType.MAP) drivers!: Map<string, number>;
     @prop({ type: Map, default: {} }, PropType.MAP) jobs!: Map<string, number>;
     @prop({ type: Map, default: {} }, PropType.MAP) distance!: Map<string, number>;
+    @prop({ type: Map, default: {} }, PropType.MAP) mdistance!: Map<string, number>;
     @prop({ type: Map, default: {} }, PropType.MAP) fuel!: Map<string, number>;
 };
 
