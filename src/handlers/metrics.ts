@@ -41,4 +41,4 @@ const task = async () => {
 };
 
 task();
-setInterval(task, 60 * 60 * 1000);
+setInterval(task, 2 * 60 * 60 * 1000);
