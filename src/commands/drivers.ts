@@ -1,4 +1,4 @@
-import { getUserDocumentByDiscordId, getUserDocumentBySteamId, resetUserDocument } from "../database";
+import { getUserDocumentByDiscordId, getUserDocumentBySteamId, Jobs, resetUserDocument } from "../database";
 import { ChatInputCommandInteraction, SlashCommandBuilder, TextChannel } from "discord.js";
 import { getWebhook } from "../constants/functions";
 import { botlogs } from "..";
@@ -210,10 +210,11 @@ export default {
                 const reason = interaction.options.getString("reason", true);
                 const type = interaction.options.getString("type", true);
                 const { append } = await appendGenerator(interaction);
-                await append("✅ Driver removed from Navio. Deleting database document...");
+                await append("✅ Driver removed from Navio. Deleting database document and jobs...");
 
                 await resetUserDocument(steamId);
-                await append("✅ Database document deleted. Trying to remove driver role...");
+                const deleted = await Jobs.deleteMany({ "driver.steam_id": steamId });
+                await append(`✅ Deleted database document and ${deleted.deletedCount} jobs. Trying to remove driver role...`);
 
                 const role = await member?.roles.remove(
                     config.driver_role,
