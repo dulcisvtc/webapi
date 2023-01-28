@@ -1,4 +1,5 @@
 import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { botlogs } from "..";
 import { generateId } from "../constants/functions";
 import { getUserDocumentByDiscordId, UserDocument } from "../database";
 
@@ -56,6 +57,23 @@ export default {
                 content: `Added warn to ${user} (${user.tag}) with description: ${description}`,
                 ephemeral: true,
             });
+
+            await botlogs?.send({
+                embeds: [{
+                    title: `warn ${id} added`,
+                    author: {
+                        name: interaction.user.tag,
+                        icon_url: interaction.user.displayAvatarURL()
+                    },
+                    fields: [{
+                        name: "discord user",
+                        value: `${user} \`${user.tag}\` (\`${user.id}\`)`
+                    }, {
+                        name: "description",
+                        value: description
+                    }]
+                }]
+            });
         } else if (command === "remove") {
             if (!document)
                 return interaction.reply({
@@ -77,6 +95,20 @@ export default {
             await interaction.reply({
                 content: `Removed warn from ${user} (${user.tag}) with ID: ${id}`,
                 ephemeral: true,
+            });
+
+            await botlogs?.send({
+                embeds: [{
+                    title: `warn ${id} removed`,
+                    author: {
+                        name: interaction.user.tag,
+                        icon_url: interaction.user.displayAvatarURL()
+                    },
+                    fields: [{
+                        name: "discord user",
+                        value: `${user} \`${user.tag}\` (\`${user.id}\`)`
+                    }]
+                }]
             });
         } else if (command === "list") {
             if (!document)
