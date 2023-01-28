@@ -229,26 +229,28 @@ export default {
                 if (!role) roletext = "❌ Failed to remove driver role.";
                 await append(roletext + " Trying to send member updates webhook...");
 
-                let webhooktext = "✅ Member updates webhook sent.";
-                try {
-                    const webhook = await getWebhook(
-                        interaction.guild.channels.cache.get(config.member_updates_channel) as TextChannel,
-                        "Member Updates"
-                    );
+                if (memberupdate) {
+                    let webhooktext = "✅ Member updates webhook sent.";
+                    try {
+                        const webhook = await getWebhook(
+                            interaction.guild.channels.cache.get(config.member_updates_channel) as TextChannel,
+                            "Member Updates"
+                        );
 
-                    await webhook.send({
-                        embeds: [{
-                            title: "Member Update",
-                            description: `**[Driver]** ${user} has `
-                                + (type === "removed" ? "been removed from" : "left")
-                                + ` Dulcis Logistics due to ${reason}`,
-                            color: 0x7d7a7a
-                        }]
-                    })
-                } catch {
-                    webhooktext = "❌ Failed to send member updates webhook."
+                        await webhook.send({
+                            embeds: [{
+                                title: "Member Update",
+                                description: `**[Driver]** ${user} has `
+                                    + (type === "removed" ? "been removed from" : "left")
+                                    + ` Dulcis Logistics due to ${reason}`,
+                                color: 0x7d7a7a
+                            }]
+                        })
+                    } catch {
+                        webhooktext = "❌ Failed to send member updates webhook."
+                    };
+                    await append(webhooktext);
                 };
-                await append(webhooktext);
 
                 if (interaction.options.getBoolean("giveretiredrole", true) && member) {
                     await member.roles.add(config.retired_driver_role)
