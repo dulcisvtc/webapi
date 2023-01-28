@@ -1,4 +1,4 @@
-import { DocumentType, getModelForClass, modelOptions, prop, Severity } from "@typegoose/typegoose";
+import { DocumentType, getModelForClass, modelOptions, prop, PropType, Severity } from "@typegoose/typegoose";
 import { Snowflake } from "discord.js";
 
 @modelOptions({ schemaOptions: { _id: false }, options: { allowMixed: Severity.ALLOW } })
@@ -25,7 +25,7 @@ class UserSchema {
     @prop({ type: String }) username?: string;
     @prop({ type: Number, default: 0 }) permissions!: number;
     @prop({ type: LeaderboardSchema, default: {} }) leaderboard!: LeaderboardSchema;
-    @prop({ type: WarnSchema, default: {} }) warns!: Map<string, WarnSchema>;
+    @prop({ type: WarnSchema, default: {} }, PropType.MAP) warns!: Map<string, WarnSchema>;
 
     safeSave(this: UserDocument): void {
         if (saveQueue.has(this.steam_id)) return void saveQueue.set(this.steam_id, 2);
