@@ -1,4 +1,5 @@
 import { GuildTextBasedChannel, Message, TextChannel } from "discord.js";
+import crypto from "crypto";
 
 const bulks = new Map<string, Message[]>();
 export function queueDelete(messages: Message[]): void {
@@ -49,4 +50,10 @@ export const paginate = <T>(arr: T[], itemsPerPage: number): T[][] => {
 
         return acc;
     }, []);
+};
+
+export const generateId = (length: number): string => {
+    if (length < 1) return "";
+
+    return crypto.randomBytes(Math.ceil(length / 2)).toString("hex").slice(0, length);
 };
