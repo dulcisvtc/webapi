@@ -16,6 +16,7 @@ export default {
                 .addUserOption((o) => o.setName("user").setDescription("Driver's Discord account.").setRequired(true))
                 .addStringOption((o) => o.setName("steamid").setDescription("Driver's SteamID.").setRequired(true))
                 .addStringOption((o) => o.setName("position").setDescription("User's current position.").setRequired(true))
+                .addBooleanOption((o) => o.setName("memberupdate").setDescription("for development purposes. ignore this."))
         )
         .addSubcommand((c) =>
             c
@@ -30,14 +31,16 @@ export default {
                     name: "removed",
                     value: "removed"
                 }).setRequired(true))
-                .addStringOption((o) => o.setName("reason").setDescription("Reason for removal. dont write 'due to'").setRequired(true))
+                .addStringOption((o) => o.setName("reason").setDescription("\"...left Dulcis Logistics due to <TEXTHERE>\"").setRequired(true))
                 .addBooleanOption((o) => o.setName("giveretiredrole").setDescription("yes").setRequired(true))
+                .addBooleanOption((o) => o.setName("memberupdate").setDescription("for development purposes. ignore this."))
         )
         .setDefaultMemberPermissions(8)
         .toJSON(),
     execute: async (interaction: ChatInputCommandInteraction<"cached">) => {
         const command = interaction.options.getSubcommand();
         const navio = new Navio(config.navio_api_key);
+        const memberupdate = interaction.options.getBoolean("memberupdate") ?? true;
 
         if (command === "add") {
             await interaction.reply({
@@ -99,24 +102,26 @@ export default {
                 if (!role) roletext = "❌ Failed to give driver role.";
                 await append(roletext + " Trying to send member updates webhook...");
 
-                let webhooktext = "✅ Member updates webhook sent.";
-                try {
-                    const webhook = await getWebhook(
-                        interaction.guild.channels.cache.get(config.member_updates_channel) as TextChannel,
-                        "Member Updates"
-                    );
+                if (memberupdate) {
+                    let webhooktext = "✅ Member updates webhook sent.";
+                    try {
+                        const webhook = await getWebhook(
+                            interaction.guild.channels.cache.get(config.member_updates_channel) as TextChannel,
+                            "Member Updates"
+                        );
 
-                    await webhook.send({
-                        embeds: [{
-                            title: "Member Update",
-                            description: `**[${interaction.options.getString("position")}]** ${member} has joined Dulcis Logistics as a driver.`,
-                            color: 0x7d7a7a
-                        }]
-                    })
-                } catch {
-                    webhooktext = "❌ Failed to send member updates webhook."
+                        await webhook.send({
+                            embeds: [{
+                                title: "Member Update",
+                                description: `**[${interaction.options.getString("position")}]** ${member} has joined Dulcis Logistics as a driver.`,
+                                color: 0x7d7a7a
+                            }]
+                        });
+                    } catch {
+                        webhooktext = "❌ Failed to send member updates webhook.";
+                    };
+                    await append(webhooktext);
                 };
-                await append(webhooktext);
 
                 await append("✨ Done.", "Success!");
 
