@@ -1,6 +1,6 @@
 {
     "name": "@dulcis/api",
-    "version": "1.6.2",
+    "version": "1.6.3",
     "main": "dist/",
     "scripts": {
         "build": "yarn clean && tsc",
