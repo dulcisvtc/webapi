@@ -39,7 +39,6 @@ const task = async () => {
         const [lastTimestamp] = latestFromMap(document.metrics.drivers);
 
         if (formatTimestamp(parseInt(lastTimestamp)) === formatTimestamp(timestamp)) {
-            console.log("a1");
             document.metrics.drivers.delete(lastTimestamp);
             document.metrics.jobs.delete(lastTimestamp);
             document.metrics.distance.delete(lastTimestamp);
@@ -50,7 +49,6 @@ const task = async () => {
             document.metrics.distance.set(timestamp.toString(), distance);
             document.metrics.fuel.set(timestamp.toString(), fuel);
         } else {
-            console.log("a2");
             document.metrics.drivers.set(timestamp.toString(), drivers);
             document.metrics.jobs.set(timestamp.toString(), jobs);
             document.metrics.distance.set(timestamp.toString(), distance);
@@ -58,12 +56,10 @@ const task = async () => {
         };
 
         if (formatTimestamp(parseInt(lastTimestamp), { day: false }) === formatTimestamp(timestamp, { day: false })) {
-            console.log("b1");
             document.metrics.mdistance.delete(lastTimestamp);
 
             document.metrics.mdistance.set(timestamp.toString(), mdistance);
         } else {
-            console.log("b2");
             document.metrics.mdistance.set(timestamp.toString(), mdistance);
         };
 
