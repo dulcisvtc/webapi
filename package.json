@@ -3,10 +3,9 @@
     "version": "1.6.5",
     "main": "dist/",
     "scripts": {
-        "build": "yarn clean && tsc",
-        "build:run": "yarn build && yarn start",
+        "build": "tsc",
+        "build:run": "yarn build --incremental && yarn start",
         "build:watch": "tsc -w",
-        "clean": "rm -rf build",
         "dev": "tsc-watch --noClear --onSuccess \"yarn start\"",
         "start": "node --no-warnings ."
     },
