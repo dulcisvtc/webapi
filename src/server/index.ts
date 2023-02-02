@@ -209,7 +209,7 @@ app.get("/metrics", async (req, res) => {
         const document = await getGlobalDocument();
 
         cachedMetrics = document.metrics;
-        staffCacheExpire = Date.now() + 30 * 60 * 1000;
+        staffCacheExpire = Date.now() + 30 * 1000;
     };
 
     res.send(cachedMetrics);

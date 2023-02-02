@@ -57,3 +57,10 @@ export const generateId = (length: number): string => {
 
     return crypto.randomBytes(Math.ceil(length / 2)).toString("hex").slice(0, length);
 };
+
+export const latestFromMap = <T>(map: Map<string, T>): [string, T] => {
+    const keys = Array.from(map.keys());
+    const latest = keys[keys.length - 1];
+
+    return [latest, map.get(latest)!];
+};
