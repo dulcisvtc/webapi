@@ -9,8 +9,8 @@ class EventSchema {
     @prop({ type: String, default: "" }) destination!: string;
     @prop({ type: Number, default: 0 }) meetup!: number;
     @prop({ type: Number, default: 0 }) departure!: number;
-    @prop({ type: Number, default: 0 }) slot_id!: number;
-    @prop({ type: String, default: "" }) slot_image!: string;
+    @prop({ type: Number }) slot_id?: number;
+    @prop({ type: String }) slot_image?: string;
 
     safeSave(this: EventDocument): void {
         if (saveQueue.has(this.id)) return void saveQueue.set(this.id, 2);

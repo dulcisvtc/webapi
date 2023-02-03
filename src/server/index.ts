@@ -144,8 +144,8 @@ app.post("/events", async (req, res) => {
         destination: string;
         meetup: number;
         departure: number;
-        slotId: number;
-        slotImage: string;
+        slotId?: number;
+        slotImage?: string;
     };
     const event = await getEventDocument(eventObject.eventId);
 
@@ -153,8 +153,8 @@ app.post("/events", async (req, res) => {
     event.destination = eventObject.destination;
     event.meetup = eventObject.meetup;
     event.departure = eventObject.departure;
-    event.slot_id = eventObject.slotId;
-    event.slot_image = eventObject.slotImage;
+    if (eventObject.slotId) event.slot_id = eventObject.slotId;
+    if (eventObject.slotImage) event.slot_image = eventObject.slotImage;
 
     event.safeSave();
 
