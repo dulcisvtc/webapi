@@ -23,8 +23,8 @@ export const client = new Client({
         GatewayIntentBits.MessageContent
     ]
 });
-// import "./handlers/events";
-// import { eventsTicker } from "./handlers/events";
+import "./handlers/events";
+import { eventsTicker } from "./handlers/events";
 
 export let guild: Guild | null = null;
 export let botlogs: TextChannel | null = null;
@@ -32,7 +32,7 @@ export let botlogs: TextChannel | null = null;
 client.once("ready", () => {
     discordLogger.info(`Logged in as ${client.user!.tag}`);
 
-    // eventsTicker.start();
+    eventsTicker.start();
 
     guild = client.guilds.cache.get(config.guild)!;
     botlogs = guild.channels.cache.get(config.botlogs_channel)! as TextChannel;
