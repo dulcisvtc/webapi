@@ -89,6 +89,7 @@ eventsTicker.on("tick", async () => {
     const descriptionArray = [
         `**Date:** <t:${Math.round(selectedEvent.departure / 1000)}:F>`,
         `**Meetup:** <t:${Math.round(selectedEvent.meetup / 1000)}:R>`,
+        `**Departure:** <t:${Math.round(selectedEvent.departure / 1000)}:R>`,
         `**Start location:** ${selectedEvent.location}`,
         `**Destination:** ${selectedEvent.destination}`,
         `**Server:** ${apiEvent.data.response.server.name}`,
