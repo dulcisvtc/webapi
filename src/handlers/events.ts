@@ -94,9 +94,9 @@ eventsTicker.on("tick", async () => {
         `**Destination:** ${selectedEvent.destination}`,
         `**Server:** ${apiEvent.data.response.server.name}`,
         // @ts-expect-error - TMP API returns an empty array if there are no DLCs
-        `**DLC required:** ${apiEvent.data.response.dlcs.length === 0 ? "None." : Object.values(apiEvent.data.response.dlcs).join(", ")}`
+        `**DLC required:** ${apiEvent.data.response.dlcs.length === 0 ? "None." : Object.values(apiEvent.data.response.dlcs).join(", ")}`,
+        `**Slot:** ${selectedEvent.slot_id || "None."}`
     ];
-    selectedEvent.slot_id && descriptionArray.push(`**Slot:** ${selectedEvent.slot_id}`);
 
     const thumbnailUrl = apiEvent.data.response.vtc
         ? (await axios.get<{ response: APICompany }>(APIWebRoutes.company(apiEvent.data.response.vtc.id))).data.response.logo
