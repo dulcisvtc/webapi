@@ -69,7 +69,7 @@ const task = async () => {
             `Logged metrics (${Date.now() - start}ms): drivers=${drivers}, jobs=${jobs}, distance=${distance}, mdistance=${mdistance}, fuel=${fuel}`
         );
     } catch (err) {
-        metricsLogger.error(`Metrics error: ${inspect(err, { depth: Infinity })}`);
+        metricsLogger.error(`Metrics error: ${inspect(err)}`);
     };
 };
 

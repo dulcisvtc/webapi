@@ -58,5 +58,5 @@ connection.then(() => {
     return client.login(config.token);
 });
 
-process.on("unhandledRejection", (e) => generalLogger.error(`unhandledRejection:\n${inspect(e, { depth: Infinity })}`));
-process.on("uncaughtException", (e) => generalLogger.error(`uncaughtException:\n${inspect(e, { depth: Infinity })}`));
+process.on("unhandledRejection", (e) => generalLogger.error(`unhandledRejection:\n${inspect(e)}`));
+process.on("uncaughtException", (e) => generalLogger.error(`uncaughtException:\n${inspect(e)}`));
