@@ -841,10 +841,10 @@
   resolved "https://registry.yarnpkg.com/@truckersmp_official/api-types/-/api-types-1.0.1.tgz#062d1cb2e3a3c64003f55ab572f059cb6774132d"
   integrity sha512-WVG4LDc8fOnVsslixZtqBvKbd2Wr6l+tv3PI9GcKd0lYV4RRH6IE+gDRjGRED8a4H8jCSz0KwACsc8vK3ByFHw==
 
-"@typegoose/typegoose@^10.1.0":
-  version "10.1.0"
-  resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-10.1.0.tgz#b1e64760849840ff0c4b87e5049bb73a86c2e8bd"
-  integrity sha512-2TEOW5oLbU2d52+Tz23C3vr5gFPk+qP5gl/745IFisOAHnoAuTKf3znbagy4Ce90XBMnHUtsTjZD+mmUsEVJ1w==
+"@typegoose/typegoose@^10.1.1":
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-10.1.1.tgz#1776212bf4427314a96e8a87cd599a8b82bc1fc5"
+  integrity sha512-QzRzgFnsQ3/UTToUEVJ5ln4t/QzlznEat7bcn9tNt4U6QCytPVvTJnRe5SwrJllxakgz0yrnbKkTw9YeoiYXuQ==
   dependencies:
     lodash "^4.17.20"
     loglevel "^1.8.1"
@@ -857,10 +857,15 @@
   resolved "https://registry.yarnpkg.com/@types/json-bigint/-/json-bigint-1.0.1.tgz#201062a6990119a8cc18023cfe1fed12fc2fc8a7"
   integrity sha512-zpchZLNsNuzJHi6v64UBoFWAvQlPhch7XAi36FkH6tL1bbbmimIF+cS7vwkzY4u5RaSWMoflQfu+TshMPPw8uw==
 
-"@types/node@*", "@types/node@^18.11.18":
+"@types/node@*":
   version "18.11.18"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.18.tgz#8dfb97f0da23c2293e554c5a50d61ef134d7697f"
   integrity sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==
+
+"@types/node@^18.11.19":
+  version "18.11.19"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.19.tgz#35e26df9ec441ab99d73e99e9aca82935eea216d"
+  integrity sha512-YUgMWAQBWLObABqrvx8qKO1enAvBUdjZOAWQ5grBAkp5LQv45jBvYKZ3oFS9iKRCQyFjqw6iuEa1vmFqtxYLZw==
 
 "@types/text-table@^0.2.2":
   version "0.2.2"
