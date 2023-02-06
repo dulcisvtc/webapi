@@ -98,7 +98,7 @@ eventsTicker.on("tick", async () => {
         `**Slot:** ${selectedEvent.slot_id || "None."}`
     ];
 
-    const thumbnailUrl = apiEvent.data.response.vtc
+    const thumbnailUrl = apiEvent.data.response.vtc?.id
         ? (await axios.get<{ response: APICompany }>(APIWebRoutes.company(apiEvent.data.response.vtc.id))).data.response.logo
         // @ts-expect-error - smh, bigints
         : (await axios.get<{ response: APIPlayer }>(APIWebRoutes.player(apiEvent.data.response.user.id))).data.response.avatar;
