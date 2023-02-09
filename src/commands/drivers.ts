@@ -94,6 +94,7 @@ export default {
 
                 const document = await getUserDocumentBySteamId(steamId);
                 document.discord_id = member.id;
+                document.username = result.username;
                 document.safeSave();
                 await append("✅ Database entry created. Trying to give driver role...");
 
