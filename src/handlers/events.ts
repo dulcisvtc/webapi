@@ -112,9 +112,11 @@ eventsTicker.on("tick", async () => {
         .setFooter({ text: "Last update" })
         .setTimestamp();
 
-    if (attendingMessage && attendingMessage.embeds[0]?.title !== apiEvent.data.response.name) await attendingMessage.delete();
+    let deleted = false;
+    if (attendingMessage && attendingMessage.embeds[0]?.title !== apiEvent.data.response.name)
+        await attendingMessage.delete().then(() => deleted = true);
 
-    if (attendingMessage) await attendingMessage.edit({
+    if (attendingMessage && !deleted) await attendingMessage.edit({
         embeds: selectedEvent.slot_image ? [
             attendingEmbed, {
                 image: {
