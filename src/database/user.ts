@@ -1,10 +1,14 @@
 import type { UserDocument } from "./models/User";
 import { User } from "./models/User";
 
-export function getUserDocumentBySteamId(steamId: string): Promise<UserDocument> {
-    return new Promise<UserDocument>((resolve) => {
+export function getUserDocumentBySteamId(steamId: string, returnNull: true): Promise<UserDocument | null>;
+export function getUserDocumentBySteamId(steamId: string, returnNull?: boolean): Promise<UserDocument>;
+export function getUserDocumentBySteamId(steamId: string, returnNull?: boolean): Promise<UserDocument | null> {
+    return new Promise((resolve) => {
         void User.findOne({ steam_id: steamId }).then((userInDb) => {
-            const user = userInDb ?? new User({ steam_id: steamId });
+            if (returnNull) return resolve(userInDb);
+
+            const user = new User({ steam_id: steamId });
 
             return resolve(user);
         });
