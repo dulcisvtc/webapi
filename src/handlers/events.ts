@@ -1,18 +1,35 @@
 import { APICompany, APIGameEvent, APIPlayer, APIWebRouteBases, APIWebRoutes } from "@truckersmp_official/api-types/v2";
 import { EmbedBuilder, TextChannel } from "discord.js";
 import { formatTimestamp } from "../constants/time";
+import { setTimeout } from "node:timers/promises";
 import { Event } from "../database/models/Event";
 import { getLogger } from "../logger";
 import { client } from "..";
+import Axios, { AxiosError } from "axios";
 import Ticker from "../lib/ticker";
 import config from "../config";
-import Axios from "axios";
 
 const eventsLogger = getLogger("events", true);
 
 export const eventsTicker = new Ticker(60_000);
 const axios = Axios.create({
     baseURL: APIWebRouteBases.api
+});
+
+axios.interceptors.response.use(undefined, async (error: AxiosError) => {
+    const { config, message } = error;
+
+    if (!config || !config.retry)
+        return Promise.reject(error);
+
+    if (!message.includes("write EPROTO"))
+        return Promise.reject(error);
+
+    config.retry -= 1;
+
+    await setTimeout(config.retryDelay ?? 500);
+
+    return await axios(config);
 });
 
 eventsTicker.on("tick", async () => {
@@ -24,7 +41,7 @@ eventsTicker.on("tick", async () => {
             .filter((e) => formatTimestamp(e.departure, { day: false }) === formatTimestamp(Date.now(), { day: false }))
             .sort((a, b) => a.departure - b.departure)
             .map(async (event) => {
-                const apiEvent = await axios.get<{ response: APIGameEvent; }>(APIWebRoutes.event(event.id));
+                const apiEvent = await axios.get<{ response: APIGameEvent; }>(APIWebRoutes.event(event.id), { retry: 5 });
                 const departureDate = new Date(event.departure)
 
                 let string = [
@@ -84,7 +101,7 @@ eventsTicker.on("tick", async () => {
                 : curr;
         });
 
-    const apiEvent = await axios.get<{ response: APIGameEvent; }>(APIWebRoutes.event(selectedEvent.id));
+    const apiEvent = await axios.get<{ response: APIGameEvent; }>(APIWebRoutes.event(selectedEvent.id), { retry: 5 });
 
     const descriptionArray = [
         `**Date:** <t:${Math.round(selectedEvent.departure / 1000)}:F>`,

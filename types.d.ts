@@ -42,3 +42,10 @@ export interface WordchannelSchema {
         [id: string]: number;
     };
 }
+
+declare module "axios" {
+    export interface AxiosRequestConfig {
+        retry?: number;
+        retryDelay?: number;
+    }
+}
