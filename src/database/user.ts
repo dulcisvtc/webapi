@@ -6,7 +6,7 @@ export function getUserDocumentBySteamId(steamId: string, returnNull?: boolean):
 export function getUserDocumentBySteamId(steamId: string, returnNull?: boolean): Promise<UserDocument | null> {
     return new Promise((resolve) => {
         void User.findOne({ steam_id: steamId }).then((userInDb) => {
-            if (returnNull) return resolve(userInDb);
+            if (userInDb || returnNull) return resolve(userInDb);
 
             const user = new User({ steam_id: steamId });
 
