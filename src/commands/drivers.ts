@@ -30,9 +30,9 @@ export default {
                     name: "removed",
                     value: "removed"
                 }).setRequired(true))
-                .addUserOption((o) => o.setName("user").setDescription("Driver's Discord account."))
                 .addStringOption((o) => o.setName("reason").setDescription("\"...left Dulcis Logistics due to <TEXTHERE>\"").setRequired(true))
                 .addBooleanOption((o) => o.setName("giveretiredrole").setDescription("yes").setRequired(true))
+                .addUserOption((o) => o.setName("user").setDescription("Driver's Discord account."))
                 .addBooleanOption((o) => o.setName("memberupdate").setDescription("for development purposes. ignore this."))
         )
         .setDefaultMemberPermissions(8)
