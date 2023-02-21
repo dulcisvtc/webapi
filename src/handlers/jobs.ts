@@ -54,13 +54,13 @@ export const handleDelivery = async (job: JobSchema): Promise<200> => {
 
     const user = await getUserDocumentBySteamId(job.driver.steam_id);
 
-    await user.updateOne({
-        $inc: {
-            "leaderboard.monthly_mileage": job.driven_distance,
-            "leaderboard.alltime_mileage": job.driven_distance
-        },
-        $set: { username: job.driver.username }
-    });
+    user.leaderboard.monthly_mileage += job.driven_distance;
+    user.leaderboard.alltime_mileage += job.driven_distance;
+    user.username = job.driver.username;
+
+    user.safeSave();
+
+    jobsLogger.debug(`Updated user ${user.username} (${user.steam_id})'s mileage:\n${inspect(user.leaderboard, { depth: Infinity })}`);
 
     return 200;
 };
