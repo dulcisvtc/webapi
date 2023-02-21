@@ -1,5 +1,9 @@
 import type { UserDocument } from "./models/User";
+import { getLogger } from "../logger";
 import { User } from "./models/User";
+import { inspect } from "util";
+
+const dbLogger = getLogger("database", true);
 
 export function getUserDocumentBySteamId(steamId: string, returnNull: true): Promise<UserDocument | null>;
 export function getUserDocumentBySteamId(steamId: string, returnNull?: boolean): Promise<UserDocument>;
@@ -26,5 +30,6 @@ export function getUserDocumentByDiscordId(discordId: string): Promise<UserDocum
 
 export async function resetUserDocument(steamId: string): Promise<void> {
     const user = await getUserDocumentBySteamId(steamId);
+    dbLogger.debug(`Reset user document for ${steamId}:\n${inspect(user, { depth: Infinity })}`);
     return void user.remove();
 };

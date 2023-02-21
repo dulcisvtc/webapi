@@ -1,8 +1,8 @@
 export interface JobSchema {
     job_id: number;
     driver: {
-        id: number;
-        steam_id: string;
+        id?: number;
+        steam_id?: string;
         username: string;
     };
     start_timestamp: number;

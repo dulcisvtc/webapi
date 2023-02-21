@@ -22,7 +22,6 @@ export default {
             c
                 .setName("remove")
                 .setDescription("Remove a driver.")
-                .addUserOption((o) => o.setName("user").setDescription("Driver's Discord account.").setRequired(true))
                 .addStringOption((o) => o.setName("steamid").setDescription("Driver's SteamID.").setRequired(true))
                 .addStringOption((o) => o.setName("type").setDescription("removed or left").addChoices({
                     name: "left",
@@ -31,6 +30,7 @@ export default {
                     name: "removed",
                     value: "removed"
                 }).setRequired(true))
+                .addUserOption((o) => o.setName("user").setDescription("Driver's Discord account."))
                 .addStringOption((o) => o.setName("reason").setDescription("\"...left Dulcis Logistics due to <TEXTHERE>\"").setRequired(true))
                 .addBooleanOption((o) => o.setName("giveretiredrole").setDescription("yes").setRequired(true))
                 .addBooleanOption((o) => o.setName("memberupdate").setDescription("for development purposes. ignore this."))
@@ -144,13 +144,9 @@ export default {
                 });
             };
         } else if (command === "remove") {
+            const steamId = interaction.options.getString("steamid", true);
+            const document = await getUserDocumentBySteamId(steamId);
             let user = interaction.options.getUser("user");
-            let steamId = interaction.options.getString("steamid");
-
-            if (!steamId && !user) return interaction.reply({
-                content: "You need to provide either a Discord user or a SteamID",
-                ephemeral: true
-            });
 
             await interaction.reply({
                 embeds: [{
@@ -160,24 +156,8 @@ export default {
                 ephemeral: true
             });
 
-            if (!steamId && user) steamId = (await getUserDocumentByDiscordId(user.id))?.steam_id ?? null;
-            if (!steamId) return interaction.editReply({
-                embeds: [{
-                    title: "Error!",
-                    description: "Can't find SteamID of that user."
-                }]
-            });
-            if (!user) {
-                const document = await getUserDocumentBySteamId(steamId);
-
-                if (document.discord_id) user = await interaction.client.users.fetch(document.discord_id).catch(() => null);
-            };
-            if (!user) return interaction.editReply({
-                embeds: [{
-                    title: "Error!",
-                    description: "Can't find user's Discord account."
-                }]
-            });
+            if (!user && document.discord_id)
+                user = await interaction.client.users.fetch(document.discord_id).catch(() => null);
 
             const result = await navio.removeDriver(steamId);
 
@@ -192,7 +172,7 @@ export default {
                         description: result,
                         fields: [{
                             name: "discord user",
-                            value: `${user} \`${user?.tag}\` (\`${user?.id}\`)`
+                            value: user ? `${user} \`${user.tag}\` (\`${user.id}\`)` : document.username
                         }, {
                             name: "steamid",
                             value: `\`${steamId}\``
@@ -208,24 +188,30 @@ export default {
                 });
             } else {
                 let member = interaction.options.getMember("user");
-                if (!member) {
-                    const document = await getUserDocumentBySteamId(steamId);
-
-                    if (document.discord_id) member = await interaction.guild.members.fetch(document.discord_id).catch(() => null);
-                };
+                if (!member && document.discord_id)
+                    member = await interaction.guild.members.fetch(document.discord_id).catch(() => null);
                 const reason = interaction.options.getString("reason", true);
                 const type = interaction.options.getString("type", true);
+
                 const { append } = await appendGenerator(interaction);
-                await append("✅ Driver removed from Navio. Deleting database document and jobs...");
+                await append("✅ Driver removed from Navio. Deleting database document...");
 
                 await resetUserDocument(steamId);
-                const deleted = await Jobs.deleteMany({ "driver.steam_id": steamId });
-                await append(`✅ Deleted database document and ${deleted.deletedCount} jobs. Trying to remove driver role...`);
+                const updated = await Jobs.updateMany({ "driver.steam_id": steamId }, {
+                    $unset: {
+                        "driver.id": "",
+                        "driver.steam_id": ""
+                    },
+                    $set: {
+                        "driver.username": "Deleted User"
+                    }
+                });
+                await append(`✅ Deleted database document and updated ${updated.modifiedCount} jobs. Trying to remove driver role...`);
 
                 const role = await member?.roles.remove(
                     config.driver_role,
                     `Driver removed by ${interaction.user.tag}`
-                ).catch(() => false as const);
+                ).catch(() => null);
                 let roletext = "✅ Driver role removed.";
                 if (!role) roletext = "❌ Failed to remove driver role.";
                 await append(roletext + " Trying to send member updates webhook...");
@@ -241,7 +227,7 @@ export default {
                         await webhook.send({
                             embeds: [{
                                 title: "Member Update",
-                                description: `**[Driver]** ${user} has `
+                                description: `**[Driver]** ${user ? user : document.username} has `
                                     + (type === "removed" ? "been removed from" : "left")
                                     + ` Dulcis Logistics due to ${reason}`,
                                 color: 0x7d7a7a
@@ -250,14 +236,14 @@ export default {
                     } catch {
                         webhooktext = "❌ Failed to send member updates webhook."
                     };
+
                     await append(webhooktext);
                 };
 
-                if (interaction.options.getBoolean("giveretiredrole", true) && member) {
+                if (member && interaction.options.getBoolean("giveretiredrole", true))
                     await member.roles.add(config.retired_driver_role)
                         .then(() => append("✅ Gave retired driver role"))
-                        .catch(() => append("❌ Failed to give retired driver role."))
-                };
+                        .catch(() => append("❌ Failed to give retired driver role."));
 
                 await append("✨ Done.", "Success!");
 
@@ -270,7 +256,7 @@ export default {
                         },
                         fields: [{
                             name: "discord user",
-                            value: `${user} \`${user?.tag}\` (\`${user?.id}\`)`
+                            value: user ? `${user} \`${user.tag}\` (\`${user.id}\`)` : document.username
                         }, {
                             name: "steamid",
                             value: `\`${steamId}\``
@@ -279,7 +265,7 @@ export default {
                             value: type
                         }, {
                             name: "reason",
-                            value: reason ?? "none"
+                            value: reason
                         }]
                     }]
                 });
