@@ -1,6 +1,6 @@
+import { formatTimestamp, getStartOfMonth } from "../constants/time";
 import { getGlobalDocument } from "../database/global";
 import { latestFromMap } from "../constants/functions";
-import { formatTimestamp } from "../constants/time";
 import { Jobs, User } from "../database";
 import { getLogger } from "../logger";
 import { inspect } from "util";
@@ -22,10 +22,16 @@ const task = async () => {
             }
         }]))[0] as { driven_distance: number; fuel_used: number };
 
-        const mdistance = Math.round((await User.aggregate([{
+        const startOfMonth = getStartOfMonth().getTime();
+
+        const mdistance = Math.round((await Jobs.aggregate([{
+            $match: {
+                stop_timestamp: { $gte: startOfMonth }
+            },
+        }, {
             $group: {
                 _id: null,
-                distance: { $sum: "$leaderboard.monthly_mileage" }
+                distance: { $sum: "$driven_distance" }
             }
         }]))[0].distance);
 

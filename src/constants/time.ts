@@ -28,3 +28,7 @@ export function formatTimestamp(timestamp: number, opts?: Partial<{
 
     return formated;
 };
+
+export function getStartOfMonth(date: Date = new Date()): Date {
+    return new Date(date.getFullYear(), date.getMonth(), 1);
+};
