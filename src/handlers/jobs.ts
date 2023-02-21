@@ -52,7 +52,7 @@ export const handleDelivery = async (job: JobSchema): Promise<200> => {
             .catch((e) => jobsLogger.error(`Failed to send job delivered message:\n${inspect(e, { depth: Infinity })}`));
     };
 
-    const user = await getUserDocumentBySteamId(job.driver.steam_id);
+    const user = await getUserDocumentBySteamId(job.driver.steam_id!);
 
     user.leaderboard.monthly_mileage += job.driven_distance;
     user.leaderboard.alltime_mileage += job.driven_distance;
