@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
-import { botlogs } from "..";
+import { getUserDocumentByDiscordId } from "../database";
 import { generateId } from "../constants/functions";
-import { getUserDocumentByDiscordId, UserDocument } from "../database";
+import { botlogs } from "..";
 
 export default {
     data: new SlashCommandBuilder()
@@ -130,14 +130,14 @@ export default {
 
             for (const [id, warn] of warns) {
                 const createdById = warn.createdById;
-                const createdTimestamp = warn.createdTimestamp;
+                const createdTimestamp = Math.round(warn.createdTimestamp / 1000);
                 const description = warn.description;
 
                 embed.addFields({
                     name: `Warn ID: ${id}`,
                     value: `Created by: <@${createdById}>\nCreated at: <t:${createdTimestamp}:F>\nDescription: ${description}`
                 });
-            }
+            };
 
             await interaction.reply({ embeds: [embed], ephemeral: true });
         };
