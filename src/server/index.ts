@@ -1,7 +1,7 @@
 import { Event, EventDocument, getEventDocument, getGlobalDocument, GlobalDocument, Jobs, User, UserDocument } from "../database/";
 import { handleDelivery } from "../handlers/jobs";
 import { paginate } from "../constants/functions";
-import { JobSchema } from "../../types";
+import { JobSchema, TrackSimJobWebhookObject } from "../../types";
 import { getLogger } from "../logger";
 import { client, guild } from "..";
 import { inspect } from "util";
@@ -215,16 +215,30 @@ app.get("/metrics", async (req, res) => {
     res.send(cachedMetrics);
 });
 
+const recentJobs = new Map<string, {
+    distance: number;
+    name: string;
+}>();
 app.post("/webhook/navio", async (req, res) => {
     try {
         if (!config.navio_secrets.some((secret) =>
             req.headers["navio-signature"] === hmacSHA256(secret, (req.body as any).raw)
         )) return res.code(401);
 
-        if ((req.body as any).parsed.type !== "job.delivered") return res.code(400);
+        const { parsed } = (req.body as any);
 
-        const parsed = (req.body as any).parsed;
+        if (parsed.type !== "job.delivered") return res.code(400);
+
         const job = parsed.data.object;
+
+        const recentJob = recentJobs.get(job.driver.steam_id);
+        if (recentJob && recentJob.distance === job.driven_distance && recentJob.name === job.cargo.name) return res.status(200);
+
+        recentJobs.set(job.driver.steam_id, {
+            distance: job.driven_distance,
+            name: job.cargo.name
+        });
+
         const newJobObject: JobSchema = {
             job_id: job.id,
             driver: {
@@ -252,9 +266,61 @@ app.post("/webhook/navio", async (req, res) => {
 
         const status = await handleDelivery(newJobObject);
 
-        return res.status(status).send();
+        return res.status(status);
     } catch (e) {
-        webLogger.error(`Failed to handle delivery:\n${inspect(e, { depth: Infinity })}`);
+        webLogger.error(`Failed to handle delivery:\n${inspect(e)}`);
+    };
+});
+app.post("/webhook/tracksim", async (req, res) => {
+    try {
+        if (!config.tracksim_secrets.some((secret) =>
+            req.headers["tracksim-signature"] === hmacSHA256(secret, (req.body as any).raw)
+        )) return res.status(401);
+
+        const parsed = (req.body as any).parsed as TrackSimJobWebhookObject;
+
+        if (parsed.type !== "job.delivered") return res.status(400);
+
+        const job = parsed.data.object;
+
+        const recentJob = recentJobs.get(job.driver.steam_id);
+        if (recentJob && recentJob.distance === job.driven_distance && recentJob.name === job.cargo.name) return res.status(200);
+
+        recentJobs.set(job.driver.steam_id, {
+            distance: job.driven_distance,
+            name: job.cargo.name
+        });
+
+        const newJobObject: JobSchema = {
+            ts_job_id: job.id,
+            driver: {
+                id: job.driver.id,
+                steam_id: job.driver.steam_id,
+                username: job.driver.username
+            },
+            start_timestamp: new Date(job.start_time).getTime(),
+            stop_timestamp: new Date(job.stop_time).getTime(),
+            driven_distance: job.driven_distance,
+            fuel_used: job.fuel_used,
+            cargo: {
+                name: job.cargo.name,
+                mass: job.cargo.mass,
+                damage: job.cargo.damage
+            },
+            source_city: job.source_city.name,
+            source_company: job.source_company.name,
+            destination_city: job.destination_city.name,
+            destination_company: job.destination_company.name,
+            truck: `${job.truck.brand.name} ${job.truck.name}`,
+            average_speed: job.truck.average_speed * 3.6,
+            top_speed: job.truck.top_speed * 3.6
+        };
+
+        const status = await handleDelivery(newJobObject);
+
+        return res.status(status);
+    } catch (e) {
+        webLogger.error(`Failed to handle delivery:\n${inspect(e)}`);
     };
 });
 

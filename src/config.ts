@@ -4,6 +4,8 @@ export default {
 
     navio_api_key: process.env["NAVIO_API_KEY"]!,
     navio_secrets: process.env["NAVIO_SECRETS"]!.split(","),
+    tracksim_api_key: process.env["TRACKSIM_API_KEY"]!,
+    tracksim_secrets: process.env["TRACKSIM_SECRETS"]!.split(","),
     messaging_secret: process.env["MESSAGING_SECRET"]!,
 
     guild: process.env["GUILD_ID"]!,

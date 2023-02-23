@@ -10,12 +10,14 @@ const jobsLogger = getLogger("jobs", true);
 export const handleDelivery = async (job: JobSchema): Promise<200> => {
     if (job.driven_distance < 1) return 200;
 
-    if (await Jobs.findOne({ job_id: job.job_id })) {
-        jobsLogger.warn(`Job ${job.job_id} already exists in database.`);
+    const check = job.job_id ? Jobs.findOne({ job_id: job.job_id }) : Jobs.findOne({ ts_job_id: job.ts_job_id });
+
+    if (await check) {
+        jobsLogger.warn(`Job ${job.job_id ?? job.ts_job_id} already exists in database.`);
     } else {
         await Jobs.create(job);
 
-        jobsLogger.debug(`Job delivered:\n${inspect(job, { depth: Infinity })}`);
+        jobsLogger.debug(`Job delivered (${job.job_id ? "navio" : "tracksim"}):\n${inspect(job, { depth: Infinity })}`);
 
         const channel = client.channels.cache.get("992906515809828914") as GuildTextBasedChannel;
         const embed = new EmbedBuilder()
