@@ -1,5 +1,5 @@
-import { getUserDocumentByDiscordId, getUserDocumentBySteamId, Jobs, resetUserDocument } from "../database";
 import { ChatInputCommandInteraction, SlashCommandBuilder, TextChannel } from "discord.js";
+import { getUserDocumentBySteamId, Jobs, resetUserDocument } from "../database";
 import { getWebhook } from "../constants/functions";
 import { botlogs } from "..";
 import Navio from "../lib/navio";
@@ -34,6 +34,13 @@ export default {
                 .addBooleanOption((o) => o.setName("giveretiredrole").setDescription("yes").setRequired(true))
                 .addUserOption((o) => o.setName("user").setDescription("Driver's Discord account."))
                 .addBooleanOption((o) => o.setName("memberupdate").setDescription("for development purposes. ignore this."))
+        )
+        .addSubcommand((c) =>
+            c
+                .setName("setdiscord")
+                .setDescription("Set a driver's Discord account.")
+                .addStringOption((o) => o.setName("steamid").setDescription("Driver's SteamID.").setRequired(true))
+                .addUserOption((o) => o.setName("user").setDescription("Driver's Discord account.").setRequired(true))
         )
         .setDefaultMemberPermissions(8)
         .toJSON(),
@@ -270,6 +277,33 @@ export default {
                     }]
                 });
             };
+        } else if (command === "setdiscord") {
+            const steamId = interaction.options.getString("steamid", true);
+            const document = await getUserDocumentBySteamId(steamId);
+            const user = interaction.options.getUser("user", true);
+
+            document.discord_id = user.id;
+            document.safeSave();
+
+            await interaction.reply({
+                embeds: [{
+                    title: "Success!",
+                    description: `Successfully set ${user} as the Discord user for \`${steamId}\`.`
+                }]
+            });
+
+            await botlogs?.send({
+                embeds: [{
+                    title: "discord user set",
+                    fields: [{
+                        name: "discord user",
+                        value: `${user} \`${user.tag}\` (\`${user.id}\`)`
+                    }, {
+                        name: "steamid",
+                        value: `\`${steamId}\``
+                    }]
+                }]
+            });
         };
     }
 };
