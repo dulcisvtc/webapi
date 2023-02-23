@@ -227,11 +227,11 @@ app.post("/webhook/navio", async (req, res) => {
     try {
         if (!config.navio_secrets.some((secret) =>
             req.headers["navio-signature"] === hmacSHA256(secret, (req.body as any).raw)
-        )) return res.code(401);
+        )) return res.status(401).send();
 
         const { parsed } = (req.body as any);
 
-        if (parsed.type !== "job.delivered") return res.code(400);
+        if (parsed.type !== "job.delivered") return res.status(400).send();
 
         const job = parsed.data.object;
 
@@ -244,7 +244,7 @@ app.post("/webhook/navio", async (req, res) => {
             && recentJob.source_company === job.source_company.name
             && recentJob.destination_city === job.destination_city.name
             && recentJob.destination_company === job.destination_company.name
-        ) return res.status(200);
+        ) return res.status(200).send();
 
         recentJobs.set(job.driver.steam_id, {
             distance: Math.round(job.driven_distance),
@@ -282,7 +282,7 @@ app.post("/webhook/navio", async (req, res) => {
 
         const status = await handleDelivery(newJobObject);
 
-        return res.status(status);
+        return res.status(status).send();
     } catch (e) {
         webLogger.error(`Failed to handle delivery:\n${inspect(e)}`);
     };
@@ -291,11 +291,11 @@ app.post("/webhook/tracksim", async (req, res) => {
     try {
         if (!config.tracksim_secrets.some((secret) =>
             req.headers["tracksim-signature"] === hmacSHA256(secret, (req.body as any).raw)
-        )) return res.status(401);
+        )) return res.status(401).send();
 
         const parsed = (req.body as any).parsed as TrackSimJobWebhookObject;
 
-        if (parsed.type !== "job.delivered") return res.status(400);
+        if (parsed.type !== "job.delivered") return res.status(400).send();
 
         const job = parsed.data.object;
 
@@ -308,7 +308,7 @@ app.post("/webhook/tracksim", async (req, res) => {
             && recentJob.source_company === job.source_company.name
             && recentJob.destination_city === job.destination_city.name
             && recentJob.destination_company === job.destination_company.name
-        ) return res.status(200);
+        ) return res.status(200).send();
 
         recentJobs.set(job.driver.steam_id, {
             distance: Math.round(job.driven_distance),
@@ -346,7 +346,7 @@ app.post("/webhook/tracksim", async (req, res) => {
 
         const status = await handleDelivery(newJobObject);
 
-        return res.status(status);
+        return res.status(status).send();
     } catch (e) {
         webLogger.error(`Failed to handle delivery:\n${inspect(e)}`);
     };
