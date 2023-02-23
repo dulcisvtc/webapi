@@ -238,7 +238,7 @@ app.post("/webhook/navio", async (req, res) => {
         const recentJob = recentJobs.get(job.driver.steam_id);
         if (
             recentJob
-            && recentJob.distance === job.driven_distance
+            && recentJob.distance === Math.round(job.driven_distance)
             && recentJob.name === job.cargo.name
             && recentJob.source_city === job.source_city.name
             && recentJob.source_company === job.source_company.name
@@ -247,7 +247,7 @@ app.post("/webhook/navio", async (req, res) => {
         ) return res.status(200);
 
         recentJobs.set(job.driver.steam_id, {
-            distance: job.driven_distance,
+            distance: Math.round(job.driven_distance),
             name: job.cargo.name,
             source_city: job.source_city.name,
             source_company: job.source_company.name,
