@@ -4,6 +4,8 @@ import { getWebhook } from "../constants/functions";
 import { botlogs } from "..";
 import Navio from "../lib/navio";
 import config from "../config";
+import TrackSim from "tracksim.js";
+import { AxiosError } from "axios";
 
 export default {
     data: new SlashCommandBuilder()
@@ -46,6 +48,7 @@ export default {
         .toJSON(),
     execute: async (interaction: ChatInputCommandInteraction<"cached">) => {
         const command = interaction.options.getSubcommand();
+        const track = new TrackSim(config.tracksim_api_key);
         const navio = new Navio(config.navio_api_key);
         const memberupdate = interaction.options.getBoolean("memberupdate") ?? true;
 
@@ -68,44 +71,19 @@ export default {
                 }]
             });
 
-            const result = await navio.addDriver(steamId);
+            try {
+                const driver = await track.drivers.add(steamId);
 
-            if (typeof result === "string") {
-                await botlogs?.send({
-                    embeds: [{
-                        title: "error when adding a driver",
-                        author: {
-                            name: interaction.user.tag,
-                            icon_url: interaction.user.displayAvatarURL()
-                        },
-                        description: result,
-                        fields: [{
-                            name: "discord user",
-                            value: `${member} \`${member.user.tag}\` (\`${member.id}\`)`
-                        }, {
-                            name: "steamid",
-                            value: `\`${steamId}\``
-                        }]
-                    }]
-                });
-
-                return interaction.editReply({
-                    embeds: [{
-                        title: "Error!",
-                        description: result
-                    }]
-                });
-            } else {
                 const { append } = await appendGenerator(interaction);
-                await append("✅ Driver added to Navio. Creating database document...");
+                await append("✅ Driver added to TrackSim. Creating database document...");
 
                 const document = await getUserDocumentBySteamId(steamId);
                 document.discord_id = member.id;
-                document.username = result.username;
+                document.username = driver.username;
                 document.safeSave();
                 await append("✅ Database entry created. Trying to give driver role...");
 
-                const role = await member.roles.add(config.driver_role, `Driver added by ${interaction.user.tag}`).catch(() => false as const);
+                const role = await member.roles.add(config.driver_role, `Driver added by ${interaction.user.tag}`).catch(() => null);
                 let roletext = "✅ Driver role given.";
                 if (!role) roletext = "❌ Failed to give driver role.";
                 await append(roletext + " Trying to send member updates webhook...");
@@ -149,6 +127,35 @@ export default {
                         }]
                     }]
                 });
+            } catch (e) {
+                if (e instanceof AxiosError) {
+                    await botlogs?.send({
+                        embeds: [{
+                            title: "error when adding a driver",
+                            author: {
+                                name: interaction.user.tag,
+                                icon_url: interaction.user.displayAvatarURL()
+                            },
+                            description: e.message,
+                            fields: [{
+                                name: "discord user",
+                                value: `${member} \`${member.user.tag}\` (\`${member.id}\`)`
+                            }, {
+                                name: "steamid",
+                                value: `\`${steamId}\``
+                            }]
+                        }]
+                    });
+
+                    return interaction.editReply({
+                        embeds: [{
+                            title: "Error!",
+                            description: e.message
+                        }]
+                    });
+                };
+
+                throw e;
             };
         } else if (command === "remove") {
             const steamId = interaction.options.getString("steamid", true);
@@ -163,120 +170,106 @@ export default {
                 ephemeral: true
             });
 
+            const { append } = await appendGenerator(interaction);
+
             if (!user && document.discord_id)
                 user = await interaction.client.users.fetch(document.discord_id).catch(() => null);
 
-            const result = await navio.removeDriver(steamId);
-
-            if (typeof result === "string") {
-                await botlogs?.send({
-                    embeds: [{
-                        title: "error when removing a driver",
-                        author: {
-                            name: interaction.user.tag,
-                            icon_url: interaction.user.displayAvatarURL()
-                        },
-                        description: result,
-                        fields: [{
-                            name: "discord user",
-                            value: user ? `${user} \`${user.tag}\` (\`${user.id}\`)` : document.username
-                        }, {
-                            name: "steamid",
-                            value: `\`${steamId}\``
-                        }]
-                    }]
-                });
-
-                return interaction.editReply({
-                    embeds: [{
-                        title: "Error!",
-                        description: result
-                    }]
-                });
-            } else {
-                let member = interaction.options.getMember("user");
-                if (!member && document.discord_id)
-                    member = await interaction.guild.members.fetch(document.discord_id).catch(() => null);
-                const reason = interaction.options.getString("reason", true);
-                const type = interaction.options.getString("type", true);
-
-                const { append } = await appendGenerator(interaction);
-                await append("✅ Driver removed from Navio. Deleting database document...");
-
-                await resetUserDocument(steamId);
-                const updated = await Jobs.updateMany({ "driver.steam_id": steamId }, {
-                    $unset: {
-                        "driver.id": "",
-                        "driver.steam_id": ""
-                    },
-                    $set: {
-                        "driver.username": "Deleted User"
-                    }
-                });
-                await append(`✅ Deleted database document and updated ${updated.modifiedCount} jobs. Trying to remove driver role...`);
-
-                const role = await member?.roles.remove(
-                    config.driver_role,
-                    `Driver removed by ${interaction.user.tag}`
-                ).catch(() => null);
-                let roletext = "✅ Driver role removed.";
-                if (!role) roletext = "❌ Failed to remove driver role.";
-                await append(roletext + " Trying to send member updates webhook...");
-
-                if (memberupdate) {
-                    let webhooktext = "✅ Member updates webhook sent.";
-                    try {
-                        const webhook = await getWebhook(
-                            interaction.guild.channels.cache.get(config.member_updates_channel) as TextChannel,
-                            "Member Updates"
-                        );
-
-                        await webhook.send({
-                            embeds: [{
-                                title: "Member Update",
-                                description: `**[Driver]** ${user ? user : document.username} has `
-                                    + (type === "removed" ? "been removed from" : "left")
-                                    + ` Dulcis Logistics due to ${reason}`,
-                                color: 0x7d7a7a
-                            }]
-                        })
-                    } catch {
-                        webhooktext = "❌ Failed to send member updates webhook."
-                    };
-
-                    await append(webhooktext);
+            const navio_result = await navio.removeDriver(steamId);
+            const tracksim_result = await track.drivers.remove(steamId).catch((e) => {
+                if (e instanceof AxiosError) {
+                    return e.message;
                 };
 
-                if (member && interaction.options.getBoolean("giveretiredrole", true))
-                    await member.roles.add(config.retired_driver_role)
-                        .then(() => append("✅ Gave retired driver role"))
-                        .catch(() => append("❌ Failed to give retired driver role."));
+                return null
+            });
 
-                await append("✨ Done.", "Success!");
+            if (typeof navio_result === "string")
+                await append(`❌ Failed to remove driver from Navio: ${navio_result}`);
+            else await append("✅ Removed driver from Navio.");
+            if (tracksim_result !== 200)
+                await append(`❌ Failed to remove driver from TrackSim: ${tracksim_result}`);
+            else await append("✅ Removed driver from TrackSim.");
 
-                await botlogs?.send({
-                    embeds: [{
-                        title: "driver removed",
-                        author: {
-                            name: interaction.user.tag,
-                            icon_url: interaction.user.displayAvatarURL()
-                        },
-                        fields: [{
-                            name: "discord user",
-                            value: user ? `${user} \`${user.tag}\` (\`${user.id}\`)` : document.username
-                        }, {
-                            name: "steamid",
-                            value: `\`${steamId}\``
-                        }, {
-                            name: "type",
-                            value: type
-                        }, {
-                            name: "reason",
-                            value: reason
+            let member = interaction.options.getMember("user");
+            if (!member && document.discord_id)
+                member = await interaction.guild.members.fetch(document.discord_id).catch(() => null);
+            const reason = interaction.options.getString("reason", true);
+            const type = interaction.options.getString("type", true);
+
+            await resetUserDocument(steamId);
+            const updated = await Jobs.updateMany({ "driver.steam_id": steamId }, {
+                $unset: {
+                    "driver.id": "",
+                    "driver.steam_id": ""
+                },
+                $set: {
+                    "driver.username": "Deleted User"
+                }
+            });
+            await append(`✅ Deleted database document and updated ${updated.modifiedCount} jobs. Trying to remove driver role...`);
+
+            const role = await member?.roles.remove(
+                config.driver_role,
+                `Driver removed by ${interaction.user.tag}`
+            ).catch(() => null);
+            let roletext = "✅ Driver role removed.";
+            if (!role) roletext = "❌ Failed to remove driver role.";
+            await append(roletext + " Trying to send member updates webhook...");
+
+            if (memberupdate) {
+                let webhooktext = "✅ Member updates webhook sent.";
+                try {
+                    const webhook = await getWebhook(
+                        interaction.guild.channels.cache.get(config.member_updates_channel) as TextChannel,
+                        "Member Updates"
+                    );
+
+                    await webhook.send({
+                        embeds: [{
+                            title: "Member Update",
+                            description: `**[Driver]** ${user ? user : document.username} has `
+                                + (type === "removed" ? "been removed from" : "left")
+                                + ` Dulcis Logistics due to ${reason}`,
+                            color: 0x7d7a7a
                         }]
-                    }]
-                });
+                    })
+                } catch {
+                    webhooktext = "❌ Failed to send member updates webhook."
+                };
+
+                await append(webhooktext);
             };
+
+            if (member && interaction.options.getBoolean("giveretiredrole", true))
+                await member.roles.add(config.retired_driver_role)
+                    .then(() => append("✅ Gave retired driver role"))
+                    .catch(() => append("❌ Failed to give retired driver role."));
+
+            await append("✨ Done.", "Success!");
+
+            await botlogs?.send({
+                embeds: [{
+                    title: "driver removed",
+                    author: {
+                        name: interaction.user.tag,
+                        icon_url: interaction.user.displayAvatarURL()
+                    },
+                    fields: [{
+                        name: "discord user",
+                        value: user ? `${user} \`${user.tag}\` (\`${user.id}\`)` : document.username
+                    }, {
+                        name: "steamid",
+                        value: `\`${steamId}\``
+                    }, {
+                        name: "type",
+                        value: type
+                    }, {
+                        name: "reason",
+                        value: reason
+                    }]
+                }]
+            });
         } else if (command === "setdiscord") {
             const steamId = interaction.options.getString("steamid", true);
             const document = await getUserDocumentBySteamId(steamId);
