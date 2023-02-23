@@ -218,6 +218,10 @@ app.get("/metrics", async (req, res) => {
 const recentJobs = new Map<string, {
     distance: number;
     name: string;
+    source_city: string;
+    source_company: string;
+    destination_city: string;
+    destination_company: string;
 }>();
 app.post("/webhook/navio", async (req, res) => {
     try {
@@ -232,11 +236,23 @@ app.post("/webhook/navio", async (req, res) => {
         const job = parsed.data.object;
 
         const recentJob = recentJobs.get(job.driver.steam_id);
-        if (recentJob && recentJob.distance === job.driven_distance && recentJob.name === job.cargo.name) return res.status(200);
+        if (
+            recentJob
+            && recentJob.distance === job.driven_distance
+            && recentJob.name === job.cargo.name
+            && recentJob.source_city === job.source_city.name
+            && recentJob.source_company === job.source_company.name
+            && recentJob.destination_city === job.destination_city.name
+            && recentJob.destination_company === job.destination_company.name
+        ) return res.status(200);
 
         recentJobs.set(job.driver.steam_id, {
             distance: job.driven_distance,
-            name: job.cargo.name
+            name: job.cargo.name,
+            source_city: job.source_city.name,
+            source_company: job.source_company.name,
+            destination_city: job.destination_city.name,
+            destination_company: job.destination_company.name
         });
 
         const newJobObject: JobSchema = {
@@ -284,11 +300,23 @@ app.post("/webhook/tracksim", async (req, res) => {
         const job = parsed.data.object;
 
         const recentJob = recentJobs.get(job.driver.steam_id);
-        if (recentJob && recentJob.distance === job.driven_distance && recentJob.name === job.cargo.name) return res.status(200);
+        if (
+            recentJob
+            && recentJob.distance === job.driven_distance
+            && recentJob.name === job.cargo.name
+            && recentJob.source_city === job.source_city.name
+            && recentJob.source_company === job.source_company.name
+            && recentJob.destination_city === job.destination_city.name
+            && recentJob.destination_company === job.destination_company.name
+        ) return res.status(200);
 
         recentJobs.set(job.driver.steam_id, {
             distance: job.driven_distance,
-            name: job.cargo.name
+            name: job.cargo.name,
+            source_city: job.source_city.name,
+            source_company: job.source_company.name,
+            destination_city: job.destination_city.name,
+            destination_company: job.destination_company.name
         });
 
         const newJobObject: JobSchema = {
