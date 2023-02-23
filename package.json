@@ -1,6 +1,6 @@
 {
     "name": "@dulcis/api",
-    "version": "1.16.4",
+    "version": "1.17.0",
     "main": "dist/",
     "scripts": {
         "build": "tsc",
