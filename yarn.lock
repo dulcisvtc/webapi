@@ -841,10 +841,10 @@
   resolved "https://registry.yarnpkg.com/@truckersmp_official/api-types/-/api-types-1.0.1.tgz#062d1cb2e3a3c64003f55ab572f059cb6774132d"
   integrity sha512-WVG4LDc8fOnVsslixZtqBvKbd2Wr6l+tv3PI9GcKd0lYV4RRH6IE+gDRjGRED8a4H8jCSz0KwACsc8vK3ByFHw==
 
-"@typegoose/typegoose@^10.1.1":
-  version "10.1.1"
-  resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-10.1.1.tgz#1776212bf4427314a96e8a87cd599a8b82bc1fc5"
-  integrity sha512-QzRzgFnsQ3/UTToUEVJ5ln4t/QzlznEat7bcn9tNt4U6QCytPVvTJnRe5SwrJllxakgz0yrnbKkTw9YeoiYXuQ==
+"@typegoose/typegoose@^10.2.0":
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-10.2.0.tgz#59c80b17c6225fa2286f58bc3891f4d3ab6cdc31"
+  integrity sha512-HP+0IGjjdxXeN57q0NgnSqTEAdPVuW17yL0QcHKqqI4Hb/cSJR+xEMBn8QcansS+hCCkzkYOKodo0Wv6Fzn12Q==
   dependencies:
     lodash "^4.17.20"
     loglevel "^1.8.1"
@@ -857,10 +857,15 @@
   resolved "https://registry.yarnpkg.com/@types/json-bigint/-/json-bigint-1.0.1.tgz#201062a6990119a8cc18023cfe1fed12fc2fc8a7"
   integrity sha512-zpchZLNsNuzJHi6v64UBoFWAvQlPhch7XAi36FkH6tL1bbbmimIF+cS7vwkzY4u5RaSWMoflQfu+TshMPPw8uw==
 
-"@types/node@*", "@types/node@^18.11.19":
+"@types/node@*":
   version "18.11.19"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.11.19.tgz#35e26df9ec441ab99d73e99e9aca82935eea216d"
   integrity sha512-YUgMWAQBWLObABqrvx8qKO1enAvBUdjZOAWQ5grBAkp5LQv45jBvYKZ3oFS9iKRCQyFjqw6iuEa1vmFqtxYLZw==
+
+"@types/node@^18.14.1":
+  version "18.14.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.14.1.tgz#90dad8476f1e42797c49d6f8b69aaf9f876fc69f"
+  integrity sha512-QH+37Qds3E0eDlReeboBxfHbX9omAcBCXEzswCu6jySP642jiM3cYSIkU/REqwhCUqXdonHFuBfJDiAJxMNhaQ==
 
 "@types/text-table@^0.2.2":
   version "0.2.2"
@@ -957,16 +962,7 @@ avvio@^8.2.0:
     debug "^4.0.0"
     fastq "^1.6.1"
 
-axios@1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.3.2.tgz#7ac517f0fa3ec46e0e636223fd973713a09c72b3"
-  integrity sha512-1M3O703bYqYuPhbHeya5bnhpYVsDDRyQSabNja04mZtboLNSuZ4YrltestrLXfHgmzua4TpUqRiVKbiQuo2epw==
-  dependencies:
-    follow-redirects "^1.15.0"
-    form-data "^4.0.0"
-    proxy-from-env "^1.1.0"
-
-axios@^1.3.3:
+axios@1.3.4, axios@^1.3.3:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.3.4.tgz#f5760cefd9cfb51fd2481acf88c05f67c4523024"
   integrity sha512-toYm+Bsyl6VC5wSkfkbbNB6ROv7KY93PEBBL6xyDczaIHasAiv4wPqQ/c4RjoQzipxRD2W5g21cOqQulZ7rHwQ==
@@ -1268,10 +1264,10 @@ fast-xml-parser@4.0.11:
   dependencies:
     strnum "^1.0.5"
 
-fastify@^4.12.0:
-  version "4.12.0"
-  resolved "https://registry.yarnpkg.com/fastify/-/fastify-4.12.0.tgz#e5330215d95702336693b38b2e66d34ee8300d3e"
-  integrity sha512-Hh2GCsOCqnOuewWSvqXlpq5V/9VA+/JkVoooQWUhrU6gryO9+/UGOoF/dprGcKSDxkM/9TkMXSffYp8eA/YhYQ==
+fastify@^4.13.0:
+  version "4.13.0"
+  resolved "https://registry.yarnpkg.com/fastify/-/fastify-4.13.0.tgz#5726d4c63acae1b5e34c7643e233a0be8169009a"
+  integrity sha512-p9ibdFWH3pZ7KPgmfHPKGUy2W4EWU2TEpwlcu58w4CwGyU3ARFfh2kwq6zpZ5W2ZGVbufi4tZbqHIHAlX/9Z/A==
   dependencies:
     "@fastify/ajv-compiler" "^3.3.1"
     "@fastify/error" "^3.0.0"
@@ -1546,10 +1542,10 @@ mongodb-connection-string-url@^2.5.4:
     "@types/whatwg-url" "^8.2.1"
     whatwg-url "^11.0.0"
 
-mongodb@4.13.0:
-  version "4.13.0"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-4.13.0.tgz#2aa832b827e2891eb2e52e8235c201cbb4701ed2"
-  integrity sha512-+taZ/bV8d1pYuHL4U+gSwkhmDrwkWbH1l4aah4YpmpscMwgFBkufIKxgP/G7m87/NUuQzc2Z75ZTI7ZOyqZLbw==
+mongodb@4.14.0:
+  version "4.14.0"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-4.14.0.tgz#3a21ca602069b2494b7066a7709056c8cece6bf6"
+  integrity sha512-coGKkWXIBczZPr284tYKFLg+KbGPPLlSbdgfKAb6QqCFt5bo5VFZ50O3FFzsw4rnkqjwT6D8Qcoo9nshYKM7Mg==
   dependencies:
     bson "^4.7.0"
     mongodb-connection-string-url "^2.5.4"
@@ -1558,14 +1554,14 @@ mongodb@4.13.0:
     "@aws-sdk/credential-providers" "^3.186.0"
     saslprep "^1.0.3"
 
-mongoose@~6.9.0:
-  version "6.9.0"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-6.9.0.tgz#cfc5acb2e4aa8188eb248e98a920a829ffcc273d"
-  integrity sha512-5tu6+trwjk5TIH6b6iYgAwmzZ0RNOxFoqXQb9h21Oi45DeM1rWM/niHxJ4ROqBISDfQMwRvLSABHTsyn3AzoFQ==
+mongoose@~6.10.0:
+  version "6.10.0"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-6.10.0.tgz#42aa9134b665cb17d7b6e9a7ba89f89751021074"
+  integrity sha512-0zrKDEnmNscYyAyN94smo2LlJ63gaezKHpHM+KQ+6EiAgAnah5Kt3hQSYzOTQX/63YNdT1oJXiLlB5LqTdcjUw==
   dependencies:
     bson "^4.7.0"
     kareem "2.5.1"
-    mongodb "4.13.0"
+    mongodb "4.14.0"
     mpath "0.9.0"
     mquery "4.0.3"
     ms "2.1.3"
