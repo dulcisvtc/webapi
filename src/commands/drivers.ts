@@ -159,7 +159,7 @@ export default {
             };
         } else if (command === "remove") {
             const steamId = interaction.options.getString("steamid", true);
-            const document = await getUserDocumentBySteamId(steamId);
+            const document = await getUserDocumentBySteamId(steamId, true);
             let user = interaction.options.getUser("user");
 
             await interaction.reply({
@@ -172,7 +172,7 @@ export default {
 
             const { append } = await appendGenerator(interaction);
 
-            if (!user && document.discord_id)
+            if (!user && document?.discord_id)
                 user = await interaction.client.users.fetch(document.discord_id).catch(() => null);
 
             const navio_result = await navio.removeDriver(steamId);
@@ -192,8 +192,9 @@ export default {
             else await append("✅ Removed driver from TrackSim.");
 
             let member = interaction.options.getMember("user");
-            if (!member && document.discord_id)
+            if (!member && document?.discord_id)
                 member = await interaction.guild.members.fetch(document.discord_id).catch(() => null);
+
             const reason = interaction.options.getString("reason", true);
             const type = interaction.options.getString("type", true);
 
@@ -228,7 +229,7 @@ export default {
                     await webhook.send({
                         embeds: [{
                             title: "Member Update",
-                            description: `**[Driver]** ${user ? user : document.username} has `
+                            description: `**[Driver]** ${user ? user : document?.username ?? "Unknown User"} has `
                                 + (type === "removed" ? "been removed from" : "left")
                                 + ` Dulcis Logistics due to ${reason}`,
                             color: 0x7d7a7a
@@ -257,7 +258,7 @@ export default {
                     },
                     fields: [{
                         name: "discord user",
-                        value: user ? `${user} \`${user.tag}\` (\`${user.id}\`)` : document.username
+                        value: user ? `${user} \`${user.tag}\` (\`${user.id}\`)` : document?.username ?? "Unknown User"
                     }, {
                         name: "steamid",
                         value: `\`${steamId}\``
