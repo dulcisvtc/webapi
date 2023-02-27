@@ -199,6 +199,27 @@ app.get("/staff", async (req, res) => {
     res.send(cachedStaff);
 });
 
+let cachedStats: {
+    jobs: number;
+    drivers: number;
+};
+let statsCacheExpire = Date.now();
+app.get("/stats", async (req, res) => {
+    if (Date.now() >= statsCacheExpire) {
+        const jobs = await Jobs.count();
+        const drivers = await User.count();
+
+        cachedStats = {
+            jobs,
+            drivers
+        };
+
+        staffCacheExpire = Date.now() + 60 * 1000;
+    };
+
+    res.send(cachedStats);
+});
+
 let cachedMetrics: GlobalDocument["metrics"];
 let metricsCacheExpire = Date.now();
 app.get("/metrics", async (req, res) => {
