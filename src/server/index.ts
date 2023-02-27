@@ -60,8 +60,10 @@ app.get("/jobs", async (req, res) => {
     const { limit, skip } = req.query as { limit?: string; skip?: string; };
     if (limit || skip) {
         const jobs = cachedJobs.sort((a, b) => b.stop_timestamp - a.stop_timestamp);
+        const skipi = parseInt(skip || "0");
+        const limiti = parseInt(limit || "0") + skipi;
 
-        return res.send(jobs.slice(parseInt(skip || "0"), parseInt(limit || "0")));
+        return res.send(jobs.slice(skipi, limiti));
     };
 
     res.send(cachedJobs);
