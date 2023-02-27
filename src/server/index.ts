@@ -57,14 +57,11 @@ app.get("/jobs", async (req, res) => {
         jobsCacheExpire = Date.now() + 60_000;
     };
 
-    const { page, perPage } = req.query as { page?: string; perPage?: string; };
-    const pageNum = parseInt(page ?? "");
-    const pageSize = parseInt(perPage ?? "");
+    const { limit, skip } = req.query as { limit?: string; skip?: string; };
+    if (limit || skip) {
+        const jobs = cachedJobs.sort((a, b) => b.stop_timestamp - a.stop_timestamp);
 
-    if (pageNum || pageNum === 0) {
-        const pages = paginate(cachedJobs.sort((a, b) => b.stop_timestamp - a.stop_timestamp), pageSize || 25);
-
-        return res.send(pages[pageNum]);
+        return res.send(jobs.slice(parseInt(skip || "0"), parseInt(limit || "0")));
     };
 
     res.send(cachedJobs);
