@@ -78,7 +78,7 @@ eventsTicker.on("tick", async () => {
     eventsLogger.debug("Updated event calendar.");
 
     const attendingChannel = client.channels.cache.get(config.event_channels.attending)! as TextChannel;
-    const attendingMessage = (await attendingChannel.messages.fetch({ limit: 5 })).find((m) => m.author.id === client.user!.id);
+    const attendingMessage = (await attendingChannel.messages.fetch({ limit: 50 })).find((m) => m.author.id === client.user!.id);
 
     const todayEvents = events
         .filter((event) => {
