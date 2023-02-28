@@ -201,10 +201,10 @@ app.get("/stats", async (req, res) => {
         const jobs = await Jobs.find().select("driven_distance fuel_used stop_timestamp -_id");
         const mjobs = jobs.filter((job) => job.stop_timestamp > new Date().setMonth(new Date().getMonth() - 1));
 
-        const distance = jobs.reduce((a, b) => a + b.driven_distance, 0);
-        const mdistance = mjobs.reduce((a, b) => a + b.driven_distance, 0);
+        const distance = Math.round(jobs.reduce((a, b) => a + b.driven_distance, 0));
+        const mdistance = Math.round(mjobs.reduce((a, b) => a + b.driven_distance, 0));
 
-        const fuel = jobs.reduce((a, b) => a + b.fuel_used, 0);
+        const fuel = Math.round(jobs.reduce((a, b) => a + b.fuel_used, 0));
 
         cachedStats = {
             drivers,
