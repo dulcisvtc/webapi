@@ -198,7 +198,7 @@ app.get("/stats", async (req, res) => {
     if (Date.now() >= statsCacheExpire) {
         const drivers = await User.count();
 
-        const jobs = await Jobs.find().select("driven_distance fuel_used stop_timestamp -_id -__v");
+        const jobs = await Jobs.find().select("driven_distance fuel_used stop_timestamp -_id");
         const mjobs = jobs.filter((job) => job.stop_timestamp > new Date().setMonth(new Date().getMonth() - 1));
 
         const distance = jobs.reduce((a, b) => a + b.driven_distance, 0);
