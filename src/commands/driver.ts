@@ -32,6 +32,7 @@ export default {
             .setDescription([
                 `**Discord:** ${user ? `${user} (${user.tag})` : "Not linked."}`,
                 `**SteamID:** ${document.steam_id}`,
+                `[**TruckersMP Search**](https://truckersmp.com/user/search?search=${document.steam_id})`,
                 `**Username:** ${document.username ?? "Not set."}`,
                 `**Monthly mileage:** ${mdist.toLocaleString()}km`,
                 `**Total mileage:** ${adist.toLocaleString()}km`,
