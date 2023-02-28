@@ -40,22 +40,17 @@ app.get<{ Params: { id: string; }; }>("/tmp/event/:id", async (req, res) =>
 );
 
 app.get("/jobs", async (req, res) => {
-    const query = req.query as { limit?: string; skip?: string; };
+    const query = req.query as { limit?: string; skip?: string; steamid?: string; };
     const limit = parseInt(query.limit || "10");
     const skip = parseInt(query.skip || "0");
 
-    const jobs = await Jobs.find().sort({ stop_timestamp: -1 }).skip(skip).limit(limit);
+    const filter = query.steamid
+        ? { "driver.steam_id": query.steamid }
+        : {};
 
-    const documents = JSON.parse(JSON.stringify(jobs));
+    const jobs = await Jobs.find(filter).sort({ stop_timestamp: -1 }).skip(skip).limit(limit).select("-_id -__v");
 
-    for (const doc of documents) {
-        // @ts-ignore
-        delete doc._id;
-        // @ts-ignore
-        delete doc.__v;
-    };
-
-    res.send(documents);
+    res.send(jobs);
 });
 
 let cachedUsers: UserDocument[] = [];
