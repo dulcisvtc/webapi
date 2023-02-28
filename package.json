@@ -7,7 +7,8 @@
         "build:run": "yarn build --incremental && yarn start",
         "build:watch": "tsc -w",
         "dev": "tsc-watch --noClear --onSuccess \"yarn start\"",
-        "start": "node --no-warnings ."
+        "start": "node --no-warnings .",
+        "postversion": "git push && git push --tags"
     },
     "dependencies": {
         "@truckersmp_official/api-types": "^1.0.1",
