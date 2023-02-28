@@ -1,7 +1,6 @@
 import { Event, EventDocument, getEventDocument, getGlobalDocument, GlobalDocument, Jobs, User, UserDocument } from "../database/";
-import { handleDelivery } from "../handlers/jobs";
-import { paginate } from "../constants/functions";
 import { JobSchema, TrackSimJobWebhookObject } from "../../types";
+import { handleDelivery } from "../handlers/jobs";
 import { getLogger } from "../logger";
 import { client, guild } from "..";
 import { inspect } from "util";
@@ -40,33 +39,23 @@ app.get<{ Params: { id: string; }; }>("/tmp/event/:id", async (req, res) =>
     )).data)
 );
 
-let cachedJobs: JobSchema[] = [];
-let jobsCacheExpire = Date.now();
 app.get("/jobs", async (req, res) => {
-    if (Date.now() >= jobsCacheExpire) {
-        const documents = JSON.parse(JSON.stringify(await Jobs.find()));
+    const query = req.query as { limit?: string; skip?: string; };
+    const limit = parseInt(query.limit || "10");
+    const skip = parseInt(query.skip || "0");
 
-        for (const doc of documents) {
-            // @ts-ignore
-            delete doc._id;
-            // @ts-ignore
-            delete doc.__v;
-        };
+    const jobs = await Jobs.find().sort({ stop_timestamp: -1 }).skip(skip).limit(limit);
 
-        cachedJobs = documents;
-        jobsCacheExpire = Date.now() + 60_000;
+    const documents = JSON.parse(JSON.stringify(jobs));
+
+    for (const doc of documents) {
+        // @ts-ignore
+        delete doc._id;
+        // @ts-ignore
+        delete doc.__v;
     };
 
-    const { limit, skip } = req.query as { limit?: string; skip?: string; };
-    if (limit || skip) {
-        const jobs = cachedJobs.sort((a, b) => b.stop_timestamp - a.stop_timestamp);
-        const skipi = parseInt(skip || "0");
-        const limiti = parseInt(limit || "0") + skipi;
-
-        return res.send(jobs.slice(skipi, limiti));
-    };
-
-    res.send(cachedJobs);
+    res.send(documents);
 });
 
 let cachedUsers: UserDocument[] = [];
