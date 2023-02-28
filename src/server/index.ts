@@ -191,21 +191,36 @@ app.get("/staff", async (req, res) => {
 });
 
 let cachedStats: {
-    jobs: number;
     drivers: number;
+    jobs: number;
+    mjobs: number;
+    distance: number;
+    mdistance: number;
+    fuel: number;
 };
 let statsCacheExpire = Date.now();
 app.get("/stats", async (req, res) => {
     if (Date.now() >= statsCacheExpire) {
-        const jobs = await Jobs.count();
         const drivers = await User.count();
 
+        const jobs = await Jobs.find().select("driven_distance fuel_used stop_timestamp -_id -__v");
+        const mjobs = jobs.filter((job) => job.stop_timestamp > new Date().setMonth(new Date().getMonth() - 1));
+
+        const distance = jobs.reduce((a, b) => a + b.driven_distance, 0);
+        const mdistance = mjobs.reduce((a, b) => a + b.driven_distance, 0);
+
+        const fuel = jobs.reduce((a, b) => a + b.fuel_used, 0);
+
         cachedStats = {
-            jobs,
-            drivers
+            drivers,
+            jobs: jobs.length,
+            mjobs: mjobs.length,
+            distance,
+            mdistance,
+            fuel
         };
 
-        staffCacheExpire = Date.now() + 60 * 1000;
+        statsCacheExpire = Date.now() + 60 * 1000;
     };
 
     res.send(cachedStats);
