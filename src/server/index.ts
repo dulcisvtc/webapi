@@ -257,7 +257,7 @@ app.post("/webhook/navio", async (req, res) => {
         const recentJob = recentJobs.get(job.driver.steam_id);
         if (
             recentJob
-            && recentJob.distance === Math.round(job.driven_distance)
+            && recentJob.distance === Math.floor(job.driven_distance)
             && recentJob.name === job.cargo.name
             && recentJob.source_city === job.source_city.name
             && recentJob.source_company === job.source_company.name
@@ -321,7 +321,7 @@ app.post("/webhook/tracksim", async (req, res) => {
         const recentJob = recentJobs.get(job.driver.steam_id);
         if (
             recentJob
-            && recentJob.distance === Math.round(job.driven_distance)
+            && recentJob.distance === Math.floor(job.driven_distance)
             && recentJob.name === job.cargo.name
             && recentJob.source_city === job.source_city.name
             && recentJob.source_company === job.source_company.name
