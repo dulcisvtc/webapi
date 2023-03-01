@@ -10,8 +10,6 @@ const metricsLogger = getLogger("metrics", true);
 
 const task = async () => {
     try {
-        const start = Date.now();
-
         const timestamp = Date.now();
 
         const dbjobs = (await Jobs.aggregate([{
@@ -33,7 +31,7 @@ const task = async () => {
                 _id: null,
                 distance: { $sum: "$driven_distance" }
             }
-        }]))[0].distance);
+        }]))[0]?.distance ?? 0);
 
         const drivers = await axios.get("https://api.dulcis.org/vtc/members").then(res => res.data.response.members_count) as number;
         const jobs = await Jobs.count();
@@ -61,7 +59,9 @@ const task = async () => {
             document.metrics.fuel.set(timestamp.toString(), fuel);
         };
 
-        if (formatTimestamp(parseInt(lastTimestamp), { day: false }) === formatTimestamp(timestamp, { day: false })) {
+        const [lastTimestamp2] = latestFromMap(document.metrics.mdistance);
+
+        if (formatTimestamp(parseInt(lastTimestamp2), { day: false }) === formatTimestamp(timestamp, { day: false })) {
             document.metrics.mdistance.delete(lastTimestamp);
 
             document.metrics.mdistance.set(timestamp.toString(), mdistance);
@@ -69,10 +69,21 @@ const task = async () => {
             document.metrics.mdistance.set(timestamp.toString(), mdistance);
         };
 
+        for (const [key] of document.metrics.drivers) {
+            if (document.metrics.drivers.size > 30) {
+                document.metrics.drivers.delete(key);
+                document.metrics.jobs.delete(key);
+                document.metrics.distance.delete(key);
+                document.metrics.fuel.delete(key);
+            } else {
+                break;
+            };
+        };
+
         document.safeSave();
 
         metricsLogger.debug(
-            `Logged metrics (${Date.now() - start}ms): drivers=${drivers}, jobs=${jobs}, distance=${distance}, mdistance=${mdistance}, fuel=${fuel}`
+            `Logged metrics (${Date.now() - timestamp}ms): drivers=${drivers}, jobs=${jobs}, distance=${distance}, mdistance=${mdistance}, fuel=${fuel}`
         );
     } catch (err) {
         metricsLogger.error(`Metrics error: ${inspect(err)}`);
