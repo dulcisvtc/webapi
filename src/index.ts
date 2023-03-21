@@ -37,7 +37,7 @@ client.once("ready", () => {
     guild = client.guilds.cache.get(config.guild)!;
     botlogs = guild.channels.cache.get(config.botlogs_channel)! as TextChannel;
 
-    guild.members.fetch({ force: true }).then(() => {
+    guild.members.fetch().then(() => {
         discordLogger.info("Fetched members.");
     });
     registerCommands(guild).then((commands) => {
