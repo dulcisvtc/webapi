@@ -1,8 +1,8 @@
 import { formatTimestamp, getStartOfMonth } from "../constants/time";
 import { getGlobalDocument } from "../database/global";
 import { latestFromMap } from "../constants/functions";
-import { Jobs, User } from "../database";
 import { getLogger } from "../logger";
+import { Jobs } from "../database";
 import { inspect } from "util";
 import axios from "axios";
 
@@ -47,27 +47,20 @@ const task = async () => {
             document.metrics.jobs.delete(lastTimestamp);
             document.metrics.distance.delete(lastTimestamp);
             document.metrics.fuel.delete(lastTimestamp);
-
-            document.metrics.drivers.set(timestamp.toString(), drivers);
-            document.metrics.jobs.set(timestamp.toString(), jobs);
-            document.metrics.distance.set(timestamp.toString(), distance);
-            document.metrics.fuel.set(timestamp.toString(), fuel);
-        } else {
-            document.metrics.drivers.set(timestamp.toString(), drivers);
-            document.metrics.jobs.set(timestamp.toString(), jobs);
-            document.metrics.distance.set(timestamp.toString(), distance);
-            document.metrics.fuel.set(timestamp.toString(), fuel);
         };
+
+        document.metrics.drivers.set(timestamp.toString(), drivers);
+        document.metrics.jobs.set(timestamp.toString(), jobs);
+        document.metrics.distance.set(timestamp.toString(), distance);
+        document.metrics.fuel.set(timestamp.toString(), fuel);
 
         const [lastTimestamp2] = latestFromMap(document.metrics.mdistance);
 
         if (formatTimestamp(parseInt(lastTimestamp2), { day: false }) === formatTimestamp(timestamp, { day: false })) {
             document.metrics.mdistance.delete(lastTimestamp);
-
-            document.metrics.mdistance.set(timestamp.toString(), mdistance);
-        } else {
-            document.metrics.mdistance.set(timestamp.toString(), mdistance);
         };
+
+        document.metrics.mdistance.set(timestamp.toString(), mdistance);
 
         for (const [key] of document.metrics.drivers) {
             if (document.metrics.drivers.size > 30) {
@@ -75,6 +68,14 @@ const task = async () => {
                 document.metrics.jobs.delete(key);
                 document.metrics.distance.delete(key);
                 document.metrics.fuel.delete(key);
+            } else {
+                break;
+            };
+        };
+
+        for (const [key] of document.metrics.mdistance) {
+            if (document.metrics.mdistance.size > 12) {
+                document.metrics.mdistance.delete(key);
             } else {
                 break;
             };
