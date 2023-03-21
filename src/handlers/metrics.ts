@@ -1,8 +1,8 @@
+import { formatTimestamp, getStartOfMonth } from "../constants/time";
 import { getGlobalDocument } from "../database/global";
 import { latestFromMap } from "../constants/functions";
-import { formatTimestamp } from "../constants/time";
+import { Jobs, User } from "../database";
 import { getLogger } from "../logger";
-import { Jobs } from "../database";
 import { inspect } from "util";
 import axios from "axios";
 
@@ -12,20 +12,31 @@ const task = async () => {
     try {
         const timestamp = Date.now();
 
-        const jobs = await Jobs
-            .find()
-            .select("driven_distance fuel_used stop_timestamp")
-            .lean();
+        const dbjobs = (await Jobs.aggregate([{
+            $group: {
+                _id: null,
+                driven_distance: { $sum: "$driven_distance" },
+                fuel_used: { $sum: "$fuel_used" }
+            }
+        }]))[0] as { driven_distance: number; fuel_used: number };
 
-        const drivers = await axios.get("https://api.dulcis.org/vtc/members")
-            .then(res => res.data.response.members_count) as number;
-        const distance = Math.round(jobs.reduce((a, b) => a + b.driven_distance, 0));
-        const mdistance = Math.round(
-            jobs
-                .filter(job => formatTimestamp(job.stop_timestamp, { day: false }) === formatTimestamp(timestamp, { day: false }))
-                .reduce((a, b) => a + b.driven_distance, 0)
-        );
-        const fuel = Math.round(jobs.reduce((a, b) => a + b.fuel_used, 0));
+        const startOfMonth = getStartOfMonth().getTime();
+
+        const mdistance = Math.round((await Jobs.aggregate([{
+            $match: {
+                stop_timestamp: { $gte: startOfMonth }
+            },
+        }, {
+            $group: {
+                _id: null,
+                distance: { $sum: "$driven_distance" }
+            }
+        }]))[0]?.distance ?? 0);
+
+        const drivers = await axios.get("https://api.dulcis.org/vtc/members").then(res => res.data.response.members_count) as number;
+        const jobs = await Jobs.count();
+        const distance = Math.round(dbjobs.driven_distance);
+        const fuel = Math.round(dbjobs.fuel_used);
 
         const document = await getGlobalDocument();
 
@@ -36,20 +47,27 @@ const task = async () => {
             document.metrics.jobs.delete(lastTimestamp);
             document.metrics.distance.delete(lastTimestamp);
             document.metrics.fuel.delete(lastTimestamp);
-        };
 
-        document.metrics.drivers.set(timestamp.toString(), drivers);
-        document.metrics.jobs.set(timestamp.toString(), jobs.length);
-        document.metrics.distance.set(timestamp.toString(), distance);
-        document.metrics.fuel.set(timestamp.toString(), fuel);
+            document.metrics.drivers.set(timestamp.toString(), drivers);
+            document.metrics.jobs.set(timestamp.toString(), jobs);
+            document.metrics.distance.set(timestamp.toString(), distance);
+            document.metrics.fuel.set(timestamp.toString(), fuel);
+        } else {
+            document.metrics.drivers.set(timestamp.toString(), drivers);
+            document.metrics.jobs.set(timestamp.toString(), jobs);
+            document.metrics.distance.set(timestamp.toString(), distance);
+            document.metrics.fuel.set(timestamp.toString(), fuel);
+        };
 
         const [lastTimestamp2] = latestFromMap(document.metrics.mdistance);
 
         if (formatTimestamp(parseInt(lastTimestamp2), { day: false }) === formatTimestamp(timestamp, { day: false })) {
             document.metrics.mdistance.delete(lastTimestamp);
-        };
 
-        document.metrics.mdistance.set(timestamp.toString(), mdistance);
+            document.metrics.mdistance.set(timestamp.toString(), mdistance);
+        } else {
+            document.metrics.mdistance.set(timestamp.toString(), mdistance);
+        };
 
         for (const [key] of document.metrics.drivers) {
             if (document.metrics.drivers.size > 30) {
@@ -62,18 +80,10 @@ const task = async () => {
             };
         };
 
-        for (const [key] of document.metrics.mdistance) {
-            if (document.metrics.mdistance.size > 12) {
-                document.metrics.mdistance.delete(key);
-            } else {
-                break;
-            };
-        };
-
         document.safeSave();
 
         metricsLogger.debug(
-            `Logged metrics (${Date.now() - timestamp}ms): drivers=${drivers}, jobs=${jobs.length}, distance=${distance}, mdistance=${mdistance}, fuel=${fuel}`
+            `Logged metrics (${Date.now() - timestamp}ms): drivers=${drivers}, jobs=${jobs}, distance=${distance}, mdistance=${mdistance}, fuel=${fuel}`
         );
     } catch (err) {
         metricsLogger.error(`Metrics error: ${inspect(err)}`);
