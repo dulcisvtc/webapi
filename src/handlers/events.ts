@@ -101,7 +101,18 @@ eventsTicker.on("tick", async () => {
                 : curr;
         });
 
-    const apiEvent = await axios.get<{ response: APIGameEvent; }>(APIWebRoutes.event(selectedEvent.id), { retry: 5 });
+    const apiEvent = await axios.get<{ response: APIGameEvent; }>(APIWebRoutes.event(selectedEvent.id), { retry: 5 })
+        .catch(async (e: AxiosError) => {
+            if (e.response?.status === 404) {
+                eventsLogger.error(`Event ${selectedEvent.id} not found.`);
+
+                await Event.deleteOne({ id: selectedEvent.id });
+
+                return;
+            };
+        });
+
+    if (!apiEvent) return;
 
     const descriptionArray = [
         `**Date:** <t:${Math.round(selectedEvent.departure / 1000)}:F>`,
