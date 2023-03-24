@@ -1,5 +1,5 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder, TextChannel } from "discord.js";
-import { getUserDocumentBySteamId, Jobs, resetUserDocument } from "../database";
+import { ChatInputCommandInteraction, SlashCommandBuilder, TextChannel, User } from "discord.js";
+import { getUserDocumentByDiscordId, getUserDocumentBySteamId, Jobs, resetUserDocument, UserDocument } from "../database";
 import { getWebhook } from "../constants/functions";
 import { botlogs } from "..";
 import Navio from "../lib/navio";
@@ -24,7 +24,6 @@ export default {
             c
                 .setName("remove")
                 .setDescription("Remove a driver.")
-                .addStringOption((o) => o.setName("steamid").setDescription("Driver's SteamID.").setRequired(true))
                 .addStringOption((o) => o.setName("type").setDescription("removed or left").addChoices({
                     name: "left",
                     value: "left"
@@ -34,6 +33,7 @@ export default {
                 }).setRequired(true))
                 .addStringOption((o) => o.setName("reason").setDescription("\"...left Dulcis Logistics due to <TEXTHERE>\"").setRequired(true))
                 .addBooleanOption((o) => o.setName("giveretiredrole").setDescription("yes").setRequired(true))
+                .addStringOption((o) => o.setName("steamid").setDescription("Driver's SteamID."))
                 .addUserOption((o) => o.setName("user").setDescription("Driver's Discord account."))
                 .addBooleanOption((o) => o.setName("memberupdate").setDescription("for development purposes. ignore this."))
         )
@@ -151,9 +151,25 @@ export default {
                 throw e;
             };
         } else if (command === "remove") {
-            const steamId = interaction.options.getString("steamid", true);
-            const document = await getUserDocumentBySteamId(steamId, true);
-            let user = interaction.options.getUser("user");
+            let steamId = interaction.options.getString("steamid") as string;
+            let user = interaction.options.getUser("user") as User;
+
+            if (!steamId && !user) return interaction.reply({
+                content: "You must provide either a SteamID or a Discord user.",
+                ephemeral: true
+            });
+
+            let document: UserDocument | null = null;
+            if (user) document = await getUserDocumentByDiscordId(user.id);
+            else if (steamId) document = await getUserDocumentBySteamId(steamId, true);
+
+            if (!document) return interaction.reply({
+                content: "This user is not a driver.",
+                ephemeral: true
+            });
+
+            if (!steamId) steamId = document.steam_id;
+            if (!user) user = await interaction.client.users.fetch(document.discord_id);
 
             await interaction.reply({
                 embeds: [{
@@ -164,9 +180,6 @@ export default {
             });
 
             const { append } = await appendGenerator(interaction);
-
-            if (!user && document?.discord_id)
-                user = await interaction.client.users.fetch(document.discord_id).catch(() => null);
 
             const navio_result = await navio.removeDriver(steamId);
             const tracksim_result = await track.drivers.remove(steamId).catch((e) => {
@@ -185,7 +198,7 @@ export default {
             else await append("✅ Removed driver from TrackSim.");
 
             let member = interaction.options.getMember("user");
-            if (!member && document?.discord_id)
+            if (!member && document.discord_id)
                 member = await interaction.guild.members.fetch(document.discord_id).catch(() => null);
 
             const reason = interaction.options.getString("reason", true);
@@ -222,7 +235,7 @@ export default {
                     await webhook.send({
                         embeds: [{
                             title: "Member Update",
-                            description: `**[Driver]** ${user ? user : document?.username ?? "Unknown User"} has `
+                            description: `**[Driver]** ${user ? user : document.username ?? "Unknown User"} has `
                                 + (type === "removed" ? "been removed from" : "left")
                                 + ` Dulcis Logistics due to ${reason}`,
                             color: 0x7d7a7a
@@ -251,7 +264,7 @@ export default {
                     },
                     fields: [{
                         name: "discord user",
-                        value: user ? `${user} \`${user.tag}\` (\`${user.id}\`)` : document?.username ?? "Unknown User"
+                        value: user ? `${user} \`${user.tag}\` (\`${user.id}\`)` : document.username ?? "Unknown User"
                     }, {
                         name: "steamid",
                         value: `\`${steamId}\``
