@@ -21,7 +21,7 @@ const saveQueue = new Map<Snowflake, 1 | 2>();
 @modelOptions({ schemaOptions: { collection: "users" }, options: { allowMixed: Severity.ALLOW } })
 class UserSchema {
     @prop({ type: String, unique: true, required: true }) steam_id!: string;
-    @prop({ type: String, unique: true }) discord_id?: string;
+    @prop({ type: String, unique: true, required: true }) discord_id!: string;
     @prop({ type: String, required: true }) username!: string;
     @prop({ type: Number, default: 0 }) permissions!: number;
     @prop({ type: LeaderboardSchema, default: {} }) leaderboard!: LeaderboardSchema;
