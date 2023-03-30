@@ -1,11 +1,16 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder, TextChannel, User } from "discord.js";
+import { ActionRowBuilder, ChatInputCommandInteraction, InteractionCollector, InteractionType, ModalBuilder, SlashCommandBuilder, TextChannel, TextInputBuilder, TextInputStyle, User } from "discord.js";
 import { getUserDocumentByDiscordId, getUserDocumentBySteamId, Jobs, resetUserDocument, UserDocument } from "../database";
+import { generateId } from "../constants/functions";
 import { getWebhook } from "../constants/functions";
+import { AxiosError } from "axios";
 import { botlogs } from "..";
+import TrackSim from "tracksim.js";
 import Navio from "../lib/navio";
 import config from "../config";
-import TrackSim from "tracksim.js";
-import { AxiosError } from "axios";
+import { getLogger } from "../logger";
+import dedent from "dedent";
+
+const dbLogger = getLogger("database", true);
 
 export default {
     data: new SlashCommandBuilder()
@@ -36,6 +41,13 @@ export default {
                 .addStringOption((o) => o.setName("steamid").setDescription("Driver's SteamID."))
                 .addUserOption((o) => o.setName("user").setDescription("Driver's Discord account."))
                 .addBooleanOption((o) => o.setName("memberupdate").setDescription("for development purposes. ignore this."))
+        )
+        .addSubcommand((c) =>
+            c
+                .setName("edit")
+                .setDescription("Edit a driver's information.")
+                .addStringOption((o) => o.setName("steamid").setDescription("Driver's SteamID."))
+                .addUserOption((o) => o.setName("user").setDescription("Driver's Discord account."))
         )
         .setDefaultMemberPermissions(8)
         .toJSON(),
@@ -276,6 +288,145 @@ export default {
                         value: reason
                     }]
                 }]
+            });
+        } else if (command === "edit") {
+            let steamId = interaction.options.getString("steamid") as string;
+            let user = interaction.options.getUser("user") as User;
+
+            if (!steamId && !user) return interaction.reply({
+                content: "You must provide either a SteamID or a Discord user.",
+                ephemeral: true
+            });
+
+            let document: UserDocument | null = null;
+
+            if (user) document = await getUserDocumentByDiscordId(user.id);
+            else if (steamId) document = await getUserDocumentBySteamId(steamId, true);
+
+            if (!document) return interaction.reply({
+                content: "This user is not a driver.",
+                ephemeral: true
+            });
+
+            if (!steamId) steamId = document.steam_id;
+            if (!user) user = await interaction.client.users.fetch(document.discord_id);
+
+            const randomIdentifier = generateId(6);
+
+            const modal = new ModalBuilder().setTitle(`Editing ${user.tag} (${steamId})`).setCustomId(randomIdentifier);
+
+            const fields = [
+                new TextInputBuilder()
+                    .setCustomId("username")
+                    .setPlaceholder("Username")
+                    .setStyle(TextInputStyle.Short)
+                    .setLabel("Username")
+                    .setRequired(true)
+                    .setValue(document.username),
+                new TextInputBuilder()
+                    .setCustomId("steamid")
+                    .setPlaceholder("SteamID")
+                    .setStyle(TextInputStyle.Short)
+                    .setLabel("SteamID")
+                    .setMinLength(17)
+                    .setMaxLength(17)
+                    .setRequired(true)
+                    .setValue(steamId),
+                new TextInputBuilder()
+                    .setCustomId("discordid")
+                    .setPlaceholder("DiscordID")
+                    .setStyle(TextInputStyle.Short)
+                    .setLabel("DiscordID")
+                    .setMinLength(17)
+                    .setRequired(true)
+                    .setValue(document.discord_id),
+                new TextInputBuilder()
+                    .setCustomId("monthly_distance")
+                    .setPlaceholder("Monthly Distance")
+                    .setStyle(TextInputStyle.Short)
+                    .setLabel("Monthly Distance")
+                    .setRequired(true)
+                    .setValue(document.leaderboard.monthly_mileage.toString()),
+                new TextInputBuilder()
+                    .setCustomId("alltime_distance")
+                    .setPlaceholder("All-Time Distance")
+                    .setStyle(TextInputStyle.Short)
+                    .setLabel("All-Time Distance")
+                    .setRequired(true)
+                    .setValue(document.leaderboard.alltime_mileage.toString())
+            ].map(f => new ActionRowBuilder<TextInputBuilder>().addComponents(f));
+
+            modal.addComponents(fields);
+
+            await interaction.showModal(modal);
+
+            const collector = new InteractionCollector(interaction.client, {
+                filter: i => i.customId === randomIdentifier && i.user.id === interaction.user.id,
+                interactionType: InteractionType.ModalSubmit,
+                time: 60000
+            });
+
+            collector.on("collect", async (i) => {
+                if (i.isModalSubmit()) {
+                    const fields = i.fields;
+
+                    const username = fields.getTextInputValue("username");
+                    const steamid = fields.getTextInputValue("steamid");
+                    const discordid = fields.getTextInputValue("discordid");
+                    const monthly_distance = fields.getTextInputValue("monthly_distance");
+                    const alltime_distance = fields.getTextInputValue("alltime_distance");
+
+                    if (isNaN(parseInt(monthly_distance)) || isNaN(parseInt(alltime_distance)))
+                        return void i.reply({
+                            content: "Monthly and all-time distance must be a number.",
+                            ephemeral: true
+                        });
+
+                    if (document!.discord_id !== discordid) {
+                        const user = await interaction.client.users.fetch(discordid).catch(() => null);
+
+                        if (!user) return void i.reply({
+                            content: "This user does not exist.",
+                            ephemeral: true
+                        });
+
+                        const oldMember = await interaction.guild.members.fetch(document!.discord_id).catch(() => null);
+                        const member = await interaction.guild.members.fetch(user).catch(() => null);
+
+                        if (!member) return void i.reply({
+                            content: "This user is not a member of this server.",
+                            ephemeral: true
+                        });
+
+                        await member.roles.add(config.driver_role).catch(() => null);
+                        if (oldMember) {
+                            await oldMember.roles.remove(config.driver_role).catch(() => null);
+                        };
+                    };
+
+                    dbLogger.debug(dedent`Updating driver ${document!.steam_id} (${document!.username}):
+                        username: ${document!.username} -> ${username}
+                        steamid: ${document!.steam_id} -> ${steamid}
+                        discordid: ${document!.discord_id} -> ${discordid}
+                        monthly_distance: ${document!.leaderboard.monthly_mileage} -> ${monthly_distance}
+                        alltime_distance: ${document!.leaderboard.alltime_mileage} -> ${alltime_distance}
+                    `);
+
+                    document!.username = username;
+                    document!.steam_id = steamid;
+                    document!.discord_id = discordid;
+                    document!.leaderboard.monthly_mileage = parseInt(monthly_distance);
+                    document!.leaderboard.alltime_mileage = parseInt(alltime_distance);
+
+                    document!.safeSave();
+
+                    await i.reply({
+                        content: "Successfully updated driver. If something was updated accidentally, please contact a developer.",
+                        ephemeral: true
+                    });
+
+                    collector.stop();
+                };
             });
         };
     }
