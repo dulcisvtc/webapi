@@ -155,7 +155,7 @@ export default {
                     return interaction.editReply({
                         embeds: [{
                             title: "Error!",
-                            description: e.message
+                            description: e.response?.data?.error?.message || e.message
                         }]
                     });
                 };
