@@ -141,7 +141,7 @@ export default {
                                 name: interaction.user.tag,
                                 icon_url: interaction.user.displayAvatarURL()
                             },
-                            description: e.message,
+                            description: e.response?.data?.error?.message || e.message,
                             fields: [{
                                 name: "discord user",
                                 value: `${member} \`${member.user.tag}\` (\`${member.id}\`)`
