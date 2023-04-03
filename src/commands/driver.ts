@@ -23,20 +23,20 @@ export default {
 
         const mdist = Math.round(document.leaderboard.monthly_mileage);
         const adist = Math.round(document.leaderboard.alltime_mileage);
-        const jobs = await Jobs.find({ "driver.steam_id": document.steam_id });
+        const jobs = await Jobs.find({ "driver.steam_id": document.steam_id }).count();
 
-        if (!user && document.discord_id) user = await interaction.client.users.fetch(document.discord_id);
+        if (!user) user = await interaction.client.users.fetch(document.discord_id);
 
         const embed = new EmbedBuilder()
             .setTitle("Driver info")
             .setDescription([
-                `**Discord:** ${user ? `${user} (${user.tag})` : "Not linked."}`,
+                `**Discord:** ${`${user} (${user.tag})`}`,
                 `**SteamID:** ${document.steam_id}`,
                 `[**TruckersMP Search**](https://truckersmp.com/user/search?search=${document.steam_id})`,
-                `**Username:** ${document.username ?? "Not set."}`,
+                `**Username:** ${document.username}`,
                 `**Monthly mileage:** ${mdist.toLocaleString()}km`,
                 `**Total mileage:** ${adist.toLocaleString()}km`,
-                `**Jobs:** ${jobs.length}`
+                `**Jobs:** ${jobs}`
             ].join("\n"));
 
         return interaction.editReply({ embeds: [embed] });
