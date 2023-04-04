@@ -24,13 +24,15 @@
         "text-table": "^0.2.0",
         "tracksim.js": "^1.1.2",
         "winston": "^3.8.2",
-        "winston-daily-rotate-file": "^4.7.1"
+        "winston-daily-rotate-file": "^4.7.1",
+        "ws": "^8.13.0"
     },
     "devDependencies": {
         "@types/dedent": "^0.7.0",
         "@types/json-bigint": "^1.0.1",
         "@types/node": "^18.15.5",
         "@types/text-table": "^0.2.2",
+        "@types/ws": "^8.5.4",
         "copyfiles": "^2.4.1",
         "tsc-watch": "^6.0.0",
         "typescript": "^5.0.2"

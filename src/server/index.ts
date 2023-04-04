@@ -1,13 +1,16 @@
 import { Event, EventDocument, getEventDocument, getGlobalDocument, GlobalDocument, Jobs, User, UserDocument } from "../database/";
 import { JobSchema, TrackSimJobWebhookObject } from "../../types";
+import { APIGameEvent } from "@truckersmp_official/api-types/v2";
 import { handleDelivery } from "../handlers/jobs";
 import { getLogger } from "../logger";
 import { client, guild } from "..";
 import { inspect } from "util";
 import JSONbigint from "json-bigint";
 import config from "../config";
+import http from "../lib/http";
 import fastify from "fastify";
 import crypto from "crypto";
+import WebSocket from "ws";
 import axios from "axios";
 
 const webLogger = getLogger("web", true);
@@ -103,6 +106,44 @@ app.get("/setdiscordid", async (req, res) => {
 
 let cachedEvents: EventDocument[] = [];
 let eventsCacheExpire = Date.now();
+
+const wss = new WebSocket.Server({ server: app.server });
+wss.on("connection", async (ws, req) => {
+    if (req.url !== "/events") return ws.close(1003, "Invalid URL");
+
+    if (Date.now() >= eventsCacheExpire) {
+        const documents = JSON.parse(JSON.stringify(await Event.find()));
+
+        for (const document of documents) {
+            delete document.__v;
+            delete document._id;
+        };
+
+        cachedEvents = documents.sort((a: any, b: any) => a.departure - b.departure);
+        eventsCacheExpire = Date.now() + 5_000;
+    };
+
+    await Promise.all(cachedEvents.map(async (x) => {
+        const TMPEvent = (await http.get<{ response: APIGameEvent }>(`https://api.truckersmp.com/v2/events/${x.id}`, { retry: 5 })).data.response;
+
+        ws.send(JSON.stringify({
+            type: "new",
+            event: {
+                id: x.id,
+                name: TMPEvent.name,
+                banner: TMPEvent.banner,
+                location: x.location,
+                destination: x.destination,
+                meetup: x.meetup,
+                departure: x.departure,
+                slot_id: x.slot_id,
+                slot_image: x.slot_image
+            }
+        }));
+    }));
+});
+
+
 app.get("/events", async (req, res) => {
     if (Date.now() >= eventsCacheExpire) {
         const documents = JSON.parse(JSON.stringify(await Event.find()));
@@ -130,14 +171,49 @@ app.post("/events", async (req, res) => {
         slotId?: number;
         slotImage?: string;
     };
+
     const event = await getEventDocument(eventObject.eventId);
+    const isNew = event.isNew;
+    const TMPEvent = (await http.get<{ response: APIGameEvent }>(`https://api.truckersmp.com/v2/events/${event.id}`, { retry: 5 })).data.response;
+
+    const wsEvent = {
+        id: eventObject.eventId,
+        name: TMPEvent.name,
+        banner: TMPEvent.banner,
+        location: eventObject.location,
+        destination: eventObject.destination,
+        meetup: eventObject.meetup,
+        departure: eventObject.departure,
+        slot_id: eventObject.slotId,
+        slot_image: eventObject.slotImage
+    };
+
+    if (isNew) {
+        wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify({
+                    type: "new",
+                    event: wsEvent
+                }));
+            };
+        });
+    } else {
+        wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify({
+                    type: "update",
+                    event: wsEvent
+                }));
+            };
+        });
+    };
 
     event.location = eventObject.location;
     event.destination = eventObject.destination;
     event.meetup = eventObject.meetup;
     event.departure = eventObject.departure;
-    if (eventObject.slotId) event.slot_id = eventObject.slotId;
-    if (eventObject.slotImage) event.slot_image = eventObject.slotImage;
+    event.slot_id = eventObject.slotId;
+    event.slot_image = eventObject.slotImage;
 
     event.safeSave();
 
@@ -148,6 +224,23 @@ app.delete<{ Params: { id: string; }; }>("/events/:id", async (req, res) => {
 
     const eventId = parseInt(req.params.id);
     const event = await getEventDocument(eventId);
+
+    wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({
+                type: "delete",
+                event: {
+                    id: eventId,
+                    location: event.location,
+                    destination: event.destination,
+                    meetup: event.meetup,
+                    departure: event.departure,
+                    slot_id: event.slot_id,
+                    slot_image: event.slot_image
+                }
+            }));
+        };
+    });
 
     await event.delete();
 
