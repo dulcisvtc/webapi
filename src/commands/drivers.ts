@@ -112,6 +112,24 @@ export default {
                         webhooktext = "❌ Failed to send member updates webhook.";
                     };
                     await append(webhooktext);
+
+                    let dmtext = "✅ DM sent.";
+                    try {
+                        await member.send({
+                            embeds: [{
+                                title: "Welcome to Dulcis Logistics!",
+                                description: dedent`
+                                    Congratulations, ${member}! Your application at Dulcis Logistics has been accepted.
+                                    Please read the <#992844255657742377> and <#992841702345801810> channels to get started.
+
+                                    If you have any questions, feel free to ask in <#992837899559125105>.
+                                `
+                            }]
+                        });
+                    } catch {
+                        dmtext = "❌ Failed to send DM.";
+                    };
+                    await append(dmtext);
                 };
 
                 await append("✨ Done.", "Success!");
