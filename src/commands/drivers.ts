@@ -5,7 +5,6 @@ import { getWebhook } from "../constants/functions";
 import { AxiosError } from "axios";
 import { botlogs } from "..";
 import TrackSim from "tracksim.js";
-import Navio from "../lib/navio";
 import config from "../config";
 import { getLogger } from "../logger";
 import dedent from "dedent";
@@ -54,7 +53,6 @@ export default {
     execute: async (interaction: ChatInputCommandInteraction<"cached">) => {
         const command = interaction.options.getSubcommand();
         const track = new TrackSim(config.tracksim_api_key);
-        const navio = new Navio(config.navio_api_key);
         const memberupdate = interaction.options.getBoolean("memberupdate") ?? true;
 
         if (command === "add") {
@@ -211,7 +209,6 @@ export default {
 
             const { append } = await appendGenerator(interaction);
 
-            const navio_result = await navio.removeDriver(steamId);
             const tracksim_result = await track.drivers.remove(steamId).catch((e) => {
                 if (e instanceof AxiosError) {
                     return e.message;
@@ -220,9 +217,6 @@ export default {
                 return null
             });
 
-            if (typeof navio_result === "string")
-                await append(`❌ Failed to remove driver from Navio: ${navio_result}`);
-            else await append("✅ Removed driver from Navio.");
             if (tracksim_result !== 200)
                 await append(`❌ Failed to remove driver from TrackSim: ${tracksim_result}`);
             else await append("✅ Removed driver from TrackSim.");
