@@ -14,7 +14,7 @@ const discordLogger = getLogger("discord", true);
 const databaseLogger = getLogger("database", true);
 const generalLogger = getLogger("general", true);
 
-export const admens = ["419892040726347776"];
+export const admens = ["419892040726347776", "736719142345900195"];
 export const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
