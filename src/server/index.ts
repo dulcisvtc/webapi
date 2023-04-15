@@ -43,12 +43,13 @@ app.get<{ Params: { id: string; }; }>("/tmp/event/:id", async (req, res) =>
 );
 
 app.get("/jobs", async (req, res) => {
-    const query = req.query as { limit?: string; skip?: string; steamid?: string; };
+    const query = req.query as { limit?: string; skip?: string; steamids?: string; };
+    const steamids = query.steamids?.split(",") ?? [];
     const limit = parseInt(query.limit || "10");
     const skip = parseInt(query.skip || "0");
 
-    const filter = query.steamid
-        ? { "driver.steam_id": query.steamid }
+    const filter = steamids.length
+        ? { "driver.steam_id": { $in: steamids } }
         : {};
 
     const jobs = await Jobs.find(filter).sort({ stop_timestamp: -1 }).skip(skip).limit(limit).select("-_id -__v");
