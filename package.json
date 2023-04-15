@@ -4,7 +4,7 @@
     "main": "dist/",
     "scripts": {
         "build": "tsc",
-        "build:run": "yarn build --incremental && yarn start",
+        "build:run": "yarn build && yarn start",
         "build:watch": "tsc -w",
         "dev": "tsc-watch --noClear --onSuccess \"yarn start\"",
         "start": "node --no-warnings .",
