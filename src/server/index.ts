@@ -327,78 +327,6 @@ app.get("/metrics", async (req, res) => {
     res.send(cachedMetrics);
 });
 
-const recentJobs = new Map<string, {
-    distance: number;
-    name: string;
-    source_city: string;
-    source_company: string;
-    destination_city: string;
-    destination_company: string;
-}>();
-app.post("/webhook/navio", async (req, res) => {
-    try {
-        if (!config.navio_secrets.some((secret) =>
-            req.headers["navio-signature"] === hmacSHA256(secret, (req.body as any).raw)
-        )) return res.status(401).send();
-
-        const { parsed } = (req.body as any);
-
-        if (parsed.type !== "job.delivered") return res.status(400).send();
-
-        const job = parsed.data.object;
-
-        const recentJob = recentJobs.get(job.driver.steam_id);
-        if (
-            recentJob
-            && recentJob.distance === Math.floor(job.driven_distance)
-            && recentJob.name === job.cargo.name
-            && recentJob.source_city === job.source_city.name
-            && recentJob.source_company === job.source_company.name
-            && recentJob.destination_city === job.destination_city.name
-            && recentJob.destination_company === job.destination_company.name
-        ) return res.status(200).send();
-
-        recentJobs.set(job.driver.steam_id, {
-            distance: Math.round(job.driven_distance),
-            name: job.cargo.name,
-            source_city: job.source_city.name,
-            source_company: job.source_company.name,
-            destination_city: job.destination_city.name,
-            destination_company: job.destination_company.name
-        });
-
-        const newJobObject: JobSchema = {
-            job_id: job.id,
-            driver: {
-                id: job.driver.id,
-                steam_id: job.driver.steam_id,
-                username: job.driver.username
-            },
-            start_timestamp: new Date(job.start_time).getTime(),
-            stop_timestamp: new Date(job.stop_time).getTime(),
-            driven_distance: job.driven_distance,
-            fuel_used: job.fuel_used,
-            cargo: {
-                name: job.cargo.name,
-                mass: job.cargo.mass,
-                damage: job.cargo.damage
-            },
-            source_city: job.source_city.name,
-            source_company: job.source_company.name,
-            destination_city: job.destination_city.name,
-            destination_company: job.destination_company.name,
-            truck: `${job.truck.brand.name} ${job.truck.name}`,
-            average_speed: job.truck.average_speed * 3.6,
-            top_speed: job.truck.top_speed * 3.6
-        };
-
-        const status = await handleDelivery(newJobObject);
-
-        return res.status(status).send();
-    } catch (e) {
-        webLogger.error(`Failed to handle delivery:\n${inspect(e)}`);
-    };
-});
 app.post("/webhook/tracksim", async (req, res) => {
     try {
         if (!config.tracksim_secrets.some((secret) =>
@@ -410,26 +338,6 @@ app.post("/webhook/tracksim", async (req, res) => {
         if (parsed.type !== "job.delivered") return res.status(400).send();
 
         const job = parsed.data.object;
-
-        const recentJob = recentJobs.get(job.driver.steam_id);
-        if (
-            recentJob
-            && recentJob.distance === Math.floor(job.driven_distance)
-            && recentJob.name === job.cargo.name
-            && recentJob.source_city === job.source_city.name
-            && recentJob.source_company === job.source_company.name
-            && recentJob.destination_city === job.destination_city.name
-            && recentJob.destination_company === job.destination_company.name
-        ) return res.status(200).send();
-
-        recentJobs.set(job.driver.steam_id, {
-            distance: Math.round(job.driven_distance),
-            name: job.cargo.name,
-            source_city: job.source_city.name,
-            source_company: job.source_company.name,
-            destination_city: job.destination_city.name,
-            destination_company: job.destination_company.name
-        });
 
         const newJobObject: JobSchema = {
             ts_job_id: job.id,
