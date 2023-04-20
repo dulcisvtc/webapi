@@ -91,7 +91,7 @@ app.get<{ Params: { id: string; }; }>("/isdriver/:id", async (req, res) => {
     const { id } = req.params;
 
     return {
-        isdriver: guild?.members.cache.get(id)?.roles.cache.has(config.driver_role) ?? false
+        isdriver: (await guild?.members.fetch(id).catch(() => null))?.roles.cache.has(config.driver_role) ?? false
     };
 });
 app.get("/setdiscordid", async (req, res) => {
