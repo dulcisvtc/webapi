@@ -75,6 +75,8 @@ app.get("/users", async (req, res) => {
     res.status(200).send(cachedUsers);
 });
 app.get<{ Params: { id: string; }; }>("/users/:id", async (req, res) => {
+    if (Date.now() >= usersCacheExpire) cachedUsers.length = 0;
+
     const { id } = req.params;
     const user = cachedUsers.find((x) => x.discord_id === id) ?? await User.findOne({ discord_id: id });
 
