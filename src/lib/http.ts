@@ -7,15 +7,9 @@ const http = axios.create({
 });
 
 http.interceptors.response.use(undefined, async (error: AxiosError) => {
-    const { config, message } = error;
+    const { config } = error;
 
-    if (!config || !config.retry)
-        return Promise.reject(error);
-
-    if (
-        !message.includes("write EPROTO")
-        && !`${error.response?.status}`.startsWith("5")
-    )
+    if (!config?.retry || error.response?.status === 404)
         return Promise.reject(error);
 
     config.retry -= 1;
