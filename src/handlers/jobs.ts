@@ -15,6 +15,8 @@ export const handleDelivery = async (job: JobSchema): Promise<200> => {
     if (await check) {
         jobsLogger.warn(`Job ${job.job_id ?? job.ts_job_id} already exists in database.`);
     } else {
+        job.fuel_used < 0 ? job.fuel_used = 0 : null;
+
         await Jobs.create(job);
 
         jobsLogger.debug(`Job delivered (${job.job_id ? "navio" : "tracksim"}):\n${inspect(job, { depth: Infinity })}`);
