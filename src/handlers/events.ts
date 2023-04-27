@@ -35,13 +35,21 @@ axios.interceptors.response.use(undefined, async (error: AxiosError) => {
 eventsTicker.on("tick", async () => {
     if (!process.env["EVENTS_CALENDAR_CHANNEL"]) return;
 
-    const events = await Event.find();
+    let events = await Event.find();
     const calendarDescription = (await Promise.all(
         events
             .filter((e) => formatTimestamp(e.departure, { day: false }) === formatTimestamp(Date.now(), { day: false }))
             .sort((a, b) => a.departure - b.departure)
             .map(async (event) => {
-                const apiEvent = await axios.get<{ response: APIGameEvent; }>(APIWebRoutes.event(event.id), { retry: 5 });
+                const apiEvent = await axios.get<{ response: APIGameEvent; }>(APIWebRoutes.event(event.id), { retry: 10 })
+                    .catch(async (e: AxiosError) => {
+                        eventsLogger.error(`[calendar] Failed to fetch event ${event.id} (${e.response?.status ?? e.code}).`);
+                        if (e.response?.status === 404) {
+                            await Event.deleteOne({ id: event.id });
+                            events = events.filter((e) => e.id !== event.id);
+                        };
+                    });
+                if (!apiEvent) return;
                 const departureDate = new Date(event.departure)
 
                 let string = [
@@ -54,6 +62,7 @@ eventsTicker.on("tick", async () => {
 
                 return string;
             })
+            .filter(async (e) => !!(await e))
     )).join("\n");
 
     const calendarChannel = client.channels.cache.get(config.event_channels.calendar)! as TextChannel;
@@ -101,15 +110,9 @@ eventsTicker.on("tick", async () => {
                 : curr;
         });
 
-    const apiEvent = await axios.get<{ response: APIGameEvent; }>(APIWebRoutes.event(selectedEvent.id), { retry: 5 })
-        .catch(async (e: AxiosError) => {
-            if (e.response?.status === 404) {
-                eventsLogger.error(`Event ${selectedEvent.id} not found.`);
-
-                await Event.deleteOne({ id: selectedEvent.id });
-
-                return;
-            };
+    const apiEvent = await axios.get<{ response: APIGameEvent; }>(APIWebRoutes.event(selectedEvent.id), { retry: 10 })
+        .catch((e: AxiosError) => {
+            eventsLogger.error(`[attending] Failed to fetch event ${selectedEvent.id} (${e.response?.status ?? e.code}).`);
         });
 
     if (!apiEvent) return;
