@@ -1,4 +1,4 @@
-import { EmbedBuilder, GuildTextBasedChannel } from "discord.js";
+import { EmbedBuilder, GuildTextBasedChannel, escapeMarkdown } from "discord.js";
 import { getUserDocumentBySteamId, Jobs } from "../database";
 import { JobSchema } from "../../types";
 import { getLogger } from "../logger";
@@ -25,7 +25,7 @@ export const handleDelivery = async (job: JobSchema): Promise<200> => {
         const embed = new EmbedBuilder()
             .setTitle("Job delivered!")
             .setURL("https://hub.dulcis.org/jobs?utm_source=job-delivered")
-            .setDescription(`${job.driver.username} | ${job.driven_distance.toFixed(2)}km`)
+            .setDescription(`${escapeMarkdown(job.driver.username)} | ${job.driven_distance.toFixed(2)}km`)
             .addFields({
                 name: "Source",
                 value: `${job.source_company} (${job.source_city})`,
