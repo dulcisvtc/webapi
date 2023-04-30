@@ -428,17 +428,13 @@ export default {
                     document!.steam_id = steamid;
                     document!.discord_id = discordid;
 
-                    monthly_distance.startsWith("-")
-                        ? document!.leaderboard.monthly_mileage -= parseInt(monthly_distance)
-                        : monthly_distance.startsWith("+")
-                            ? document!.leaderboard.monthly_mileage += parseInt(monthly_distance)
-                            : document!.leaderboard.monthly_mileage = parseInt(monthly_distance);
+                    monthly_distance.startsWith("+") || monthly_distance.startsWith("-")
+                        ? document!.leaderboard.monthly_mileage += parseInt(monthly_distance)
+                        : document!.leaderboard.monthly_mileage = parseInt(monthly_distance);
 
-                    alltime_distance.startsWith("-")
-                        ? document!.leaderboard.alltime_mileage -= parseInt(alltime_distance)
-                        : alltime_distance.startsWith("+")
-                            ? document!.leaderboard.alltime_mileage += parseInt(alltime_distance)
-                            : document!.leaderboard.alltime_mileage = parseInt(alltime_distance);
+                    alltime_distance.startsWith("+") || alltime_distance.startsWith("-")
+                        ? document!.leaderboard.alltime_mileage += parseInt(alltime_distance)
+                        : document!.leaderboard.alltime_mileage = parseInt(alltime_distance);
 
                     document!.safeSave();
 
