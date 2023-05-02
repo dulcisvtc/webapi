@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
 import config from "../config";
 
-export const connection = mongoose.connect(config.database_uri);
+export const connection = mongoose.connect(config.database_uri, {
+    authSource: "admin"
+});
 
 export * from "./models/Event";
 export * from "./models/Global";
