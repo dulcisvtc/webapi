@@ -1,5 +1,5 @@
 import { handleMessage } from "../handlers/wordchannel";
-import { Message } from "discord.js";
+import type { Message } from "discord.js";
 import { inspect } from "util";
 import { admens } from "..";
 
@@ -12,13 +12,15 @@ export default {
             const [cmd, ...args] = message.content.slice(`${message.client.user!}`.length).trim().split(/\s/g);
 
             if (cmd === "eval" && admens.includes(message.author.id)) {
-                const _ = message;
+                const _ = message; _;
                 let evaled;
+
                 try {
                     evaled = await eval(args.join(" "));
                 } catch (e) {
                     evaled = e;
                 };
+
                 const clean = inspect(evaled, { depth: 1 });
 
                 const text = clean.length > 1980 ? `\`\`\`js\n${clean.slice(0, 1980) + "..."}\n\`\`\`` : `\`\`\`js\n${clean}\n\`\`\``;

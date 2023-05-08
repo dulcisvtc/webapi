@@ -1,4 +1,4 @@
-import { GuildTextBasedChannel, Message, TextChannel } from "discord.js";
+import type { GuildTextBasedChannel, Message, TextChannel } from "discord.js";
 import crypto from "crypto";
 
 const bulks = new Map<string, Message[]>();
@@ -58,9 +58,11 @@ export const generateId = (length: number): string => {
     return crypto.randomBytes(Math.ceil(length / 2)).toString("hex").slice(0, length);
 };
 
-export const latestFromMap = <T>(map: Map<string, T>): [string, T] => {
+export const latestFromMap = <T>(map: Map<string, T>): [string, T | null] => {
     const keys = Array.from(map.keys());
-    const latest = keys[keys.length - 1];
+    if (!keys.length) return ["", null];
+
+    const latest = keys[keys.length - 1]!;
 
     return [latest, map.get(latest)!];
 };

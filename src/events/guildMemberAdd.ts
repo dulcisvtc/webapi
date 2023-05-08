@@ -9,7 +9,7 @@ export default {
 
         botlogs?.send({
             embeds: [{
-                title: "driver left the server",
+                title: "driver joined the server",
                 fields: [{
                     name: "Discord user",
                     value: `${member} (${member.user.tag})`,

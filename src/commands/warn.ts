@@ -51,14 +51,14 @@ export default {
                 description,
                 createdTimestamp: Date.now(),
             });
-            document.safeSave();
+            await document.save();
 
             await interaction.reply({
                 content: `Added warn to ${user} (${user.tag}) with description: ${description}`,
                 ephemeral: true,
             });
 
-            await botlogs?.send({
+            return void await botlogs?.send({
                 embeds: [{
                     title: `warn ${id} added`,
                     author: {
@@ -90,14 +90,14 @@ export default {
                 });
 
             document.warns.delete(id);
-            document.safeSave();
+            await document.save();
 
             await interaction.reply({
                 content: `Removed warn from ${user} (${user.tag}) with ID: ${id}`,
                 ephemeral: true,
             });
 
-            await botlogs?.send({
+            return void await botlogs?.send({
                 embeds: [{
                     title: `warn ${id} removed`,
                     author: {
@@ -139,7 +139,9 @@ export default {
                 });
             };
 
-            await interaction.reply({ embeds: [embed], ephemeral: true });
+            return void await interaction.reply({ embeds: [embed], ephemeral: true });
         };
+
+        return;
     }
 };

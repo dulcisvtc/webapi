@@ -1,10 +1,10 @@
-import { Event, EventDocument, getEventDocument, getGlobalDocument, GlobalDocument, Jobs, User, UserDocument } from "../database/";
-import { JobSchema, TrackSimJobWebhookObject } from "../../types";
-import { APIGameEvent } from "@truckersmp_official/api-types/v2";
+import { Event, EventDocument, getEventDocument, getGlobalDocument, getUserDocumentBySteamId, GlobalDocument, Jobs, User, UserDocument } from "../database/";
+import type { JobSchema, TrackSimJobWebhookObject } from "../../types";
+import type { APIGameEvent } from "@truckersmp_official/api-types/v2";
 import { handleDelivery } from "../handlers/jobs";
 import { getLogger } from "../logger";
-import { client, guild } from "..";
 import { inspect } from "util";
+import { client } from "..";
 import JSONbigint from "json-bigint";
 import config from "../config";
 import http from "../lib/http";
@@ -16,12 +16,12 @@ import axios from "axios";
 const webLogger = getLogger("web", true);
 const app = fastify();
 
-app.addHook("preHandler", (req, res, done) => {
+app.addHook("preHandler", (_req, res, done) => {
     res.header("Access-Control-Allow-Origin", "*");
     done();
 });
 
-app.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, done) => {
+app.addContentTypeParser("application/json", { parseAs: "string" }, (_req, body, done) => {
     try {
         const newBody = {
             raw: body,
@@ -31,11 +31,11 @@ app.addContentTypeParser("application/json", { parseAs: "string" }, (req, body, 
     } catch (e) { webLogger.error(e); };
 });
 
-app.get("/vtc/news", async (req, res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/news")).data);
-app.get("/vtc/members", async (req, res) =>
+app.get("/vtc/news", async (_req, _res) => (await axios.get("https://api.truckersmp.com/v2/vtc/55939/news")).data);
+app.get("/vtc/members", async (_req, _res) =>
     JSONbigint.parse((await axios.get("https://api.truckersmp.com/v2/vtc/55939/members", { transformResponse: (data) => data })).data)
 );
-app.get<{ Params: { id: string; }; }>("/tmp/event/:id", async (req, res) =>
+app.get<{ Params: { id: string; }; }>("/tmp/event/:id", async (req, _res) =>
     JSONbigint.parse((await axios.get(
         `https://api.truckersmp.com/v2/events/${req.params.id}`,
         { transformResponse: (data) => data }
@@ -44,6 +44,7 @@ app.get<{ Params: { id: string; }; }>("/tmp/event/:id", async (req, res) =>
 
 app.get("/jobs", async (req, res) => {
     const query = req.query as { limit?: string; skip?: string; steamids?: string; };
+
     const steamids = query.steamids?.split(",") ?? [];
     const limit = parseInt(query.limit || "10");
     const skip = parseInt(query.skip || "0");
@@ -52,23 +53,16 @@ app.get("/jobs", async (req, res) => {
         ? { "driver.steam_id": { $in: steamids } }
         : {};
 
-    const jobs = await Jobs.find(filter).sort({ stop_timestamp: -1 }).skip(skip).limit(limit).select("-_id -__v");
+    const jobs = await Jobs.find(filter, "-_id -__v").sort({ stop_timestamp: -1 }).skip(skip).limit(limit);
 
     res.send(jobs);
 });
 
 let cachedUsers: UserDocument[] = [];
 let usersCacheExpire = Date.now();
-app.get("/users", async (req, res) => {
+app.get("/users", async (_req, res) => {
     if (Date.now() >= usersCacheExpire) {
-        const documents = JSON.parse(JSON.stringify(await User.find()));
-
-        for (const document of documents) {
-            delete document.__v;
-            delete document._id;
-        };
-
-        cachedUsers = documents;
+        cachedUsers = await User.find({}, "-_id -__v");
         usersCacheExpire = Date.now() + 30_000;
     };
 
@@ -87,24 +81,23 @@ app.get<{ Params: { id: string; }; }>("/users/:id", async (req, res) => {
 
     res.status(200).send(user);
 });
-app.get<{ Params: { id: string; }; }>("/isdriver/:id", async (req, res) => {
-    const { id } = req.params;
 
-    return {
-        isdriver: (await guild?.members.fetch(id).catch(() => null))?.roles.cache.has(config.driver_role) ?? false
+app.post("/user/username", async (req, res) => {
+    if (req.headers["secret"] !== config.messaging_secret) return res.status(403);
+    const { steam_id, username } = req.body as { steam_id?: string; username?: string; };
+
+    if (!steam_id || !username) {
+        return res.status(400).send({ message: "Missing required fields" });
     };
-});
-app.get("/setdiscordid", async (req, res) => {
-    const { discord_id, steam_id, secret } = req.query as { discord_id?: string; steam_id?: string; secret?: string };
-    if (!discord_id || !steam_id || !secret) return;
 
-    if (secret !== config.messaging_secret) return;
+    const document = await getUserDocumentBySteamId(steam_id, true);
+    if (!document) return res.status(404).send({ message: "User not found" });
 
-    const user = await User.findOne({ steam_id });
-    if (!user) return res.status(404).send({ message: "User not found" });
-    await user.updateOne({ $set: { discord_id } });
+    document.username = username;
 
-    return res.status(200).send("a");
+    await document.save();
+
+    return res.status(200).send({ message: "OK" });
 });
 
 let cachedEvents: EventDocument[] = [];
@@ -146,8 +139,7 @@ wss.on("connection", async (ws, req) => {
     }));
 });
 
-
-app.get("/events", async (req, res) => {
+app.get("/events", async (_req, res) => {
     if (Date.now() >= eventsCacheExpire) {
         const documents = JSON.parse(JSON.stringify(await Event.find()));
 
@@ -215,10 +207,11 @@ app.post("/events", async (req, res) => {
     event.destination = eventObject.destination;
     event.meetup = eventObject.meetup;
     event.departure = eventObject.departure;
-    event.slot_id = eventObject.slotId;
-    event.slot_image = eventObject.slotImage;
 
-    event.safeSave();
+    eventObject.slotId && (event.slot_id = eventObject.slotId);
+    eventObject.slotImage && (event.slot_image = eventObject.slotImage);
+
+    await event.save();
 
     return res.status(200).send(event);
 });
@@ -259,7 +252,7 @@ let cachedStaff: {
     }[];
 }[] = [];
 let staffCacheExpire = Date.now();
-app.get("/staff", async (req, res) => {
+app.get("/staff", async (_req, res) => {
     if (Date.now() >= staffCacheExpire) {
         const document = await getGlobalDocument();
 
@@ -290,7 +283,7 @@ let cachedStats: {
     fuel: number;
 };
 let statsCacheExpire = Date.now();
-app.get("/stats", async (req, res) => {
+app.get("/stats", async (_req, res) => {
     if (Date.now() >= statsCacheExpire) {
         const drivers = await User.count();
 
@@ -319,7 +312,7 @@ app.get("/stats", async (req, res) => {
 
 let cachedMetrics: GlobalDocument["metrics"];
 let metricsCacheExpire = Date.now();
-app.get("/metrics", async (req, res) => {
+app.get("/metrics", async (_req, res) => {
     if (Date.now() >= metricsCacheExpire) {
         const document = await getGlobalDocument();
 
@@ -372,10 +365,12 @@ app.post("/webhook/tracksim", async (req, res) => {
         return res.status(status).send();
     } catch (e) {
         webLogger.error(`Failed to handle delivery:\n${inspect(e)}`);
+
+        throw e;
     };
 });
 
-app.listen({ port: config.port, host: "0.0.0.0" }, (err, address) => {
+app.listen({ port: config.port, host: "0.0.0.0" }, (_err, address) => {
     webLogger.info(`Server live on ${address}`);
 });
 

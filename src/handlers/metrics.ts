@@ -1,6 +1,6 @@
-import { formatTimestamp, getStartOfMonth } from "../constants/time";
 import { getGlobalDocument } from "../database/global";
 import { latestFromMap } from "../constants/functions";
+import { formatTimestamp } from "../constants/time";
 import { getLogger } from "../logger";
 import { Jobs } from "../database";
 import { inspect } from "util";
@@ -12,31 +12,17 @@ const task = async () => {
     try {
         const timestamp = Date.now();
 
-        const dbjobs = (await Jobs.aggregate([{
-            $group: {
-                _id: null,
-                driven_distance: { $sum: "$driven_distance" },
-                fuel_used: { $sum: "$fuel_used" }
-            }
-        }]))[0] as { driven_distance: number; fuel_used: number };
-
-        const startOfMonth = getStartOfMonth().getTime();
-
-        const mdistance = Math.round((await Jobs.aggregate([{
-            $match: {
-                stop_timestamp: { $gte: startOfMonth }
-            },
-        }, {
-            $group: {
-                _id: null,
-                distance: { $sum: "$driven_distance" }
-            }
-        }]))[0]?.distance ?? 0);
+        const dbjobs = await Jobs.find({}, "stop_timestamp driven_distance fuel_used");
 
         const drivers = await axios.get("https://api.dulcis.org/vtc/members").then(res => res.data.response.members_count) as number;
         const jobs = await Jobs.count();
-        const distance = Math.round(dbjobs.driven_distance);
-        const fuel = Math.round(dbjobs.fuel_used);
+        const distance = Math.round(dbjobs.reduce((acc, cur) => acc + cur.driven_distance, 0));
+        const mdistance = Math.round(
+            dbjobs
+                .filter(job => formatTimestamp(job.stop_timestamp, { day: false }) === formatTimestamp(timestamp, { day: false }))
+                .reduce((acc, cur) => acc + cur.driven_distance, 0)
+        );
+        const fuel = Math.round(dbjobs.reduce((acc, cur) => acc + cur.fuel_used, 0));
 
         const document = await getGlobalDocument();
 

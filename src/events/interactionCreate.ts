@@ -1,4 +1,4 @@
-import { Interaction } from "discord.js";
+import type { Interaction } from "discord.js";
 import handleCommand from "../handlers/commands";
 
 export default {

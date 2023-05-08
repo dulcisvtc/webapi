@@ -849,6 +849,11 @@
   resolved "https://registry.yarnpkg.com/@truckersmp_official/api-types/-/api-types-1.0.1.tgz#062d1cb2e3a3c64003f55ab572f059cb6774132d"
   integrity sha512-WVG4LDc8fOnVsslixZtqBvKbd2Wr6l+tv3PI9GcKd0lYV4RRH6IE+gDRjGRED8a4H8jCSz0KwACsc8vK3ByFHw==
 
+"@tsconfig/node18-strictest@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@tsconfig/node18-strictest/-/node18-strictest-1.0.0.tgz#d7c49f29ef95c47182995bd2bfcf8c177512a8de"
+  integrity sha512-bOuNKwO4Fzbt+Su5wqI9zNHwx5C25gLnutwVQA1sBZk0cW8UjVPVcwzIUhJIIJDUx7zDEbAwdCD2HfvIsV8dYg==
+
 "@typegoose/typegoose@^10.3.3":
   version "10.3.3"
   resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-10.3.3.tgz#743a252ba00f9a0069a02910db1cdc6d0c3f0e7d"

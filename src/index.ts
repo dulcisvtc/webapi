@@ -3,6 +3,7 @@ import "./server";
 import "./handlers/metrics";
 import { Client, GatewayIntentBits, Guild, TextChannel } from "discord.js";
 import { registerCommands } from "./handlers/commands";
+import { eventsTicker } from "./handlers/events";
 import { connection } from "./database";
 import { getLogger } from "./logger";
 import { readdirSync } from "fs";
@@ -24,7 +25,6 @@ export const client = new Client({
     ]
 });
 import "./handlers/events";
-import { eventsTicker } from "./handlers/events";
 
 export let guild: Guild | null = null;
 export let botlogs: TextChannel | null = null;
@@ -47,10 +47,9 @@ client.once("ready", () => {
 
 for (const eventFileName of readdirSync(join(__dirname, "events")).filter((name) => name.endsWith(".js"))) {
     const eventFile = require(`./events/${eventFileName}`).default;
-    const eventName = eventFileName.split(".")[0];
+    const eventName = eventFileName.split(".")[0]!;
 
-    if (eventFile.once) client.once(eventName, (...params) => eventFile.execute(...params));
-    else client.on(eventName, (...params) => eventFile.execute(...params));
+    client[eventFile.once ? "once" : "on"](eventName, (...params) => eventFile.execute(...params));
 };
 
 connection.then(() => {

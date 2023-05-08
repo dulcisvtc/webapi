@@ -1,5 +1,5 @@
 import { getWordchannelDocument } from "../database";
-import { Message } from "discord.js";
+import type { Message } from "discord.js";
 
 export default {
     execute: async (message: Message) => {
@@ -12,7 +12,7 @@ export default {
 
             document.message = newMessage.id;
 
-            document.safeSave();
+            await document.save();
         };
     }
 };

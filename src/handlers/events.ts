@@ -44,6 +44,7 @@ eventsTicker.on("tick", async () => {
                 const apiEvent = await axios.get<{ response: APIGameEvent; }>(APIWebRoutes.event(event.id), { retry: 10 })
                     .catch(async (e: AxiosError) => {
                         eventsLogger.error(`[calendar] Failed to fetch event ${event.id} (${e.response?.status ?? e.code}).`);
+
                         if (e.response?.status === 404) {
                             await Event.deleteOne({ id: event.id });
                             events = events.filter((e) => e.id !== event.id);
@@ -100,7 +101,7 @@ eventsTicker.on("tick", async () => {
     if (!todayEvents.length) return attendingMessage?.delete();
 
     const selectedEvent = todayEvents.length === 1
-        ? todayEvents[0]
+        ? todayEvents[0]!
         : todayEvents.reduce((prev, curr) => {
             const prevDeparture = new Date(prev.departure);
             const currDeparture = new Date(curr.departure);
@@ -165,4 +166,5 @@ eventsTicker.on("tick", async () => {
     });
 
     eventsLogger.debug(`Updated attending message for event ${selectedEvent.id}.`);
+    return;
 });

@@ -1,6 +1,6 @@
 import { getWordchannelDocument } from "../database";
 import { queueDelete } from "../constants/functions";
-import { Message } from "discord.js";
+import type { Message } from "discord.js";
 import { admens } from "..";
 
 const handleMessage = async (message: Message) => {
@@ -11,7 +11,7 @@ const handleMessage = async (message: Message) => {
         && admens.includes(message.author.id)
     ) return;
 
-    const clean = message.content.toLowerCase().split(/\s/)[0].replace(/[^a-z]/gi, "");
+    const clean = message.content.toLowerCase().split(/\s/)[0]?.replace(/[^a-z]/gi, "");
     if (!clean) return queueDelete([message]);
 
     if (
@@ -25,7 +25,7 @@ const handleMessage = async (message: Message) => {
     document.message = message.id;
     document.leaderboard.set(message.author.id, (document.leaderboard.get(message.author.id) ?? 0) + 1);
 
-    document.safeSave();
+    await document.save();
 };
 
 export { handleMessage };
