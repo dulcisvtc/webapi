@@ -31,5 +31,5 @@ export function getUserDocumentByDiscordId(discordId: string): Promise<UserDocum
 export async function resetUserDocument(steamId: string): Promise<void> {
     const user = await getUserDocumentBySteamId(steamId);
     dbLogger.debug(`Reset user document for ${steamId}:\n${inspect(user, { depth: Infinity })}`);
-    return void user.remove();
+    return void user.deleteOne();
 };

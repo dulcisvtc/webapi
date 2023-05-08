@@ -238,7 +238,7 @@ app.delete<{ Params: { id: string; }; }>("/events/:id", async (req, res) => {
         };
     });
 
-    await event.delete();
+    await event.deleteOne();
 
     return res.status(200).send(event);
 });
