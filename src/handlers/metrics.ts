@@ -1,10 +1,9 @@
 import { getGlobalDocument } from "../database/global";
 import { latestFromMap } from "../constants/functions";
 import { formatTimestamp } from "../constants/time";
+import { Jobs, User } from "../database";
 import { getLogger } from "../logger";
-import { Jobs } from "../database";
 import { inspect } from "util";
-import axios from "axios";
 
 const metricsLogger = getLogger("metrics", true);
 
@@ -14,8 +13,8 @@ const task = async () => {
 
         const dbjobs = await Jobs.find({}, "stop_timestamp driven_distance fuel_used");
 
-        const drivers = await axios.get("https://api.dulcis.org/vtc/members").then(res => res.data.response.members_count) as number;
-        const jobs = await Jobs.count();
+        const drivers = await User.countDocuments();
+        const jobs = dbjobs.length;
         const distance = Math.round(dbjobs.reduce((acc, cur) => acc + cur.driven_distance, 0));
         const mdistance = Math.round(
             dbjobs
