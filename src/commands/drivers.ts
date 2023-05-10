@@ -8,8 +8,10 @@ import TrackSim from "tracksim.js";
 import config from "../config";
 import { getLogger } from "../logger";
 import dedent from "dedent";
+import { inspect } from "node:util";
 
 const dbLogger = getLogger("database", true);
+const generalLogger = getLogger("general", true);
 
 export default {
     data: new SlashCommandBuilder()
@@ -157,7 +159,7 @@ export default {
                                 name: interaction.user.tag,
                                 icon_url: interaction.user.displayAvatarURL()
                             },
-                            description: e.response?.data?.error?.message || e.message,
+                            description: e.response?.data?.error || e.message,
                             fields: [{
                                 name: "discord user",
                                 value: `${member} \`${member.user.tag}\` (\`${member.id}\`)`
@@ -171,12 +173,12 @@ export default {
                     return void await interaction.editReply({
                         embeds: [{
                             title: "Error!",
-                            description: e.response?.data?.error?.message || e.message
+                            description: e.response?.data?.error || e.message
                         }]
                     });
                 };
 
-                throw e;
+                generalLogger.error(inspect(e));
             };
         } else if (command === "remove") {
             let steamId = interaction.options.getString("steamid") as string;
