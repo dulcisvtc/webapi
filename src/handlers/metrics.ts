@@ -42,7 +42,7 @@ const task = async () => {
         const [lastTimestamp2] = latestFromMap(document.metrics.mdistance);
 
         if (formatTimestamp(parseInt(lastTimestamp2), { day: false }) === formatTimestamp(timestamp, { day: false })) {
-            document.metrics.mdistance.delete(lastTimestamp);
+            document.metrics.mdistance.delete(lastTimestamp2);
         };
 
         document.metrics.mdistance.set(timestamp.toString(), mdistance);
