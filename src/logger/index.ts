@@ -35,7 +35,7 @@ export function getLogger(
             new DailyRotateFile({
                 filename: path.join(__dirname, "..", "..", "logs", name, "%DATE%.log"),
                 maxSize: "32m",
-                maxFiles: "7d",
+                maxFiles: "14d",
                 level: "debug",
                 format: format.combine(
                     format.timestamp({
