@@ -84,7 +84,7 @@ app.get<{ Params: { id: string; }; }>("/users/:id", async (req, res) => {
 
 app.post("/user/username", async (req, res) => {
     if (req.headers["secret"] !== config.messaging_secret) return res.status(403);
-    const { steam_id, username } = req.body as { steam_id?: string; username?: string; };
+    const { steam_id, username } = (req.body as any).parsed as { steam_id?: string; username?: string; };
 
     if (!steam_id || !username) {
         return res.status(400).send({ message: "Missing required fields" });
