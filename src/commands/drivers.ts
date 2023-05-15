@@ -150,35 +150,33 @@ export default {
                 });
 
                 return void await append("✨ Done.", "Success!");
-            } catch (e) {
-                if (e instanceof AxiosError) {
-                    await botlogs?.send({
-                        embeds: [{
-                            title: "error when adding a driver",
-                            author: {
-                                name: interaction.user.tag,
-                                icon_url: interaction.user.displayAvatarURL()
-                            },
-                            description: e.response?.data?.error || e.message,
-                            fields: [{
-                                name: "discord user",
-                                value: `${member} \`${member.user.tag}\` (\`${member.id}\`)`
-                            }, {
-                                name: "steamid",
-                                value: `\`${steamId}\``
-                            }]
-                        }]
-                    });
-
-                    return void await interaction.editReply({
-                        embeds: [{
-                            title: "Error!",
-                            description: e.response?.data?.error || e.message
-                        }]
-                    });
-                };
-
+            } catch (e: any) {
                 generalLogger.error(inspect(e));
+
+                await botlogs?.send({
+                    embeds: [{
+                        title: "error when adding a driver",
+                        author: {
+                            name: interaction.user.tag,
+                            icon_url: interaction.user.displayAvatarURL()
+                        },
+                        description: e.response?.data?.error || e.message,
+                        fields: [{
+                            name: "discord user",
+                            value: `${member} \`${member.user.tag}\` (\`${member.id}\`)`
+                        }, {
+                            name: "steamid",
+                            value: `\`${steamId}\``
+                        }]
+                    }]
+                });
+
+                return void await interaction.editReply({
+                    embeds: [{
+                        title: "Error!",
+                        description: e.response?.data?.error || e.message
+                    }]
+                });
             };
         } else if (command === "remove") {
             let steamId = interaction.options.getString("steamid") as string;
