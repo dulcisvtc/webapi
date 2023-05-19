@@ -88,7 +88,8 @@ eventsTicker.on("tick", async () => {
     eventsLogger.debug("Updated event calendar.");
 
     const attendingChannel = client.channels.cache.get(config.event_channels.attending)! as TextChannel;
-    const attendingMessage = (await attendingChannel.messages.fetch({ limit: 50 })).find((m) => m.author.id === client.user!.id);
+    const attendingMessage = (await attendingChannel.messages.fetch({ limit: 50 }))
+        .find((m) => m.author.id === client.user!.id && m.embeds.length);
 
     const todayEvents = events
         .filter((event) => {
@@ -164,6 +165,22 @@ eventsTicker.on("tick", async () => {
                 }
             }] : [attendingEmbed]
     });
+
+    if (
+        Date.now() < selectedEvent.departure &&
+        selectedEvent.departure - Date.now() < 1000 * 60 * 30 &&
+        selectedEvent.departure - Date.now() > 1000 * 60 * 29
+    ) {
+        const mentionMessage = (await attendingChannel.messages.fetch({ limit: 50 }))
+            .find((m) => m.author.id === client.user!.id && m.content.includes("<@&"));
+
+        if (!mentionMessage) await attendingChannel.send({
+            content: [
+                "<@&994010840732803073>",
+                "The convoy departs in **30 minutes**! Please be there if you can ❤️"
+            ].join("\n\n")
+        });
+    };
 
     eventsLogger.debug(`Updated attending message for event ${selectedEvent.id}.`);
     return;
