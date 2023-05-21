@@ -32,6 +32,7 @@ const BannedCron = new CronJob("0 * * * *", async () => {
                 const ok = newUntil ? Math.round(new Date(newUntil).getTime() / 1000) : null;
                 banned.push(driver.steam_id);
                 if (!driver.banNotified) {
+                    while (!botlogs) await sleep(50);
                     const ae = await botlogs?.send({
                         embeds: [{
                             title: "Banned Driver",
