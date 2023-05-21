@@ -9,6 +9,7 @@ import { getLogger } from "./logger";
 import { readdirSync } from "fs";
 import { inspect } from "util";
 import { join } from "path";
+import BannedCron from "./handlers/BannedCron";
 import config from "./config";
 
 const discordLogger = getLogger("discord", true);
@@ -33,6 +34,7 @@ client.once("ready", () => {
     discordLogger.info(`Logged in as ${client.user!.tag}`);
 
     eventsTicker.start();
+    BannedCron.start();
 
     guild = client.guilds.cache.get(config.guild)!;
     botlogs = guild.channels.cache.get(config.botlogs_channel)! as TextChannel;
@@ -54,7 +56,7 @@ for (const eventFileName of readdirSync(join(__dirname, "events")).filter((name)
 
 connection.then(() => {
     databaseLogger.info("Connected to database.");
-    return client.login(config.token);
+    return void client.login(config.token);
 });
 
 process.on("unhandledRejection", (e) => generalLogger.error(`unhandledRejection:\n${inspect(e)}`));

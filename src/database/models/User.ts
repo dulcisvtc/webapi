@@ -23,6 +23,7 @@ class UserSchema {
     @prop({ type: Number, default: 0 }) permissions!: number;
     @prop({ type: LeaderboardSchema, default: {} }) leaderboard!: LeaderboardSchema;
     @prop({ type: WarnSchema, default: {} }, PropType.MAP) warns!: Map<string, WarnSchema>;
+    @prop({ type: Boolean, default: false }) banNotified!: boolean;
 };
 
 export type UserDocument = DocumentType<UserSchema>;
