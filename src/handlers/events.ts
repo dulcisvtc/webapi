@@ -128,7 +128,7 @@ eventsTicker.on("tick", async () => {
         `**Server:** ${apiEvent.data.response.server.name}`,
         // @ts-expect-error - TMP API returns an empty array if there are no DLCs
         `**DLC required:** ${apiEvent.data.response.dlcs.length === 0 ? "None." : Object.values(apiEvent.data.response.dlcs).join(", ")}`,
-        `**Slot:** ${selectedEvent.slot_id || "None."}`
+        `**Slot:** ${selectedEvent.slotId || "None."}`
     ];
 
     const thumbnailUrl = apiEvent.data.response.vtc?.id
@@ -150,18 +150,18 @@ eventsTicker.on("tick", async () => {
         await attendingMessage.delete().then(() => deleted = true);
 
     if (attendingMessage && !deleted) await attendingMessage.edit({
-        embeds: selectedEvent.slot_image ? [
+        embeds: selectedEvent.slotImage ? [
             attendingEmbed, {
                 image: {
-                    url: selectedEvent.slot_image
+                    url: selectedEvent.slotImage
                 }
             }] : [attendingEmbed]
     });
     else await attendingChannel.send({
-        embeds: selectedEvent.slot_image ? [
+        embeds: selectedEvent.slotImage ? [
             attendingEmbed, {
                 image: {
-                    url: selectedEvent.slot_image
+                    url: selectedEvent.slotImage
                 }
             }] : [attendingEmbed]
     });

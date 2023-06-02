@@ -1,16 +1,15 @@
-import "dotenv/config";
-import "./server";
-import "./handlers/metrics";
 import { Client, GatewayIntentBits, Guild, TextChannel } from "discord.js";
+import { readdirSync } from "fs";
+import { join } from "path";
+import { inspect } from "util";
+import config from "./config";
+import { connection } from "./database";
+import BannedCron from "./handlers/BannedCron";
+import MetricsCron from "./handlers/MetricsCron";
 import { registerCommands } from "./handlers/commands";
 import { eventsTicker } from "./handlers/events";
-import { connection } from "./database";
 import { getLogger } from "./logger";
-import { readdirSync } from "fs";
-import { inspect } from "util";
-import { join } from "path";
-import BannedCron from "./handlers/BannedCron";
-import config from "./config";
+import { bootstrap } from "./server/main";
 
 const discordLogger = getLogger("discord", true);
 const databaseLogger = getLogger("database", true);
@@ -25,7 +24,6 @@ export const client = new Client({
         GatewayIntentBits.MessageContent
     ]
 });
-import "./handlers/events";
 
 export let guild: Guild | null = null;
 export let botlogs: TextChannel | null = null;
@@ -35,6 +33,7 @@ client.once("ready", () => {
 
     eventsTicker.start();
     BannedCron.start();
+    MetricsCron.start();
 
     guild = client.guilds.cache.get(config.guild)!;
     botlogs = guild.channels.cache.get(config.botlogs_channel)! as TextChannel;
@@ -58,6 +57,8 @@ connection.then(() => {
     databaseLogger.info("Connected to database.");
     return void client.login(config.token);
 });
+
+bootstrap();
 
 process.on("unhandledRejection", (e) => generalLogger.error(`unhandledRejection:\n${inspect(e)}`));
 process.on("uncaughtException", (e) => generalLogger.error(`uncaughtException:\n${inspect(e)}`));

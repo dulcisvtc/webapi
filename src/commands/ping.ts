@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import prettyMilliseconds from "pretty-ms";
+import ms from "ms";
 import table from "text-table";
 
 export default {
@@ -13,7 +13,7 @@ export default {
         await interaction.deferReply();
 
         const server = Date.now() - then;
-        const uptime = prettyMilliseconds(interaction.client.uptime);
+        const uptime = ms(interaction.client.uptime);
         const api = interaction.guild.shard.ping;
 
         const a = table([

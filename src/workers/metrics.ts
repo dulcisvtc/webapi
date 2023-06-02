@@ -1,26 +1,25 @@
-import { getGlobalDocument } from "../database/global";
+import { inspect } from "util";
 import { latestFromMap } from "../constants/functions";
 import { formatTimestamp } from "../constants/time";
-import { Jobs, User } from "../database";
+import { Jobs, User, connection, getGlobalDocument } from "../database";
 import { getLogger } from "../logger";
-import { inspect } from "util";
 
 const metricsLogger = getLogger("metrics", true);
 
-const task = async () => {
+(async () => {
     try {
+        await connection;
+
         const timestamp = Date.now();
 
-        const dbjobs = await Jobs.find({}, "stop_timestamp driven_distance fuel_used");
-
+        const dbjobs = await Jobs.find({}, "stop_timestamp driven_distance fuel_used").lean();
         const drivers = await User.countDocuments();
+
         const jobs = dbjobs.length;
         const distance = Math.round(dbjobs.reduce((acc, cur) => acc + cur.driven_distance, 0));
-        const mdistance = Math.round(
-            dbjobs
-                .filter(job => formatTimestamp(job.stop_timestamp, { day: false }) === formatTimestamp(timestamp, { day: false }))
-                .reduce((acc, cur) => acc + cur.driven_distance, 0)
-        );
+        const mdistance = Math.round(dbjobs
+            .filter(job => formatTimestamp(job.stop_timestamp, { day: false }) === formatTimestamp(timestamp, { day: false }))
+            .reduce((acc, cur) => acc + cur.driven_distance, 0));
         const fuel = Math.round(dbjobs.reduce((acc, cur) => acc + cur.fuel_used, 0));
 
         const document = await getGlobalDocument();
@@ -66,15 +65,14 @@ const task = async () => {
             };
         };
 
-        document.safeSave();
+        await document.save();
 
         metricsLogger.debug(
             `Logged metrics (${Date.now() - timestamp}ms): drivers=${drivers}, jobs=${jobs}, distance=${distance}, mdistance=${mdistance}, fuel=${fuel}`
         );
+
+        process.exit(0);
     } catch (err) {
         metricsLogger.error(`Metrics error: ${inspect(err)}`);
     };
-};
-
-task();
-setInterval(task, 1 * 60 * 1000);
+})();

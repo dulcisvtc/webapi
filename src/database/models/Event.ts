@@ -7,8 +7,8 @@ class EventSchema {
     @prop({ type: String, default: "" }) destination!: string;
     @prop({ type: Number, default: 0 }) meetup!: number;
     @prop({ type: Number, default: 0 }) departure!: number;
-    @prop({ type: Number }) slot_id?: number;
-    @prop({ type: String }) slot_image?: string;
+    @prop({ type: Number }) slotId?: number;
+    @prop({ type: String }) slotImage?: string;
 };
 
 export type EventDocument = DocumentType<EventSchema>;

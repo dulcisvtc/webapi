@@ -9,7 +9,7 @@ import { getLogger } from "../logger";
 
 const bannedLogger = getLogger("banned", true);
 
-const BannedCron = new CronJob("0 * * * *", async () => {
+const BannedCron = new CronJob("*/10 * * * *", async () => {
     const then = Date.now();
     const drivers = await User.find({});
     const pages = paginate(drivers, 10);
@@ -61,7 +61,7 @@ const BannedCron = new CronJob("0 * * * *", async () => {
 
     const now = Date.now();
 
-    bannedLogger.info(`Fetched ${drivers.length} drivers in ${now - then}ms. ${banned.length} banned, ${notBanned.length} not banned.`);
-}, null, false, "Etc/UTC", null, true);
+    bannedLogger.debug(`Fetched ${drivers.length} drivers in ${now - then}ms. ${banned.length} banned, ${notBanned.length} not banned.`);
+}); // , null, false, "Etc/UTC", null, true
 
 export default BannedCron;

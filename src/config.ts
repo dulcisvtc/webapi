@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 export default {
     token: process.env["DISCORD_TOKEN"]!,
     database_uri: process.env["DATABASE_URI"]!,
