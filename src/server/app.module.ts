@@ -1,6 +1,5 @@
-import { CacheInterceptor, CacheModule } from "@nestjs/cache-manager";
+import { CacheModule } from "@nestjs/cache-manager";
 import { Module } from "@nestjs/common";
-import { APP_INTERCEPTOR } from "@nestjs/core";
 import ms from "ms";
 import { EventsModule } from "./events/events.module";
 import { RootModule } from "./root/root.module";
@@ -23,10 +22,6 @@ import { WebhookModule } from "./webhook/webhook.module";
         UserModule,
         UsersModule,
         WebhookModule
-    ],
-    providers: [{
-        provide: APP_INTERCEPTOR,
-        useClass: CacheInterceptor
-    }],
+    ]
 })
 export class AppModule { };
