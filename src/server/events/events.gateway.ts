@@ -67,7 +67,7 @@ export class EventsGateway {
                 slot_image: event.slotImage
             };
 
-            client.emit("get events", wsEvent);
+            client.emit("new event", wsEvent);
         });
 
         await Promise.all(promises);
