@@ -6,7 +6,7 @@ import { GlobalDocument, Jobs, User, getGlobalDocument } from "../../database";
 export class RootService {
     async getStats(): Promise<Stats> {
         const drivers = await User.count();
-        const jobs = await Jobs.find({}, "driven_distance fuel_used stop_timestamp -_id");
+        const jobs = await Jobs.find({}, "driven_distance fuel_used stop_timestamp -_id").lean();
         const thismonth = formatTimestamp(Date.now(), { day: false });
 
         let mjobs = 0;
@@ -45,7 +45,11 @@ export class RootService {
             ? { "driver.steam_id": { $in: steamids } }
             : {};
 
-        const jobs = await Jobs.find(filter, "-_id -__v").sort({ stop_timestamp: -1 }).skip(skip).limit(limit);
+        const jobs = await Jobs.find(filter, "-_id -__v")
+            .sort({ stop_timestamp: -1 })
+            .skip(skip)
+            .limit(limit)
+            .lean();
 
         return jobs;
     };
