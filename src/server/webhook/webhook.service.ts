@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable, RawBodyRequest } from "@nestjs/common";
 import crypto from "crypto";
 import type { Request } from "express";
 import config from "../../config";
@@ -7,7 +7,10 @@ import { handleDelivery } from "../../handlers/jobs";
 
 @Injectable()
 export class WebhookService {
-    async handleTracksim(req: Request, body: string): Promise<any> {
+    async handleTracksim(req: RawBodyRequest<Request>): Promise<any> {
+        const body = req.rawBody?.toString().trim();
+        if (!body) throw new ForbiddenException("No body");
+
         const parsed = JSON.parse(body) as TrackSimJobWebhookObject;
         console.log("recieved job", parsed.data.object.id)
 
