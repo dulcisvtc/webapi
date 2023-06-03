@@ -11,15 +11,11 @@ export class WebhookService {
         const body = req.rawBody?.toString().trim();
         if (!body) throw new ForbiddenException("No body");
 
-        const parsed = JSON.parse(body) as TrackSimJobWebhookObject;
-        console.log("recieved job", parsed.data.object.id)
-
         if (!config.tracksim_secrets.some((secret) =>
             req.headers["tracksim-signature"] === hmacSHA256(secret, body)
         )) throw new ForbiddenException("Invalid signature");
 
-        console.log("signature valid", parsed.data.object.id)
-
+        const parsed = JSON.parse(body) as TrackSimJobWebhookObject;
         const job = parsed.data.object;
 
         const newJobObject: JobSchema = {
