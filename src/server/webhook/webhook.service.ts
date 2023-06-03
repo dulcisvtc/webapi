@@ -8,11 +8,14 @@ import { handleDelivery } from "../../handlers/jobs";
 @Injectable()
 export class WebhookService {
     async handleTracksim(req: Request, body: string): Promise<any> {
+        const parsed = JSON.parse(body) as TrackSimJobWebhookObject;
+        console.log("recieved job", parsed.data.object.id)
+
         if (!config.tracksim_secrets.some((secret) =>
             req.headers["tracksim-signature"] === hmacSHA256(secret, body)
         )) throw new ForbiddenException("Invalid signature");
 
-        const parsed = JSON.parse(body) as TrackSimJobWebhookObject;
+        console.log("signature valid", parsed.data.object.id)
 
         const job = parsed.data.object;
 
