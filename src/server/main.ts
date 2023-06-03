@@ -6,7 +6,8 @@ export async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
         cors: {
             origin: "*"
-        }
+        },
+        rawBody: true
     });
 
     await app.listen(config.port);
