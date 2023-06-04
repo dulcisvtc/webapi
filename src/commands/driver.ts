@@ -1,5 +1,5 @@
-import { getUserDocumentByDiscordId, getUserDocumentBySteamId, Jobs, UserDocument } from "../database";
 import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { getUserDocumentByDiscordId, getUserDocumentBySteamId, Jobs, UserDocument } from "../database";
 
 export default {
     data: new SlashCommandBuilder()

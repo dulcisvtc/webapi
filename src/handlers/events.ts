@@ -1,13 +1,13 @@
 import { APICompany, APIGameEvent, APIPlayer, APIWebRouteBases, APIWebRoutes } from "@truckersmp_official/api-types/v2";
-import { EmbedBuilder, TextChannel } from "discord.js";
-import { formatTimestamp } from "../constants/time";
-import { setTimeout } from "node:timers/promises";
-import { Event } from "../database/models/Event";
-import { getLogger } from "../logger";
-import { client } from "..";
 import Axios, { AxiosError } from "axios";
-import Ticker from "../lib/ticker";
+import { EmbedBuilder, TextChannel } from "discord.js";
+import { setTimeout } from "node:timers/promises";
+import { client } from "..";
 import config from "../config";
+import { formatTimestamp } from "../constants/time";
+import { Event } from "../database/models/Event";
+import Ticker from "../lib/ticker";
+import { getLogger } from "../logger";
 
 const eventsLogger = getLogger("events", true);
 

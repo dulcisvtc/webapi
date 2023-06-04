@@ -1,9 +1,9 @@
 import { EmbedBuilder, GuildTextBasedChannel, escapeMarkdown } from "discord.js";
-import { getUserDocumentBySteamId, Jobs } from "../database";
-import type { JobSchema } from "../../types";
-import { getLogger } from "../logger";
 import { inspect } from "util";
 import { client } from "..";
+import type { JobSchema } from "../../types";
+import { Jobs, getUserDocumentBySteamId } from "../database";
+import { getLogger } from "../logger";
 
 const jobsLogger = getLogger("jobs", true);
 

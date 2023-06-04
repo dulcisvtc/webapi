@@ -1,14 +1,13 @@
-import { ActionRowBuilder, ChatInputCommandInteraction, InteractionCollector, InteractionType, ModalBuilder, SlashCommandBuilder, TextChannel, TextInputBuilder, TextInputStyle, User } from "discord.js";
-import { getUserDocumentByDiscordId, getUserDocumentBySteamId, Jobs, resetUserDocument, UserDocument } from "../database";
-import { generateId } from "../constants/functions";
-import { getWebhook } from "../constants/functions";
 import { AxiosError } from "axios";
-import { botlogs } from "..";
-import TrackSim from "tracksim.js";
-import config from "../config";
-import { getLogger } from "../logger";
 import dedent from "dedent";
+import { ActionRowBuilder, ChatInputCommandInteraction, InteractionCollector, InteractionType, ModalBuilder, SlashCommandBuilder, TextChannel, TextInputBuilder, TextInputStyle, User } from "discord.js";
 import { inspect } from "node:util";
+import TrackSim from "tracksim.js";
+import { botlogs } from "..";
+import config from "../config";
+import { generateId, getWebhook } from "../constants/functions";
+import { Jobs, UserDocument, getUserDocumentByDiscordId, getUserDocumentBySteamId, resetUserDocument } from "../database";
+import { getLogger } from "../logger";
 
 const dbLogger = getLogger("database", true);
 const generalLogger = getLogger("general", true);

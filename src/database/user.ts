@@ -1,7 +1,7 @@
-import type { UserDocument } from "./models/User";
-import { getLogger } from "../logger";
-import { User } from "./models/User";
 import { inspect } from "util";
+import { getLogger } from "../logger";
+import type { UserDocument } from "./models/User";
+import { User } from "./models/User";
 
 const dbLogger = getLogger("database", true);
 

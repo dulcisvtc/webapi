@@ -1,6 +1,6 @@
+import path from "path";
 import { createLogger, format, Logger, transports } from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
-import path from "path";
 
 const loggers = new Map<string, Logger>();
 

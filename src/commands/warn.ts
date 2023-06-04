@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
-import { getUserDocumentByDiscordId } from "../database";
-import { generateId } from "../constants/functions";
 import { botlogs } from "..";
+import { generateId } from "../constants/functions";
+import { getUserDocumentByDiscordId } from "../database";
 
 export default {
     data: new SlashCommandBuilder()

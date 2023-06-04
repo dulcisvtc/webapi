@@ -1,7 +1,7 @@
-import { handleMessage } from "../handlers/wordchannel";
 import type { Message } from "discord.js";
 import { inspect } from "util";
 import { admens } from "..";
+import { handleMessage } from "../handlers/wordchannel";
 
 export default {
     execute: async (message: Message) => {

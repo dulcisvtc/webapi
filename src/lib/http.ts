@@ -1,5 +1,5 @@
-import { setTimeout as sleep } from "timers/promises";
 import axios, { AxiosError } from "axios";
+import { setTimeout as sleep } from "timers/promises";
 
 const http = axios.create({
     maxRedirects: 0,

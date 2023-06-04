@@ -1,5 +1,5 @@
-import { getWordchannelDocument } from "../database";
 import type { Message } from "discord.js";
+import { getWordchannelDocument } from "../database";
 
 export default {
     execute: async (message: Message) => {

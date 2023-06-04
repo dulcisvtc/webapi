@@ -1,7 +1,7 @@
-import { getWordchannelDocument } from "../database";
-import { queueDelete } from "../constants/functions";
 import type { Message } from "discord.js";
 import { admens } from "..";
+import { queueDelete } from "../constants/functions";
+import { getWordchannelDocument } from "../database";
 
 const handleMessage = async (message: Message) => {
     const document = await getWordchannelDocument();

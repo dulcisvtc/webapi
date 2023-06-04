@@ -1,6 +1,6 @@
-import { getUserDocumentByDiscordId } from "../database";
 import type { GuildMember } from "discord.js";
 import { botlogs } from "..";
+import { getUserDocumentByDiscordId } from "../database";
 
 export default {
     execute: async (member: GuildMember) => {

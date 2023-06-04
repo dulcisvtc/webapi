@@ -1,5 +1,5 @@
-import type { GuildTextBasedChannel, Message, TextChannel } from "discord.js";
 import crypto from "crypto";
+import type { GuildTextBasedChannel, Message, TextChannel } from "discord.js";
 
 const bulks = new Map<string, Message[]>();
 export function queueDelete(messages: Message[]): void {
