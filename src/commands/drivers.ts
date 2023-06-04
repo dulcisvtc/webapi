@@ -119,7 +119,7 @@ export default {
                             embeds: [{
                                 title: "Welcome to Dulcis Logistics!",
                                 description: dedent`
-                                    Congratulations, ${member}! Your application at Dulcis Logistics has been accepted.
+                                    Congratulations, <@${member.id}>! Your application at Dulcis Logistics has been accepted.
                                     Please read the <#992844255657742377> and <#992841702345801810> channels to get started.
 
                                     If you have any questions, feel free to ask in <#992837899559125105>.
