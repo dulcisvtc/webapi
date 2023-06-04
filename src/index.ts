@@ -4,10 +4,10 @@ import { join } from "path";
 import { inspect } from "util";
 import config from "./config";
 import { connection } from "./database";
-import BannedCron from "./handlers/BannedCron";
-import MetricsCron from "./handlers/MetricsCron";
 import { registerCommands } from "./handlers/commands";
 import { eventsTicker } from "./handlers/events";
+import BannedJob from "./jobs/BannedJob";
+import MetricsJob from "./jobs/MetricsJob";
 import { getLogger } from "./logger";
 import { bootstrap } from "./server/main";
 
@@ -32,8 +32,8 @@ client.once("ready", () => {
     discordLogger.info(`Logged in as ${client.user!.tag}`);
 
     eventsTicker.start();
-    BannedCron.start();
-    MetricsCron.start();
+    BannedJob.start();
+    MetricsJob.start();
 
     guild = client.guilds.cache.get(config.guild)!;
     botlogs = guild.channels.cache.get(config.botlogs_channel)! as TextChannel;

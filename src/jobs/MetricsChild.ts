@@ -2,9 +2,7 @@ import { inspect } from "util";
 import { latestFromMap } from "../constants/functions";
 import { formatTimestamp } from "../constants/time";
 import { Jobs, User, connection, getGlobalDocument } from "../database";
-import { getLogger } from "../logger";
-
-const metricsLogger = getLogger("metrics", true);
+import type { Metrics } from "./MetricsJob";
 
 (async () => {
     try {
@@ -14,6 +12,7 @@ const metricsLogger = getLogger("metrics", true);
 
         const dbjobs = await Jobs.find({}, "stop_timestamp driven_distance fuel_used").lean();
         const drivers = await User.countDocuments();
+        const document = await getGlobalDocument();
 
         const jobs = dbjobs.length;
         const distance = Math.round(dbjobs.reduce((acc, cur) => acc + cur.driven_distance, 0));
@@ -21,8 +20,6 @@ const metricsLogger = getLogger("metrics", true);
             .filter(job => formatTimestamp(job.stop_timestamp, { day: false }) === formatTimestamp(timestamp, { day: false }))
             .reduce((acc, cur) => acc + cur.driven_distance, 0));
         const fuel = Math.round(dbjobs.reduce((acc, cur) => acc + cur.fuel_used, 0));
-
-        const document = await getGlobalDocument();
 
         const [lastTimestamp] = latestFromMap(document.metrics.drivers);
 
@@ -67,12 +64,10 @@ const metricsLogger = getLogger("metrics", true);
 
         await document.save();
 
-        metricsLogger.debug(
-            `Logged metrics (${Date.now() - timestamp}ms): drivers=${drivers}, jobs=${jobs}, distance=${distance}, mdistance=${mdistance}, fuel=${fuel}`
-        );
+        process.send!({ drivers, jobs, distance, mdistance, fuel } satisfies Metrics);
 
-        process.exit(0);
+        process.exit();
     } catch (err) {
-        metricsLogger.error(`Metrics error: ${inspect(err)}`);
+        throw new Error(`MetricsChild: ${inspect(err)}`);
     };
 })();
