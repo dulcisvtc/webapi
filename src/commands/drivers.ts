@@ -324,7 +324,7 @@ export default {
 
             const randomIdentifier = generateId(6);
 
-            const modal = new ModalBuilder().setTitle(`Editing ${user.tag} (${steamId})`).setCustomId(randomIdentifier);
+            const modal = new ModalBuilder().setTitle(`Editing ${steamId}`).setCustomId(randomIdentifier);
 
             const fields = [
                 new TextInputBuilder()
