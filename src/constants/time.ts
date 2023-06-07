@@ -32,3 +32,18 @@ export function formatTimestamp(timestamp: number, opts?: Partial<{
 export function getStartOfMonth(date: Date = new Date()): Date {
     return new Date(date.getFullYear(), date.getMonth(), 1);
 };
+
+export function isCurrentMonth(timestamp: number): boolean {
+    const date = new Date(timestamp);
+
+    return date.getFullYear() === new Date().getFullYear() &&
+        date.getMonth() === new Date().getMonth();
+};
+
+export function isToday(timestamp: number): boolean {
+    const date = new Date(timestamp);
+
+    return date.getFullYear() === new Date().getFullYear() &&
+        date.getMonth() === new Date().getMonth() &&
+        date.getDate() === new Date().getDate();
+};

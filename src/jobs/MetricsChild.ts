@@ -1,6 +1,6 @@
 import { inspect } from "util";
 import { latestFromMap } from "../constants/functions";
-import { formatTimestamp } from "../constants/time";
+import { isCurrentMonth, isToday } from "../constants/time";
 import { Jobs, User, connection, getGlobalDocument } from "../database";
 import type { Metrics } from "./MetricsJob";
 
@@ -15,15 +15,26 @@ import type { Metrics } from "./MetricsJob";
         const document = await getGlobalDocument();
 
         const jobs = dbjobs.length;
-        const distance = Math.round(dbjobs.reduce((acc, cur) => acc + cur.driven_distance, 0));
-        const mdistance = Math.round(dbjobs
-            .filter(job => formatTimestamp(job.stop_timestamp, { day: false }) === formatTimestamp(timestamp, { day: false }))
-            .reduce((acc, cur) => acc + cur.driven_distance, 0));
-        const fuel = Math.round(dbjobs.reduce((acc, cur) => acc + cur.fuel_used, 0));
+        let distance = 0;
+        let mdistance = 0;
+        let fuel = 0;
+
+        for (const { stop_timestamp, driven_distance, fuel_used } of dbjobs) {
+            distance += driven_distance;
+            fuel += fuel_used;
+
+            if (isCurrentMonth(stop_timestamp)) {
+                mdistance += driven_distance;
+            };
+        };
+
+        distance = Math.round(distance);
+        mdistance = Math.round(mdistance);
+        fuel = Math.round(fuel);
 
         const [lastTimestamp] = latestFromMap(document.metrics.drivers);
 
-        if (formatTimestamp(parseInt(lastTimestamp)) === formatTimestamp(timestamp)) {
+        if (isToday(parseInt(lastTimestamp))) {
             document.metrics.drivers.delete(lastTimestamp);
             document.metrics.jobs.delete(lastTimestamp);
             document.metrics.distance.delete(lastTimestamp);
@@ -37,7 +48,7 @@ import type { Metrics } from "./MetricsJob";
 
         const [lastTimestamp2] = latestFromMap(document.metrics.mdistance);
 
-        if (formatTimestamp(parseInt(lastTimestamp2), { day: false }) === formatTimestamp(timestamp, { day: false })) {
+        if (isCurrentMonth(parseInt(lastTimestamp2))) {
             document.metrics.mdistance.delete(lastTimestamp2);
         };
 
@@ -62,7 +73,7 @@ import type { Metrics } from "./MetricsJob";
             };
         };
 
-        await document.save();
+        // await document.save();
 
         process.send!({ drivers, jobs, distance, mdistance, fuel } satisfies Metrics);
 
