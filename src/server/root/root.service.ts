@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { formatTimestamp } from "../../constants/time";
+import { isCurrentMonth } from "../../constants/time";
 import { GlobalDocument, Jobs, User, getGlobalDocument } from "../../database";
 
 @Injectable()
@@ -7,22 +7,25 @@ export class RootService {
     async getStats(): Promise<Stats> {
         const drivers = await User.count();
         const jobs = await Jobs.find({}, "driven_distance fuel_used stop_timestamp -_id").lean();
-        const thismonth = formatTimestamp(Date.now(), { day: false });
 
         let mjobs = 0;
         let distance = 0;
         let mdistance = 0;
         let fuel = 0;
 
-        jobs.forEach((job) => {
-            distance += job.driven_distance;
-            fuel += job.fuel_used;
+        for (const { driven_distance, fuel_used, stop_timestamp } of jobs) {
+            distance += driven_distance;
+            fuel += fuel_used;
 
-            if (formatTimestamp(job.stop_timestamp, { day: false }) >= thismonth) {
+            if (isCurrentMonth(stop_timestamp)) {
+                mdistance += driven_distance;
                 mjobs++;
-                mdistance += job.driven_distance;
             };
-        });
+        };
+
+        distance = Math.round(distance);
+        mdistance = Math.round(mdistance);
+        fuel = Math.round(fuel);
 
         return {
             drivers,

@@ -4,7 +4,7 @@ import { EmbedBuilder, TextChannel } from "discord.js";
 import { setTimeout } from "node:timers/promises";
 import { client } from "..";
 import config from "../config";
-import { formatTimestamp } from "../constants/time";
+import { formatTimestamp, isCurrentMonth, isToday } from "../constants/time";
 import { Event } from "../database/models/Event";
 import Ticker from "../lib/ticker";
 import { getLogger } from "../logger";
@@ -38,7 +38,7 @@ eventsTicker.on("tick", async () => {
     let events = await Event.find();
     const calendarDescription = (await Promise.all(
         events
-            .filter((e) => formatTimestamp(e.departure, { day: false }) === formatTimestamp(Date.now(), { day: false }))
+            .filter((e) => isCurrentMonth(e.departure))
             .sort((a, b) => a.departure - b.departure)
             .map(async (event) => {
                 const apiEvent = await axios.get<{ response: APIGameEvent; }>(APIWebRoutes.event(event.id), { retry: 10 })
@@ -93,10 +93,7 @@ eventsTicker.on("tick", async () => {
 
     const todayEvents = events
         .filter((event) => {
-            const departureDate = new Date(event.departure);
-            const now = new Date();
-
-            return formatTimestamp(departureDate.getTime()) === formatTimestamp(now.getTime());
+            return isToday(event.departure);
         });
 
     if (!todayEvents.length) return attendingMessage?.delete();
