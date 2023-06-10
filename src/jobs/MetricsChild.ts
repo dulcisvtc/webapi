@@ -73,7 +73,7 @@ import type { Metrics } from "./MetricsJob";
             };
         };
 
-        // await document.save();
+        await document.save();
 
         process.send!({ drivers, jobs, distance, mdistance, fuel } satisfies Metrics);
 
