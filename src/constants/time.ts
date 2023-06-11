@@ -35,15 +35,17 @@ export function getStartOfMonth(date: Date = new Date()): Date {
 
 export function isCurrentMonth(timestamp: number): boolean {
     const date = new Date(timestamp);
+    const now = new Date();
 
-    return date.getFullYear() === new Date().getFullYear() &&
-        date.getMonth() === new Date().getMonth();
+    return date.getFullYear() === now.getFullYear() &&
+        date.getMonth() === now.getMonth();
 };
 
 export function isToday(timestamp: number): boolean {
     const date = new Date(timestamp);
+    const now = new Date();
 
-    return date.getFullYear() === new Date().getFullYear() &&
-        date.getMonth() === new Date().getMonth() &&
-        date.getDate() === new Date().getDate();
+    return date.getFullYear() === now.getFullYear() &&
+        date.getMonth() === now.getMonth() &&
+        date.getDate() === now.getDate();
 };
