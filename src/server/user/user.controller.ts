@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Post, Req } from "@nestjs/common";
 import type { Request } from "express";
 import { UpdateUsernameDto } from "./user.dtos";
 import { UserService } from "./user.service";
@@ -8,7 +8,6 @@ export class UserController {
     constructor(private readonly userService: UserService) { };
 
     @Post("username")
-    @UsePipes(new ValidationPipe())
     async updateUsername(
         @Req() req: Request,
         @Body() updateUsernameDto: UpdateUsernameDto

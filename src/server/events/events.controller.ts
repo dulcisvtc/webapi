@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Req, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Req } from "@nestjs/common";
 import type { Request } from "express";
 import { DeleteEventDto, PostEventDto } from "./events.dtos";
 import { EventsService } from "./events.service";
@@ -13,7 +13,6 @@ export class EventsController {
     };
 
     @Post()
-    @UsePipes(new ValidationPipe())
     public postEvent(
         @Req() req: Request,
         @Body() postEventDto: PostEventDto
@@ -24,7 +23,6 @@ export class EventsController {
     };
 
     @Delete()
-    @UsePipes(new ValidationPipe())
     public deleteEvent(
         @Req() req: Request,
         @Body() data: DeleteEventDto

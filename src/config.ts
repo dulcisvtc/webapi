@@ -20,6 +20,12 @@ export default {
         attending: process.env["EVENTS_ATTENDING_CHANNEL"]!
     },
 
+    discordOauth: {
+        clientId: process.env["DISCORD_CLIENT_ID"]!,
+        clientSecret: process.env["DISCORD_CLIENT_SECRET"]!,
+        redirectUri: process.env["DISCORD_REDIRECT_URI"]!
+    },
+
     port: parseInt(process.env["PORT"] ?? "") || 3000,
 
     production: process.env["NODE_ENV"] === "production"
