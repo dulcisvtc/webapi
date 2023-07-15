@@ -72,11 +72,11 @@ export default {
 
                     const numbers = i.values.reduce((prev, curr) => prev + parseInt(curr), 0);
 
-                    document!.permissions = numbers;
-                    await document!.save();
-
                     const oldPerms = new Permissions(document!.permissions);
                     const newPerms = new Permissions(numbers);
+
+                    document!.permissions = numbers;
+                    await document!.save();
 
                     const embed = new EmbedBuilder()
                         .setTitle("Permissions updated")
