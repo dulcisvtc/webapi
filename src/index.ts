@@ -8,6 +8,7 @@ import { registerCommands } from "./handlers/commands";
 import { eventsTicker } from "./handlers/events";
 import BannedJob from "./jobs/BannedJob";
 import MetricsJob from "./jobs/MetricsJob";
+import SessionCleanupJob from "./jobs/SessionCleanupJob";
 import { getLogger } from "./logger";
 import { bootstrap } from "./server/main";
 
@@ -58,7 +59,9 @@ connection.then(() => {
     return void client.login(config.token);
 });
 
-bootstrap();
+bootstrap().then(() => {
+    SessionCleanupJob.start();
+});
 
 process.on("unhandledRejection", (e) => generalLogger.error(`unhandledRejection:\n${inspect(e)}`));
 process.on("uncaughtException", (e) => generalLogger.error(`uncaughtException:\n${inspect(e)}`));

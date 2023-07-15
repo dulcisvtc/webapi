@@ -1,11 +1,12 @@
-import { CacheTTL, Controller, Get, Param, ParseIntPipe } from "@nestjs/common";
+import { CacheTTL } from "@nestjs/cache-manager";
+import { Controller, Get, Param, ParseIntPipe } from "@nestjs/common";
 import type { APICompanyMembers, APICompanyNews, APIGameEvent } from "@truckersmp_official/api-types/v2";
 import ms from "ms";
 import { TMPService } from "./tmp.service";
 
 @Controller("tmp")
 export class TMPController {
-    constructor(private readonly tmpService: TMPService) { };
+    constructor(private tmpService: TMPService) { };
 
     @Get("news")
     async findNews(): Promise<{ response: APICompanyNews }> {

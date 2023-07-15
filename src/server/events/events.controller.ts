@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, Post, Req, UsePipes, ValidationPipe } from "@nestjs/common";
-import type { Request } from "express";
+import { Body, Controller, Delete, Get, Post } from "@nestjs/common";
+import { RequirePermissions } from "../auth/auth.decorator";
 import { DeleteEventDto, PostEventDto } from "./events.dtos";
 import { EventsService } from "./events.service";
 
 @Controller("events")
 export class EventsController {
-    constructor(private readonly eventsService: EventsService) { };
+    constructor(private eventsService: EventsService) { };
 
     @Get()
     public getEvents() {
@@ -13,24 +13,18 @@ export class EventsController {
     };
 
     @Post()
-    @UsePipes(new ValidationPipe())
+    @RequirePermissions("ManageEvents")
     public postEvent(
-        @Req() req: Request,
         @Body() postEventDto: PostEventDto
     ) {
-        const secret = req.headers["secret"] as string;
-
-        return this.eventsService.postEvent(postEventDto, secret);
+        return this.eventsService.postEvent(postEventDto);
     };
 
     @Delete()
-    @UsePipes(new ValidationPipe())
+    @RequirePermissions("ManageEvents")
     public deleteEvent(
-        @Req() req: Request,
         @Body() data: DeleteEventDto
     ) {
-        const secret = req.headers["secret"] as string;
-
-        return this.eventsService.deleteEvent(data.eventId, secret);
+        return this.eventsService.deleteEvent(data.eventId);
     };
 };

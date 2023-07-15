@@ -6,7 +6,7 @@ import TrackSim from "tracksim.js";
 import { botlogs } from "..";
 import config from "../config";
 import { generateId, getWebhook } from "../constants/functions";
-import { Jobs, UserDocument, getUserDocumentByDiscordId, getUserDocumentBySteamId, resetUserDocument } from "../database";
+import { Jobs, UserDocument, destroySessions, getUserDocumentByDiscordId, getUserDocumentBySteamId, resetUserDocument } from "../database";
 import { getLogger } from "../logger";
 
 const dbLogger = getLogger("database", true);
@@ -276,6 +276,7 @@ export default {
                     .then(() => append("✅ Gave retired driver role"))
                     .catch(() => append("❌ Failed to give retired driver role."));
 
+            await destroySessions(steamId);
             await botlogs?.send({
                 embeds: [{
                     title: "driver removed",

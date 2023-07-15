@@ -1,11 +1,12 @@
-import { CacheTTL, Controller, Get, Query } from "@nestjs/common";
+import { CacheTTL } from "@nestjs/cache-manager";
+import { Controller, Get, Query } from "@nestjs/common";
 import ms from "ms";
 import type { GlobalDocument } from "../../database";
 import { RootService, Stats } from "./root.service";
 
 @Controller()
 export class RootController {
-    constructor(private readonly rootService: RootService) { };
+    constructor(private rootService: RootService) { };
 
     @Get("stats")
     @CacheTTL(ms("1m"))

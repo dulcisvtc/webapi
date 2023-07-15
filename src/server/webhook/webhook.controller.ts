@@ -4,7 +4,7 @@ import { WebhookService } from "./webhook.service";
 
 @Controller("webhook")
 export class WebhookController {
-    constructor(private readonly webhookService: WebhookService) { };
+    constructor(private webhookService: WebhookService) { };
 
     @Post("tracksim")
     async postTracksim(

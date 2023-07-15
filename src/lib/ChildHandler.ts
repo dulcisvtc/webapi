@@ -1,6 +1,6 @@
 import { fork } from "child_process";
 
-export default class ChildHandler<T> {
+export default class ChildHandler<T = any> {
     path: string;
 
     constructor(path: string) {

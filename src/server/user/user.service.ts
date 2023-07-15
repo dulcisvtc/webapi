@@ -8,7 +8,6 @@ export class UserService {
         if (secret !== config.messaging_secret) throw new ForbiddenException("Invalid secret");
 
         const document = await getUserDocumentBySteamId(steamId, true);
-
         if (!document) throw new NotFoundException("User not found");
 
         document.username = username;

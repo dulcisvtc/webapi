@@ -1,6 +1,8 @@
 import { Inject, Injectable, Logger, forwardRef } from "@nestjs/common";
-import { ConnectedSocket, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { ConnectedSocket, SubscribeMessage, WebSocketGateway, WebSocketServer, WsException } from "@nestjs/websockets";
 import type { Server, Socket } from "socket.io";
+import { getSessionInfo, getUserDocumentBySteamId } from "../../database";
+import Permissions from "../../lib/Permissions";
 import { EventsService } from "./events.service";
 
 @Injectable()
@@ -13,7 +15,7 @@ import { EventsService } from "./events.service";
 export class EventsGateway {
     constructor(
         @Inject(forwardRef(() => EventsService))
-        private readonly eventsService: EventsService
+        private eventsService: EventsService
     ) { };
 
     @WebSocketServer()
@@ -21,35 +23,27 @@ export class EventsGateway {
 
     logger = new Logger(EventsGateway.name);
 
-    // store = new Map<string, StoreData>();
-
     afterInit() {
         this.logger.log("Initialized");
     };
-
-    // handleConnection(
-    //     @ConnectedSocket() client: Socket
-    // ) {
-    //     const userId = client.handshake.query["userId"] as string;
-
-    //     this.store.set(userId, {
-    //         socket: client,
-    //         userId,
-    //         hello: false
-    //     });
-    // };
-
-    // handleDisconnect(
-    //     @ConnectedSocket() client: Socket
-    // ) {
-    //     const userId = client.handshake.query["userId"] as string;
-    //     this.store.delete(userId);
-    // };
 
     @SubscribeMessage("get events")
     async getEvents(
         @ConnectedSocket() client: Socket
     ) {
+        const access_token = client.handshake.headers.authorization?.split(" ")[1];
+        if (!access_token) throw new WsException("Unauthorized");
+
+        const session = await getSessionInfo(access_token);
+        if (!session) throw new WsException("Unauthorized");
+
+        const user = await getUserDocumentBySteamId(session.steamId);
+        if (!user) throw new WsException("Unauthorized");
+
+        const userPermissions = new Permissions(user.permissions);
+
+        if (!userPermissions.has("ManageEvents")) throw new WsException("Unauthorized");
+
         const events = await this.eventsService.getEvents();
 
         const promises = events.map(async (event) => {
@@ -73,9 +67,3 @@ export class EventsGateway {
         await Promise.all(promises);
     };
 };
-
-// interface StoreData {
-//     socket: Socket;
-//     userId: string;
-//     hello: boolean;
-// };

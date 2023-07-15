@@ -1,6 +1,5 @@
-import { ForbiddenException, Inject, Injectable, forwardRef } from "@nestjs/common";
+import { Inject, Injectable, forwardRef } from "@nestjs/common";
 import type { APIGameEvent } from "@truckersmp_official/api-types/v2";
-import config from "../../config";
 import { Event, getEventDocument } from "../../database";
 import http from "../../lib/http";
 import type { PostEventDto } from "./events.dtos";
@@ -10,7 +9,7 @@ import { EventsGateway } from "./events.gateway";
 export class EventsService {
     constructor(
         @Inject(forwardRef(() => EventsGateway))
-        private readonly eventsGateway: EventsGateway
+        private eventsGateway: EventsGateway
     ) { };
 
     public async getEvents() {
@@ -26,11 +25,8 @@ export class EventsService {
     };
 
     public async postEvent(
-        data: PostEventDto,
-        secret: string
+        data: PostEventDto
     ) {
-        if (secret !== config.messaging_secret) throw new ForbiddenException("Invalid secret");
-
         const document = await getEventDocument(data.eventId);
 
         document.location = data.location;
@@ -66,11 +62,8 @@ export class EventsService {
     };
 
     public async deleteEvent(
-        eventId: number,
-        secret: string
+        eventId: number
     ) {
-        if (secret !== config.messaging_secret) throw new ForbiddenException("Invalid secret");
-
         const document = await Event.deleteOne({ id: eventId });
 
         if (document.deletedCount === 1) {
