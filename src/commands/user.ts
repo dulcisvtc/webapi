@@ -81,11 +81,11 @@ export default {
                     const embed = new EmbedBuilder()
                         .setTitle("Permissions updated")
                         .setDescription([
-                            `**Old permissions:** ${oldPerms.toString()}`,
-                            `**New permissions:** ${newPerms.toString()}`
+                            `**Old permissions:** ${oldPerms.toArray()}`,
+                            `**New permissions:** ${newPerms.toArray()}`
                         ].join("\n"));
 
-                    await i.editReply({ embeds: [embed] });
+                    await i.editReply({ embeds: [embed], components: [] });
                 });
 
                 collector.on("end", async (_, r) => {
