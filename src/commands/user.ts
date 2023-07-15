@@ -48,16 +48,19 @@ export default {
 
                 if (!document) return interaction.reply({ content: "User not found.", ephemeral: true });
 
+                const opts = Object.entries(Permissions.Flags).map(([key, value]) => ({
+                    label: key,
+                    value: value.toString(),
+                    description: `(${value})`,
+                    default: new Permissions(document!.permissions).has(value)
+                }))
+
                 const row = new ActionRowBuilder<StringSelectMenuBuilder>().setComponents(
                     new StringSelectMenuBuilder()
                         .setCustomId("permissions")
                         .setPlaceholder("Select a permission level")
-                        .addOptions(Object.entries(Permissions.Flags).map(([key, value]) => ({
-                            label: key,
-                            value: value.toString(),
-                            description: `(${value})`,
-                            default: new Permissions(document!.permissions).has(value)
-                        })))
+                        .addOptions(opts)
+                        .setMaxValues(opts.length)
                 );
 
                 const m = await interaction.reply({ content: "Select a permission level.", components: [row] });
