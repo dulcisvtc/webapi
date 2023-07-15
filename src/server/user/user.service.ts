@@ -1,18 +1,17 @@
-import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
-import config from "../../config";
-import { getUserDocumentBySteamId } from "../../database";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 
 @Injectable()
 export class UserService {
     async updateUsername(steamId: string, username: string, secret: string): Promise<boolean> {
-        if (secret !== config.messaging_secret) throw new ForbiddenException("Invalid secret");
+        steamId; username; secret;
+        throw new ForbiddenException("Invalid secret");
 
-        const document = await getUserDocumentBySteamId(steamId, true);
-        if (!document) throw new NotFoundException("User not found");
+        // const document = await getUserDocumentBySteamId(steamId, true);
+        // if (!document) throw new NotFoundException("User not found");
 
-        document.username = username;
-        await document.save();
+        // document.username = username;
+        // await document.save();
 
-        return true;
+        // return true;
     };
 };

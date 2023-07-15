@@ -6,7 +6,6 @@ export default {
 
     tracksim_api_key: process.env["TRACKSIM_API_KEY"]!,
     tracksim_secrets: process.env["TRACKSIM_SECRETS"]!.split(","),
-    messaging_secret: process.env["MESSAGING_SECRET"]!,
 
     guild: process.env["GUILD_ID"]!,
     driver_role: process.env["DRIVER_ROLE_ID"]!,
