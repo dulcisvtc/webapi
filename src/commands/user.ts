@@ -27,7 +27,7 @@ export default {
             .addStringOption((o) => o.setName("steamid").setDescription("SteamID."))
         )
         .addSubcommand((s) => s
-            .setName("createSession")
+            .setName("createsession")
             .setDescription("Create a session for a user.")
             .addUserOption((o) => o.setName("user").setDescription("Discord user."))
             .addStringOption((o) => o.setName("steamid").setDescription("SteamID."))
