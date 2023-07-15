@@ -86,6 +86,7 @@ export default {
                         ].join("\n"));
 
                     await i.editReply({ embeds: [embed], components: [] });
+                    collector.stop();
                 });
 
                 collector.on("end", async (_, r) => {
