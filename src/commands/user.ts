@@ -85,7 +85,7 @@ export default {
                             `**New permissions:** ${newPerms.toArray()}`
                         ].join("\n"));
 
-                    await i.editReply({ embeds: [embed], components: [] });
+                    await i.editReply({ content: null, embeds: [embed], components: [] });
                     collector.stop();
                 });
 
@@ -136,7 +136,7 @@ export default {
                 break;
             }
 
-            case "createSession": {
+            case "createsession": {
                 const user = interaction.options.getUser("user");
                 const steamId = interaction.options.getString("steamid");
                 const lifetime = interaction.options.getString("lifetime");
