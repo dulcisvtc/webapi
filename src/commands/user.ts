@@ -149,7 +149,7 @@ export default {
 
                 if (!document) return interaction.reply({ content: "User not found.", ephemeral: true });
 
-                const session = await createSession(document.steam_id, "", lifetime ?? undefined);
+                const session = await createSession(document.steam_id, "https://picsum.photos/128", lifetime ?? undefined);
 
                 await interaction.reply({
                     content: [
