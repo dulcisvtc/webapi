@@ -48,7 +48,7 @@ export function getLogger(
     };
 
     loggers.set(name, logger);
-    logger.debug("=".repeat(55));
+    // logger.debug("=".repeat(55));
 
     return logger;
 };
