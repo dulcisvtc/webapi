@@ -156,7 +156,8 @@ export default {
                         `Session created.`,
                         `Expires in ${ms(session.expiresAt - Date.now(), { long: true })}.`,
                         `Token: ||${session.access_token}||`
-                    ].join("\n")
+                    ].join("\n"),
+                    ephemeral: true
                 });
 
                 break;
