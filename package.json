@@ -16,7 +16,7 @@
         "mm:status": "migrate-mongo status"
     },
     "dependencies": {
-        "@nestjs/cache-manager": "^2.0.1",
+        "@nestjs/cache-manager": "^2.1.0",
         "@nestjs/common": "^10.0.5",
         "@nestjs/core": "^10.0.5",
         "@nestjs/platform-express": "^10.0.5",
