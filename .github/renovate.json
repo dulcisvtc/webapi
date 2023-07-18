@@ -1,14 +1,6 @@
 {
     "extends": [
-        "config:base",
-        ":preserveSemverRanges"
-    ],
-    "additionalReviewers": [
-        "itzJOHv"
-    ],
-    "schedule": "at any time",
-    "lockFileMaintenance": {
-        "enabled": true,
-        "schedule": "at any time"
-    }
+        "github>itzJOHv/renovate-config",
+        "github>itzJOHv/renovate-config:force-node-version(18)"
+    ]
 }

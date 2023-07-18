@@ -1,0 +1,22 @@
+name: Test build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: mskelton/setup-yarn@37d1b9a20fd320c216fff7d4e6eea6f85c95a892 # v1
+        with:
+          node-version: "18.x"
+
+      - name: Build
+        run: yarn build
