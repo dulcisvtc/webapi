@@ -14,6 +14,8 @@ const BannedCron = new CronJob("*/10 * * * *", async () => {
     bannedLogger.debug(`Fetched ${data.drivers} drivers in ${end - start}ms. ${data.banned} banned, ${data.notBanned} not banned.`);
 }); // , null, false, "Etc/UTC", null, true
 
+import "./BannedChild";
+
 export default BannedCron;
 
 export interface Banned {
