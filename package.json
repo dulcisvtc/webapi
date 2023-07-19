@@ -5,7 +5,6 @@
     "scripts": {
         "build": "tsc",
         "build:run": "yarn build && yarn start",
-        "build:prod": "ncc build src/index.ts -m -o out/ --target es2022",
         "build:watch": "tsc -w",
         "dev": "tsc-watch --noClear --onSuccess \"yarn start\"",
         "start": "node --no-warnings .",
@@ -58,7 +57,6 @@
         "@types/ms": "0.7.31",
         "@types/node": "18.16.19",
         "@types/text-table": "0.2.2",
-        "@vercel/ncc": "0.36.1",
         "copyfiles": "2.4.1",
         "tsc-watch": "6.0.4",
         "typescript": "5.1.6"

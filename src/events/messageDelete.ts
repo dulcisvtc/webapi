@@ -1,8 +1,8 @@
-import type { Message, PartialMessage } from "discord.js";
+import type { Message } from "discord.js";
 import { getWordchannelDocument } from "../database";
 
 export default {
-    execute: async (message: Message | PartialMessage) => {
+    execute: async (message: Message) => {
         if (message.channel.id !== "1013146174120804413") return;
 
         const document = await getWordchannelDocument();

@@ -1,12 +1,9 @@
 import { Client, GatewayIntentBits, Guild, TextChannel } from "discord.js";
+import { readdirSync } from "fs";
+import { join } from "path";
 import { inspect } from "util";
 import config from "./config";
 import { connection } from "./database";
-import guildMemberAdd from "./events/guildMemberAdd";
-import guildMemberRemove from "./events/guildMemberRemove";
-import interactionCreate from "./events/interactionCreate";
-import messageCreate from "./events/messageCreate";
-import messageDelete from "./events/messageDelete";
 import { registerCommands } from "./handlers/commands";
 import { eventsTicker } from "./handlers/events";
 import BannedJob from "./jobs/BannedJob";
@@ -50,16 +47,16 @@ client.once("ready", () => {
     });
 });
 
-client.on("guildMemberAdd", guildMemberAdd.execute);
-client.on("guildMemberRemove", guildMemberRemove.execute);
-client.on("interactionCreate", interactionCreate.execute);
-client.on("messageCreate", messageCreate.execute);
-client.on("messageDelete", messageDelete.execute);
-client.on("messageDelete", messageDelete.execute);
+for (const eventFileName of readdirSync(join(__dirname, "events")).filter((name) => name.endsWith(".js"))) {
+    const eventFile = require(`./events/${eventFileName}`).default;
+    const eventName = eventFileName.split(".")[0]!;
+
+    client[eventFile.once ? "once" : "on"](eventName, (...params) => eventFile.execute(...params));
+};
 
 connection.then(() => {
     databaseLogger.info("Connected to database.");
-    client.login(config.token);
+    return void client.login(config.token);
 });
 
 bootstrap().then(() => {

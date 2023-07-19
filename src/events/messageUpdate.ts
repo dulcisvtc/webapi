@@ -1,9 +1,9 @@
-import type { Message, PartialMessage } from "discord.js";
+import type { Message } from "discord.js";
 import { queueDelete } from "../constants/functions";
 import { getWordchannelDocument } from "../database";
 
 export default {
-    execute: async (_: any, message: Message | PartialMessage) => {
+    execute: async (_: any, message: Message) => {
         if (message.channel.id !== "1013146174120804413") return;
         if (message.partial) await message.fetch();
 
