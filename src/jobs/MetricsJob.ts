@@ -14,8 +14,6 @@ const MetricsJob = new CronJob("* * * * *", async () => {
     metricsLogger.debug(`Metrics job took ${end - start}ms ${JSON.stringify(data)}`);
 });
 
-import "./MetricsChild";
-
 export default MetricsJob;
 
 export interface Metrics {
