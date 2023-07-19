@@ -23,15 +23,14 @@ ENV NODE_ENV=production
 RUN --mount=type=secret,id=DATABASE_URI \
     export DATABASE_URI=$(cat /run/secrets/DATABASE_URI) && \
     yarn mm:up
-RUN yarn build
+RUN yarn build:prod
 
 # production image
 FROM base AS final
 WORKDIR /app
 
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/out ./out
 
 ENV NODE_ENV=production
 
-CMD [ "node", "./dist/index.js" ]
+CMD [ "node", "./out/index.js" ]

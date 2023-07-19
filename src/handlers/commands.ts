@@ -1,21 +1,32 @@
-import type { ChatInputCommandInteraction, Guild } from "discord.js";
-import { readdirSync } from "fs";
-import { join } from "path";
+import type { ChatInputCommandInteraction, Guild, RESTPostAPIChatInputApplicationCommandsJSONBody } from "discord.js";
+import driver from "../commands/driver";
+import drivers from "../commands/drivers";
+import echo from "../commands/echo";
+import lookup from "../commands/lookup";
+import ping from "../commands/ping";
+import user from "../commands/user";
+import warn from "../commands/warn";
 
 export default function handleCommand(interaction: ChatInputCommandInteraction<"cached">) {
-    const commandFile = require(`../commands/${interaction.commandName}`).default;
+    const command = commands.find((c) => c.data.name === interaction.commandName);
+    if (!command) return;
 
-    commandFile.execute(interaction);
+    command.execute(interaction);
 };
 
 export function registerCommands(guild: Guild) {
-    const commandFileNames = readdirSync(join(__dirname, "..", "commands")).filter((name) => name.endsWith(".js"));
-
-    const commands = commandFileNames.map((name) => {
-        const commandFile = require(`../commands/${name}`).default;
-
-        return commandFile.data;
-    });
-
-    return guild.commands.set(commands);
+    return guild.commands.set(commands.map((c) => c.data));
 };
+
+const commands: {
+    data: RESTPostAPIChatInputApplicationCommandsJSONBody;
+    execute: (interaction: ChatInputCommandInteraction<"cached">) => Promise<any>;
+}[] = [
+        driver,
+        drivers,
+        echo,
+        lookup,
+        ping,
+        user,
+        warn
+    ];
