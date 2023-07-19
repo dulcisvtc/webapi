@@ -29,8 +29,8 @@ RUN yarn build:prod
 FROM base AS final
 WORKDIR /app
 
-COPY --from=builder /app/out ./out
+COPY --from=builder /app/out ./dist
 
 ENV NODE_ENV=production
 
-CMD [ "node", "./out/index.js" ]
+CMD [ "node", "./dist/index.js" ]
