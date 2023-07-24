@@ -1,5 +1,6 @@
 import { CacheTTL } from "@nestjs/cache-manager";
-import { Controller, Get, Query } from "@nestjs/common";
+import { BadRequestException, Controller, Get, Query } from "@nestjs/common";
+import { isURL } from "class-validator";
 import ms from "ms";
 import type { GlobalDocument } from "../../database";
 import { RootService, Stats } from "./root.service";
@@ -31,5 +32,14 @@ export class RootController {
         const parsedSteamids = steamids?.split(",") || [];
 
         return await this.rootService.getJobs(parsedLimit, parsedSkip, parsedSteamids);
+    };
+
+    @Get("render")
+    async render(
+        @Query("url") url: string
+    ): Promise<string> {
+        if (!isURL(url)) throw new BadRequestException("Invalid URL.");
+
+        return await this.rootService.render(url);
     };
 };

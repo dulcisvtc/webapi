@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import axios from "axios";
 import { isCurrentMonth } from "../../constants/time";
 import { GlobalDocument, Jobs, User, getGlobalDocument } from "../../database";
 
@@ -55,6 +56,12 @@ export class RootService {
             .lean();
 
         return jobs;
+    };
+
+    async render(url: string): Promise<string> {
+        const r = await axios.get<string>(url, { responseType: "text" });
+
+        return r.data;
     };
 };
 
