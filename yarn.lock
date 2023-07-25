@@ -118,54 +118,54 @@
   resolved "https://registry.yarnpkg.com/@nestjs/cache-manager/-/cache-manager-2.1.0.tgz#e4dadc4ba9c02c059db4dac5e0b5513466e2895a"
   integrity sha512-9kep3a8Mq5cMuXN/anGhSYc0P48CRBXk5wyJJRBFxhNkCH8AIzZF4CASGVDIEMmm3OjVcEUHojjyJwCODS17Qw==
 
-"@nestjs/common@10.1.1":
-  version "10.1.1"
-  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-10.1.1.tgz#2f27ceadddc53bbb57467b7f53a37f6cca625577"
-  integrity sha512-LfGBo32+C8H8Gy6U2nYs6oQbqBD9TUoHqNjkEpXdfxBqKgZvaSeXZ+heqI/h6TXfeM3gsYSj3X7M9jcyd0AyhA==
+"@nestjs/common@10.1.2":
+  version "10.1.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-10.1.2.tgz#c30c5e74967a092c395ab4bc9a4faffbf62be497"
+  integrity sha512-VS8xJtaYkUJHeQSnskZccPdlzd2A+j4aeFMTTmUJaUpTHsYBwUt1wWuZgyZeaSIIs0i0TcHla5rpFzRV3ZJmnQ==
   dependencies:
     uid "2.0.2"
     iterare "1.2.1"
-    tslib "2.6.0"
+    tslib "2.6.1"
 
-"@nestjs/core@10.1.1":
-  version "10.1.1"
-  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-10.1.1.tgz#5fa3db59a7052a331eb650e92a5957e1055e5628"
-  integrity sha512-1Mp1ucKBQ3QGlK5lUHh2K0uRCQG9GY0q36Qd0Kym/wAKT+Y2DnaaVJLPElgem1o5fDMk8eYgHNa+qjLtwfPSYw==
+"@nestjs/core@10.1.2":
+  version "10.1.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-10.1.2.tgz#1803ea7742d3b51caca9cc745b011b3634bf49b7"
+  integrity sha512-iOs29A/cgz8Ou8tOAeVPKYcfFoEiYbIwUvbg0UFI6VIiauo/zGalp/14ok1OL6PotrUU3mRkb0ZWYShINlvqIA==
   dependencies:
     uid "2.0.2"
     "@nuxtjs/opencollective" "0.3.2"
     fast-safe-stringify "2.1.1"
     iterare "1.2.1"
     path-to-regexp "3.2.0"
-    tslib "2.6.0"
+    tslib "2.6.1"
 
-"@nestjs/platform-express@10.1.1":
-  version "10.1.1"
-  resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-10.1.1.tgz#3573214210e3ecda85e426aad00c8b0fd61c8aca"
-  integrity sha512-IqVHAn7K/P50v1dCinedxEbAOF7W4ijiGe9EmRn237BaCrlQZzgLX/N5P0mJb57DoRClxIsDr4NjvGar627Feg==
+"@nestjs/platform-express@10.1.2":
+  version "10.1.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-10.1.2.tgz#f5bc986cafd996990bc53b0c78852f31f9421e65"
+  integrity sha512-cH2qiyoc3B5/tujh3rJPUcafc1tY12OJC3B01n5DzRTm4K8xELJbp+jEo3XpUQis2VyET21K7hYfwBU5RJlbaQ==
   dependencies:
     body-parser "1.20.2"
     cors "2.8.5"
     express "4.18.2"
     multer "1.4.4-lts.1"
-    tslib "2.6.0"
+    tslib "2.6.1"
 
-"@nestjs/platform-socket.io@10.1.1":
-  version "10.1.1"
-  resolved "https://registry.yarnpkg.com/@nestjs/platform-socket.io/-/platform-socket.io-10.1.1.tgz#40f54f7c8b706660455cec6835ee0598bfd5946b"
-  integrity sha512-i4RlRxLmve2yHVxhhgEfguR71mAym1kqkunxFH3bNrJnr06SEr0nxMf06LDS0ggNjtJK9zCI6Xg8Hk0vAPopPQ==
+"@nestjs/platform-socket.io@10.1.2":
+  version "10.1.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-socket.io/-/platform-socket.io-10.1.2.tgz#448050b80cca90df431b03c6c9faf9e65d5464a2"
+  integrity sha512-qrn14RYNC7zF7EnEYJmg/24FXx03Sjy9nzGt9EhsylH93lIlEtjK9TIzRQEh7WZIzEojktYEAHAyilBMPTeP6g==
   dependencies:
     socket.io "4.7.1"
-    tslib "2.6.0"
+    tslib "2.6.1"
 
-"@nestjs/websockets@10.1.1":
-  version "10.1.1"
-  resolved "https://registry.yarnpkg.com/@nestjs/websockets/-/websockets-10.1.1.tgz#82cdb3b2ba307c738789702327d55eabf9ae1876"
-  integrity sha512-HuVcrHpK906vkUTYM5vorypLBtFM9Crf+n+WV5c7MzR7jY/BH627VZtX94R8s+hzPgMyvfaW7v/9KZ3f4op0Ww==
+"@nestjs/websockets@10.1.2":
+  version "10.1.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/websockets/-/websockets-10.1.2.tgz#7b44f58f391ba476c1d1fcb83fb85bf956216e27"
+  integrity sha512-4ENk/aZytxy1A9YDtGBH6GiJoT/f9VfR/6SFC3FKrsxwElrHtV18ah25NiUbKuhB6uJJf0JxrMawKlGDTSz+qQ==
   dependencies:
     iterare "1.2.1"
     object-hash "3.0.0"
-    tslib "2.6.0"
+    tslib "2.6.1"
 
 "@nuxtjs/opencollective@0.3.2":
   version "0.3.2"
@@ -2259,7 +2259,12 @@ tsc-watch@6.0.4:
     ps-tree "^1.2.0"
     string-argv "^0.3.1"
 
-tslib@2.6.0, tslib@^2.1.0, tslib@^2.5.0, tslib@^2.6.0:
+tslib@2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.6.1.tgz#fd8c9a0ff42590b25703c0acb3de3d3f4ede0410"
+  integrity sha512-t0hLfiEKfMUoqhG+U1oid7Pva4bbDPHYfJNiB7BiIjRkj1pyC++4N3huJfqY6aRH6VTB0rvtzQwjM4K6qpfOig==
+
+tslib@^2.1.0, tslib@^2.5.0, tslib@^2.6.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.6.0.tgz#b295854684dbda164e181d259a22cd779dcd7bc3"
   integrity sha512-7At1WUettjcSRHXCyYtTselblcHl9PJFFVKiCAy/bY97+BPZXSQ2wbq0P9s8tK2G7dFQfNnlJnPAiArVBVBsfA==
