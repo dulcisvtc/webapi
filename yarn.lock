@@ -252,14 +252,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/cron@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@types/cron/-/cron-2.0.1.tgz#d8bf7a24475f64197c7ac868c362b41be596e5f8"
-  integrity sha512-WHa/1rtNtD2Q/H0+YTTZoty+/5rcE66iAFX2IY+JuUoOACsevYyFkSYu/2vdw+G5LrmO7Lxowrqm0av4k3qWNQ==
-  dependencies:
-    "@types/luxon" "*"
-    "@types/node" "*"
-
 "@types/dedent@0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@types/dedent/-/dedent-0.7.0.tgz#155f339ca404e6dd90b9ce46a3f78fd69ca9b050"
@@ -294,11 +286,6 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/json-bigint/-/json-bigint-1.0.1.tgz#201062a6990119a8cc18023cfe1fed12fc2fc8a7"
   integrity sha512-zpchZLNsNuzJHi6v64UBoFWAvQlPhch7XAi36FkH6tL1bbbmimIF+cS7vwkzY4u5RaSWMoflQfu+TshMPPw8uw==
-
-"@types/luxon@*":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@types/luxon/-/luxon-3.3.0.tgz#a61043a62c0a72696c73a0a305c544c96501e006"
-  integrity sha512-uKRI5QORDnrGFYgcdAVnHvEIvEZ8noTpP/Bg+HeUzZghwinDlIS87DEenV5r1YoOF9G4x600YsUXLWZ19rmTmg==
 
 "@types/migrate-mongo@10.0.0":
   version "10.0.0"
