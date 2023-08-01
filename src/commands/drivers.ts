@@ -6,7 +6,7 @@ import TrackSim from "tracksim.js";
 import { botlogs } from "..";
 import config from "../config";
 import { generateId, getWebhook } from "../constants/functions";
-import { Jobs, UserDocument, destroySessions, getUserDocumentByDiscordId, getUserDocumentBySteamId, resetUserDocument } from "../database";
+import { Jobs, UserDocument, destroyUserSessions, getUserDocumentByDiscordId, getUserDocumentBySteamId, resetUserDocument } from "../database";
 import { getLogger } from "../logger";
 
 const dbLogger = getLogger("database", true);
@@ -276,7 +276,7 @@ export default {
                     .then(() => append("✅ Gave retired driver role"))
                     .catch(() => append("❌ Failed to give retired driver role."));
 
-            await destroySessions(steamId);
+            await destroyUserSessions(steamId);
             await botlogs?.send({
                 embeds: [{
                     title: "driver removed",
@@ -453,10 +453,10 @@ export default {
 };
 
 async function appendGenerator(interaction: ChatInputCommandInteraction<"cached">) {
-            const msg = await interaction.fetchReply();
+    const msg = await interaction.fetchReply();
 
-            const embed = msg.embeds[0]!;
-            const old = embed.description?.replace("\u200b", "") ?? "";
+    const embed = msg.embeds[0]!;
+    const old = embed.description?.replace("\u200b", "") ?? "";
 
     let title = embed.title;
     let description = old;

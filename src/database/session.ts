@@ -42,8 +42,8 @@ export async function destroySession(access_token: string): Promise<boolean> {
     return result.deletedCount === 1;
 };
 
-export async function destroySessions(...userIds: string[]): Promise<void> {
-    dbLogger.debug(`Destroying sessions for ${userIds.length} users`);
+export async function destroyUserSessions(steamId: string): Promise<void> {
+    const result = await Session.deleteMany({ steamId });
 
-    await Session.deleteMany({ steamId: { $in: userIds } });
+    dbLogger.debug(`Destroyed ${result.deletedCount} sessions for user ${steamId}`);
 };

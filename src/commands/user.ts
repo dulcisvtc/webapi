@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ChatInputCommandInteraction, ComponentType, EmbedBuilder, SlashCommandBuilder, StringSelectMenuBuilder } from "discord.js";
 import ms from "ms";
-import { createSession, destroySessions, getUserDocumentByDiscordId, getUserDocumentBySteamId, type UserDocument } from "../database";
+import { createSession, destroyUserSessions, getUserDocumentByDiscordId, getUserDocumentBySteamId, type UserDocument } from "../database";
 import Permissions from "../lib/Permissions";
 
 export default {
@@ -128,7 +128,7 @@ export default {
 
                 await interaction.deferReply();
 
-                await destroySessions(document.steam_id);
+                await destroyUserSessions(document.steam_id);
                 await document.deleteOne();
 
                 await interaction.editReply({ content: "User deleted." });
