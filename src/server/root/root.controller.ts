@@ -1,7 +1,5 @@
-import { CacheTTL } from "@nestjs/cache-manager";
 import { BadRequestException, Controller, Get, Query } from "@nestjs/common";
 import { isURL } from "class-validator";
-import ms from "ms";
 import type { GlobalDocument } from "../../database";
 import { RootService, Stats } from "./root.service";
 
@@ -10,13 +8,11 @@ export class RootController {
     constructor(private rootService: RootService) { };
 
     @Get("stats")
-    @CacheTTL(ms("1m"))
     async findStats(): Promise<Stats> {
         return await this.rootService.getStats();
     };
 
     @Get("metrics")
-    @CacheTTL(ms("1m"))
     async findMetrics(): Promise<GlobalDocument["metrics"]> {
         return await this.rootService.getMetrics();
     };

@@ -1,7 +1,5 @@
-import { CacheTTL } from "@nestjs/cache-manager";
 import { Controller, Get, Param, ParseIntPipe } from "@nestjs/common";
 import type { APICompanyMembers, APICompanyNews, APIGameEvent } from "@truckersmp_official/api-types/v2";
-import ms from "ms";
 import { TMPService } from "./tmp.service";
 
 @Controller("tmp")
@@ -19,7 +17,6 @@ export class TMPController {
     };
 
     @Get("event/:id")
-    @CacheTTL(ms("1h"))
     async findEvent(
         @Param("id", new ParseIntPipe())
         id: number
