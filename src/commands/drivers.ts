@@ -453,17 +453,23 @@ export default {
 };
 
 async function appendGenerator(interaction: ChatInputCommandInteraction<"cached">) {
-    return {
-        append: async (line: string, title?: string) => {
             const msg = await interaction.fetchReply();
 
             const embed = msg.embeds[0]!;
             const old = embed.description?.replace("\u200b", "") ?? "";
 
+    let title = embed.title;
+    let description = old;
+
+    return {
+        append: async (line: string, newTitle?: string) => {
+            title = newTitle ?? embed.title ?? undefined!;
+            description += "\n" + line;
+
             return interaction.editReply({
                 embeds: [{
-                    title: title ?? embed.title ?? undefined!,
-                    description: old + "\n" + line
+                    title,
+                    description
                 }]
             });
         }
