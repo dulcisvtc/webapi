@@ -33,8 +33,8 @@ export class EventsService {
         document.destination = data.destination;
         document.meetup = data.meetup;
         document.departure = data.departure;
-        data.slotId && (document.slotId = data.slotId);
-        data.slotImage && (document.slotImage = data.slotImage);
+        document.slotId = data.slotId ?? "";
+        document.slotImage = data.slotImage ?? "";
 
         const TMPEvent = await this.getTMPEvent(data.eventId);
 
