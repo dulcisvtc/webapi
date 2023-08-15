@@ -7,7 +7,7 @@ class EventSchema {
     @prop({ type: String, default: "" }) destination!: string;
     @prop({ type: Number, default: 0 }) meetup!: number;
     @prop({ type: Number, default: 0 }) departure!: number;
-    @prop({ type: Number }) slotId?: number;
+    @prop({ type: String }) slotId?: string;
     @prop({ type: String }) slotImage?: string;
 };
 

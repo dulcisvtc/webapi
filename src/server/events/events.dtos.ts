@@ -16,9 +16,9 @@ export class PostEventDto {
     @IsNumber()
     departure!: number;
 
-    @IsNumber()
+    @IsString()
     @ValidateIf((_, v) => v !== null)
-    slotId!: number | null;
+    slotId!: string | null;
 
     @IsString()
     @ValidateIf((_, v) => v !== null)
