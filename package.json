@@ -16,11 +16,11 @@
         "mm:status": "migrate-mongo status"
     },
     "dependencies": {
-        "@nestjs/common": "10.2.1",
-        "@nestjs/core": "10.2.1",
-        "@nestjs/platform-express": "10.2.1",
-        "@nestjs/platform-socket.io": "10.2.1",
-        "@nestjs/websockets": "10.2.1",
+        "@nestjs/common": "10.2.2",
+        "@nestjs/core": "10.2.2",
+        "@nestjs/platform-express": "10.2.2",
+        "@nestjs/platform-socket.io": "10.2.2",
+        "@nestjs/websockets": "10.2.2",
         "@truckersmp_official/api-types": "1.0.1",
         "@typegoose/typegoose": "11.4.1",
         "axios": "1.5.0",
