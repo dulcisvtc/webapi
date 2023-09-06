@@ -9,6 +9,7 @@ import { eventsTicker } from "./handlers/events";
 import BannedJob from "./jobs/BannedJob";
 import MetricsJob from "./jobs/MetricsJob";
 import SessionCleanupJob from "./jobs/SessionCleanupJob";
+import updateSlots from "./lib/updateSlots";
 import { getLogger } from "./logger";
 import { bootstrap } from "./server/main";
 
@@ -45,6 +46,9 @@ client.once("ready", () => {
     registerCommands(guild).then((commands) => {
         discordLogger.info(`Registered ${commands.size} commands.`)
     });
+    updateSlots(client).then(() => {
+        generalLogger.info("Updated slots.");
+    });
 });
 
 for (const eventFileName of readdirSync(join(__dirname, "events")).filter((name) => name.endsWith(".js"))) {
@@ -56,7 +60,7 @@ for (const eventFileName of readdirSync(join(__dirname, "events")).filter((name)
 
 connection.then(() => {
     databaseLogger.info("Connected to database.");
-    return void client.login(config.token);
+    // return void client.login(config.token);
 });
 
 bootstrap().then(() => {

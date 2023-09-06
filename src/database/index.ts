@@ -9,6 +9,7 @@ export * from "./models/Event";
 export * from "./models/Global";
 export * from "./models/Jobs";
 export * from "./models/Session";
+export * from "./models/Slot";
 export * from "./models/User";
 export * from "./models/Wordchannel";
 

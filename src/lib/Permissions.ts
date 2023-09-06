@@ -1,10 +1,11 @@
-export const Flags = {
-    Access: 1 << 0,
-    ManageEvents: 1 << 1,
-    ManageUsers: 1 << 2
-};
+const permissions = [
+    "Access",
+    "ManageEvents",
+    "ManageUsers",
+    "ManageSlots"
+] as const;
 
-type PermissionFlags = keyof typeof Flags;
+type PermissionFlags = typeof permissions[number];
 export type PermissionResolvable =
     number |
     number[] |
@@ -12,6 +13,12 @@ export type PermissionResolvable =
     PermissionFlags[] |
     Permissions |
     Permissions[];
+
+export const Flags: Record<PermissionFlags, number> = {} as Record<PermissionFlags, number>;
+
+permissions.forEach((permission, shift) => {
+    Flags[permission] = 1 << shift;
+});
 
 export default class Permissions {
     static Flags = Flags;

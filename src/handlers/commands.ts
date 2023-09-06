@@ -1,6 +1,9 @@
-import type { ChatInputCommandInteraction, Guild } from "discord.js";
+import type { ChatInputCommandInteraction, Guild, RESTPostAPIChatInputApplicationCommandsJSONBody } from "discord.js";
 import { readdirSync } from "fs";
 import { join } from "path";
+import type { Command } from "../../types";
+
+export const commands = new Map<string, Command>();
 
 export default function handleCommand(interaction: ChatInputCommandInteraction<"cached">) {
     const commandFile = require(`../commands/${interaction.commandName}`).default;
@@ -9,13 +12,20 @@ export default function handleCommand(interaction: ChatInputCommandInteraction<"
 };
 
 export function registerCommands(guild: Guild) {
+    loadCommands();
+
+    const cmds: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
+    for (const command of commands.values()) cmds.push(command.data);
+
+    return guild.commands.set(cmds);
+};
+
+function loadCommands() {
     const commandFileNames = readdirSync(join(__dirname, "..", "commands")).filter((name) => name.endsWith(".js"));
 
-    const commands = commandFileNames.map((name) => {
-        const commandFile = require(`../commands/${name}`).default;
+    commandFileNames.map((name) => {
+        const command = require(`../commands/${name}`).default as Command;
 
-        return commandFile.data;
+        commands.set(command.data.name, command);
     });
-
-    return guild.commands.set(commands);
-};
+}

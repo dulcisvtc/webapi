@@ -128,6 +128,12 @@ export interface TrackSimJobWebhookObject {
     };
 }
 
+export type Command = {
+    data: import("discord.js").RESTPostAPIChatInputApplicationCommandsJSONBody;
+    execute: (interaction: import("discord.js").ChatInputCommandInteraction<"cached">) => Promise<any>;
+    autocomplete?: (interaction: import("discord.js").AutocompleteInteraction<"cached">) => Promise<any>;
+};
+
 declare module "axios" {
     export interface AxiosRequestConfig {
         retry?: number;
