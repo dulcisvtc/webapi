@@ -3,6 +3,7 @@ import { ChannelType, SlashCommandBuilder } from "discord.js";
 import type { Command } from "../../types";
 import { getTMPEvent, getTMPVTC } from "../constants/functions";
 import { Slot } from "../database";
+import updateSlots from "../lib/updateSlots";
 
 export default {
     data: new SlashCommandBuilder()
@@ -76,7 +77,6 @@ export default {
             .addIntegerOption((o) => o
                 .setName("vtc-id")
                 .setDescription("tmp vtc id")
-                .setRequired(true)
                 .setAutocomplete(true)
             )
             .addStringOption((o) => o
@@ -116,6 +116,10 @@ export default {
                         });
 
                         await document.save();
+
+                        updateSlots(interaction.client, eventId).then(() => {
+                            interaction.followUp("Slots updated");
+                        });
 
                         return await interaction.editReply([
                             `Event created: [${event.name}](https://truckersmp.com${event.url})`,
@@ -166,6 +170,10 @@ export default {
                         };
 
                         await document.save();
+
+                        updateSlots(interaction.client, eventId).then(() => {
+                            interaction.followUp("Slots updated");
+                        });
 
                         return await interaction.editReply([
                             `Location created: ${name}`,
@@ -218,8 +226,12 @@ export default {
 
                         await document.save();
 
+                        updateSlots(interaction.client, eventId).then(() => {
+                            interaction.followUp("Slots updated");
+                        });
+
                         return await interaction.editReply([
-                            `Slot set: ${slot}`,
+                            `Slot: ${slot}`,
                             `VTC: ${vtcId}`,
                             `Display name: ${displayName}`
                         ].join("\n"));
