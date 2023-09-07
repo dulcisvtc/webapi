@@ -76,14 +76,16 @@ export default async function updateSlots(client: Client, eventId?: number) {
         };
 
         for (const chunk of document.chunks) {
+            const i = document.chunks.indexOf(chunk);
+
             const embeds = await Promise.all([
-                new EmbedBuilder()
+                i === 0 ? new EmbedBuilder()
                     .setTitle(event.name)
                     .setDescription([
                         `Below are the slots for the [${event.name}](https://truckersmp.com/events/${event.id}) event on <t:${departure}:D>.`,
                         "If you wish to book a slot please make an [Event Management](https://discord.com/channels/992837897466167317/993193956357722193/1041371729462820896) ticket."
                     ].join("\n"))
-                    .setURL(`https://truckersmp.com/events/${event.id}`),
+                    .setURL(`https://truckersmp.com/events/${event.id}`) : null,
                 ...chunk.locations.map(async (location) => {
                     const slots = [...location.slots.entries()];
 
@@ -97,25 +99,30 @@ export default async function updateSlots(client: Client, eventId?: number) {
                         return acc + `**${slot}** - ${name}\n`;
                     }, "");
 
-                    return new EmbedBuilder()
+                    const embed = new EmbedBuilder()
                         .setTitle(location.name)
-                        .setDescription(description)
                         .setImage(location.imageUrl);
+
+                    if (description) embed.setDescription(description);
+
+                    return embed;
                 })
             ]);
+
+            const filtered = embeds.filter((embed) => !!embed) as EmbedBuilder[];
 
             let message: Message;
             try {
                 if (!chunk.messageId) throw new Error("No message ID");
                 message = await slotsChannel.messages.fetch(chunk.messageId);
             } catch {
-                message = await slotsChannel.send({ embeds });
+                message = await slotsChannel.send({ embeds: filtered });
                 chunk.messageId = message.id;
                 needsUpdate = true;
                 break;
             };
 
-            await message.edit({ embeds });
+            await message.edit({ embeds: filtered });
         };
 
         if (needsUpdate) await document.save();

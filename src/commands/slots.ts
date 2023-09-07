@@ -55,7 +55,6 @@ export default {
                 .addStringOption(o => o
                     .setName("slots")
                     .setDescription("list of slots separated by commas. e.g.: `1,2,3,4,5`")
-                    .setRequired(true)
                 )
             )
         )
@@ -131,7 +130,9 @@ export default {
                         const eventId = interaction.options.getInteger("id", true);
                         const name = interaction.options.getString("name", true);
                         const imageUrl = interaction.options.getString("image-url", true);
-                        const slots = interaction.options.getString("slots", true).split(",").map((s) => s.trim());
+                        const slots = interaction.options.getString("slots") ?? "";
+
+                        const mappedSlots = slots.split(",").map((s) => s.trim()).filter((s) => s.length);
 
                         await interaction.deferReply();
 
@@ -142,13 +143,13 @@ export default {
                         if (chunk) return await interaction.editReply("Location already exists");
 
                         let trigger = "none";
-                        const s = document.chunks.some((c) => c.locations.some((l) => slots.some((s) => l.slots.has(s) && (trigger = s))));
+                        const s = document.chunks.some((c) => c.locations.some((l) => mappedSlots.some((s) => l.slots.has(s) && (trigger = s))));
                         if (s) return await interaction.editReply(`Slot \`${trigger}\` already exists`);
 
                         const obj = {
                             name,
                             imageUrl,
-                            slots: new Map(slots.map((s) => [s, {
+                            slots: new Map(mappedSlots.map((s) => [s, {
                                 vtcId: 0,
                                 taken: false,
                                 displayName: ""
@@ -156,11 +157,20 @@ export default {
                         };
 
                         if (document.chunks.length) {
+                            let added = false;
                             for (const chunk of document.chunks) {
-                                if (chunk.locations.length < 5) {
+                                if (chunk.locations.length < 3) {
                                     chunk.locations.push(obj);
+                                    added = true;
                                     break;
                                 };
+                            };
+
+                            if (!added) {
+                                document.chunks.push({
+                                    messageId: "",
+                                    locations: [obj]
+                                });
                             };
                         } else {
                             document.chunks = [{
@@ -178,7 +188,7 @@ export default {
                         return await interaction.editReply([
                             `Location created: ${name}`,
                             `Image url: ${imageUrl}`,
-                            `Slots: ${slots}`
+                            `Slots: ${mappedSlots}`
                         ].join("\n"));
                     };
                 };
