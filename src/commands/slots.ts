@@ -250,7 +250,7 @@ export default {
                             interaction.followUp("Slots updated");
                         });
 
-                        const vtcText = vtcId ? `VTC: ${vtcId} - [${vtc!.name}](https://truckersmp.com/vtc/${vtcId})` : "Non-VTC slot.";
+                        const vtcText = vtcId ? `${vtcId} - [${vtc!.name}](https://truckersmp.com/vtc/${vtcId})` : "Non-VTC slot.";
 
                         return await interaction.editReply([
                             `Slot: ${slot}`,
