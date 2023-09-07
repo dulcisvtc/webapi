@@ -9,6 +9,7 @@ import { eventsTicker } from "./handlers/events";
 import BannedJob from "./jobs/BannedJob";
 import MetricsJob from "./jobs/MetricsJob";
 import SessionCleanupJob from "./jobs/SessionCleanupJob";
+import updateSlots from "./lib/updateSlots";
 import { getLogger } from "./logger";
 import { bootstrap } from "./server/main";
 
@@ -44,6 +45,9 @@ client.once("ready", () => {
     });
     registerCommands(guild).then((commands) => {
         discordLogger.info(`Registered ${commands.size} commands.`)
+    });
+    updateSlots(client).then(() => {
+        generalLogger.info("Updated slots.");
     });
 });
 

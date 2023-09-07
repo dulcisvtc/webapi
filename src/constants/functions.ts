@@ -1,3 +1,5 @@
+import type { APICompany, APIGameEvent } from "@truckersmp_official/api-types/v2";
+import axios from "axios";
 import crypto from "crypto";
 import type { GuildTextBasedChannel, Message, TextChannel } from "discord.js";
 
@@ -65,4 +67,14 @@ export const latestFromMap = <T>(map: Map<string, T>): [string, T | null] => {
     const latest = keys[keys.length - 1]!;
 
     return [latest, map.get(latest)!];
+};
+
+export const getTMPEvent = async (eventId: number): Promise<APIGameEvent> => {
+    const res = await axios.get(`https://api.truckersmp.com/v2/events/${eventId}`, { retry: 3 });
+    return res.data.response;
+}
+
+export const getTMPVTC = async (vtcId: number): Promise<APICompany> => {
+    const res = await axios.get(`https://api.truckersmp.com/v2/vtc/${vtcId}`, { retry: 3 });
+    return res.data.response;
 };
