@@ -330,7 +330,7 @@ export default {
                                             };
                                         });
                                     });
-                                }).slice(0, 25);
+                                }).filter((s) => s.name).slice(0, 25);
                                 if (!c.length) {
                                     c = [{
                                         name: "No slots found",
