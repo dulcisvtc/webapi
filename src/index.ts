@@ -60,7 +60,7 @@ for (const eventFileName of readdirSync(join(__dirname, "events")).filter((name)
 
 connection.then(() => {
     databaseLogger.info("Connected to database.");
-    // return void client.login(config.token);
+    return void client.login(config.token);
 });
 
 bootstrap().then(() => {
