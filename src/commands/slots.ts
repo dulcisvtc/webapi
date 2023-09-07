@@ -159,7 +159,7 @@ export default {
                         if (document.chunks.length) {
                             let added = false;
                             for (const chunk of document.chunks) {
-                                if (chunk.locations.length < 3) {
+                                if (chunk.locations.length < 8) {
                                     chunk.locations.push(obj);
                                     added = true;
                                     break;
