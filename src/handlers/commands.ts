@@ -6,9 +6,11 @@ import type { Command } from "../../types";
 export const commands = new Map<string, Command>();
 
 export default function handleCommand(interaction: ChatInputCommandInteraction<"cached">) {
-    const commandFile = require(`../commands/${interaction.commandName}`).default;
+    const command = commands.get(interaction.commandName);
 
-    commandFile.execute(interaction);
+    if (!command) return;
+
+    command.execute(interaction);
 };
 
 export function registerCommands(guild: Guild) {
