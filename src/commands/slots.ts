@@ -193,6 +193,7 @@ export default {
                         let displayName = interaction.options.getString("display-name");
 
                         if (!vtcId && !displayName) return await interaction.reply("You must provide either a vtc id or a display name");
+                        if (vtcId && displayName) return await interaction.reply("You must provide either a vtc id or a display name, not both");
 
                         await interaction.deferReply();
 
@@ -230,9 +231,11 @@ export default {
                             interaction.followUp("Slots updated");
                         });
 
+                        const vtcText = vtcId ? `VTC: ${vtcId} - [${vtc!.name}](https://truckersmp.com/vtc/${vtcId})` : "Non-VTC slot.";
+
                         return await interaction.editReply([
                             `Slot: ${slot}`,
-                            `VTC: ${vtcId}`,
+                            `VTC: ${vtcText}`,
                             `Display name: ${displayName}`
                         ].join("\n"));
                     };
