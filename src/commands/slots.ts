@@ -83,11 +83,20 @@ export default {
                 .setDescription("display name. defaults to vtc name.")
             )
         )
+        .addSubcommand((c) => c
+            .setName("update")
+            .setDescription("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+            .addIntegerOption((o) => o
+                .setName("event-id")
+                .setDescription("tmp event id")
+                .setAutocomplete(true)
+            )
+        )
         .setDefaultMemberPermissions(8)
         .toJSON(),
     execute: async (interaction) => {
         const group = interaction.options.getSubcommandGroup() as "create" | null;
-        const command = interaction.options.getSubcommand() as "event" | "location" | "set" | null;
+        const command = interaction.options.getSubcommand() as "event" | "location" | "set" | "update" | null;
 
         switch (group) {
             case "create": {
@@ -249,6 +258,24 @@ export default {
                             `Display name: ${displayName}`
                         ].join("\n"));
                     };
+                    case "update": {
+                        const eventId = interaction.options.getInteger("event-id");
+
+                        await interaction.deferReply();
+
+                        if (!eventId) {
+                            const events = await Slot.find();
+                            for (const event of events) {
+                                await interaction.editReply(`Updating event ${event.eventId}`);
+                                await updateSlots(interaction.client, event.eventId);
+                            };
+                        } else {
+                            await interaction.editReply(`Updating event ${eventId}`);
+                            await updateSlots(interaction.client, eventId);
+                        };
+
+                        return await interaction.editReply("Slots updated");
+                    };
                 };
             };
         };
@@ -257,7 +284,7 @@ export default {
     },
     autocomplete: async (interaction) => {
         const group = interaction.options.getSubcommandGroup() as "create" | null;
-        const command = interaction.options.getSubcommand() as "event" | "location" | "set" | null;
+        const command = interaction.options.getSubcommand() as "event" | "location" | "set" | "update" | null;
 
         switch (group) {
             case "create": {
@@ -359,6 +386,20 @@ export default {
                                 break;
                             };
                         };
+
+                        return await interaction.respond(c);
+                    };
+                    case "update": {
+                        const eventId = interaction.options.getInteger("event-id")!;
+
+                        const c = (await Slot.find()).filter((e) => {
+                            return e.eventId.toString().includes(eventId.toString());
+                        }).map((e) => {
+                            return {
+                                name: `${e.eventId} - ${e.chunks.length} chunks`,
+                                value: e.eventId
+                            };
+                        });
 
                         return await interaction.respond(c);
                     };
