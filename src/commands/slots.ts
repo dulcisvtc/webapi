@@ -350,7 +350,7 @@ export default {
 
                                 c = s.chunks.flatMap((c) => {
                                     return c.locations.flatMap((l) => {
-                                        return [...l.slots.keys()].filter((s) => s.includes(slot ?? "")).map((s) => {
+                                        return [...l.slots.keys()].filter((s) => s.includes(slot ?? "") && !l.slots.get(s)!.taken).map((s) => {
                                             return {
                                                 name: s,
                                                 value: s
