@@ -1,17 +1,19 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { Slot } from "../../database";
-import type { PatchSlotsDto } from "./slots.dtos";
 import type { APICompany } from "@truckersmp_official/api-types/v2";
-import { getTMPVTC } from "../../constants/functions";
-import updateSlots from "../../lib/updateSlots";
 import { client } from "../..";
+import { getTMPEvent, getTMPVTC } from "../../constants/functions";
+import { Slot } from "../../database";
+import updateSlots from "../../lib/updateSlots";
+import type { PatchSlotsDto } from "./slots.dtos";
 
 @Injectable()
 export class SlotsService {
     async getAllEventSlots(): Promise<EventSlots[]> {
         const documents = await Slot.find().lean();
 
-        const eventSlots = documents.map((document) => {
+        const eventSlots = await Promise.all(documents.map(async (document) => {
+            const eventName = (await getTMPEvent(document.eventId)).name;
+
             const locations = document.chunks.flatMap((chunk) => {
                 return chunk.locations.map((location) => {
                     return {
@@ -23,9 +25,10 @@ export class SlotsService {
 
             return {
                 eventId: document.eventId,
+                eventName,
                 locations
             };
-        });
+        }));
 
         return eventSlots;
     };
@@ -34,6 +37,8 @@ export class SlotsService {
         const document = await Slot.findOne({ eventId }).lean();
 
         if (!document) throw new NotFoundException(`Couldn't find slots for eventId ${eventId}`);
+
+        const eventName = (await getTMPEvent(eventId)).name;
 
         const locations = document.chunks.flatMap((chunk) => {
             return chunk.locations.map((location) => {
@@ -46,6 +51,7 @@ export class SlotsService {
 
         return {
             eventId: document.eventId,
+            eventName,
             locations
         };
     };
@@ -102,6 +108,7 @@ export class SlotsService {
 
 export type EventSlots = {
     eventId: number;
+    eventName: string;
     locations: {
         name: string;
         slots: Record<string, { vtcId: number; displayName: string; taken: boolean; }>
