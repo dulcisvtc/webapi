@@ -17,6 +17,11 @@ export class SlotsController {
         return await this.slotsService.getEventSlots(params.eventId);
     };
 
+    @Get(":eventId/available")
+    async findAvailableEventSlots(@Param() params: GetSlotsEventIdDto): Promise<string[]> {
+        return await this.slotsService.getAvailableEventSlots(params.eventId);
+    };
+
     @Patch()
     @RequirePermissions("ManageSlots")
     async updateEventSlot(

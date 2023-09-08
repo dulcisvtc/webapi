@@ -50,6 +50,20 @@ export class SlotsService {
         };
     };
 
+    async getAvailableEventSlots(eventId: number): Promise<string[]> {
+        const document = await Slot.findOne({ eventId }).lean();
+
+        if (!document) throw new NotFoundException(`Couldn't find slots for eventId ${eventId}`);
+
+        const slots = document.chunks.flatMap((chunk) => {
+            return chunk.locations.flatMap((location) => {
+                return Object.entries(location.slots).filter(([, slot]) => !slot.taken).map(([slot]) => slot);
+            });
+        });
+
+        return slots;
+    };
+
     async updateEventSlot(data: PatchSlotsDto) {
         const document = await Slot.findOne({ eventId: data.eventId });
         if (!document) throw new NotFoundException(`Couldn't find slots for eventId ${data.eventId}`);
