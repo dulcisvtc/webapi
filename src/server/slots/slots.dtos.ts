@@ -6,6 +6,22 @@ export class GetSlotsEventIdDto {
     eventId!: number;
 };
 
+export class GetSlotsEventIdSlotDto {
+    @IsNumberString()
+    @IsNotEmpty()
+    eventId!: number;
+
+    @IsNumberString()
+    @IsNotEmpty()
+    slot!: string;
+};
+
+export class GetSlotsEventIdAvailableDto {
+    @IsNumberString()
+    @IsNotEmpty()
+    eventId!: number;
+};
+
 export class PatchSlotsDto {
     @IsNumber()
     @IsNotEmpty()

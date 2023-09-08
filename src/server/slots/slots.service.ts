@@ -56,6 +56,23 @@ export class SlotsService {
         };
     };
 
+    async getEventSlot(eventId: number, slot: string): Promise<EventSlots["locations"][number]["slots"][number]> {
+        const document = await Slot.findOne({ eventId });
+
+        if (!document) throw new NotFoundException(`Couldn't find slots for eventId ${eventId}`);
+
+        const chunk = document.chunks.find((chunk) => chunk.locations.some((location) => location.slots.has(slot)));
+        if (!chunk) throw new NotFoundException(`Couldn't find slot ${slot} for eventId ${eventId}`);
+
+        const location = chunk.locations.find((location) => location.slots.has(slot));
+        if (!location) throw new NotFoundException(`Couldn't find slot ${slot} for eventId ${eventId}`);
+
+        const slotObj = location.slots.get(slot);
+        if (!slotObj) throw new NotFoundException(`Couldn't find slot ${slot} for eventId ${eventId}`);
+
+        return slotObj;
+    };
+
     async getAvailableEventSlots(eventId: number): Promise<string[]> {
         const document = await Slot.findOne({ eventId }).lean();
 

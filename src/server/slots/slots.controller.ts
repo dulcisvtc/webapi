@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Patch } from "@nestjs/common";
-import { GetSlotsEventIdDto, PatchSlotsDto } from "./slots.dtos";
-import { EventSlots, SlotsService } from "./slots.service";
 import { RequirePermissions } from "../auth/auth.decorator";
+import { GetSlotsEventIdAvailableDto, GetSlotsEventIdDto, GetSlotsEventIdSlotDto, PatchSlotsDto } from "./slots.dtos";
+import { EventSlots, SlotsService } from "./slots.service";
 
 @Controller("slots")
 export class SlotsController {
@@ -18,8 +18,13 @@ export class SlotsController {
     };
 
     @Get(":eventId/available")
-    async findAvailableEventSlots(@Param() params: GetSlotsEventIdDto): Promise<string[]> {
+    async findAvailableEventSlots(@Param() params: GetSlotsEventIdAvailableDto): Promise<string[]> {
         return await this.slotsService.getAvailableEventSlots(params.eventId);
+    };
+
+    @Get(":eventId/:slot")
+    async findEventSlot(@Param() params: GetSlotsEventIdSlotDto): Promise<EventSlots["locations"][number]["slots"][number]> {
+        return await this.slotsService.getEventSlot(params.eventId, params.slot);
     };
 
     @Patch()
