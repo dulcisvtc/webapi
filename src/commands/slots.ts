@@ -379,7 +379,7 @@ export default {
                                 } catch (err) {
                                     c = [{
                                         name: "VTC not found",
-                                        value: ""
+                                        value: 0
                                     }];
                                     break;
                                 };
