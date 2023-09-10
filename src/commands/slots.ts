@@ -308,7 +308,7 @@ export default {
             default: {
                 switch (command) {
                     case "set": {
-                        const eventId = interaction.options.getInteger("event-id", true);
+                        const eventId = interaction.options.getInteger("event-id");
                         const slot = interaction.options.getString("slot");
                         const vtcId = interaction.options.getInteger("vtc-id");
 
@@ -321,7 +321,7 @@ export default {
                         switch (selected) {
                             case "event-id": {
                                 c = await Promise.all((await Slot.find()).filter(async (e) => {
-                                    return e.eventId.toString().includes(eventId.toString());
+                                    return e.eventId.toString().includes(eventId!.toString());
                                 }).map(async (e) => {
                                     return {
                                         name: `${e.eventId} - ${(await getTMPEvent(e.eventId)).name}`,
@@ -379,7 +379,7 @@ export default {
                                 } catch (err) {
                                     c = [{
                                         name: "VTC not found",
-                                        value: ""
+                                        value: 0
                                     }];
                                     break;
                                 };
