@@ -1,4 +1,4 @@
-import { IsNumber, IsString, ValidateIf } from "class-validator";
+import { IsNumber, IsString, MaxLength, ValidateIf } from "class-validator";
 
 export class PostEventDto {
     @IsNumber()
@@ -23,6 +23,11 @@ export class PostEventDto {
     @IsString()
     @ValidateIf((_, v) => v !== null)
     slotImage!: string | null;
+
+    @IsString()
+    @ValidateIf((_, v) => v !== null)
+    @MaxLength(1000)
+    note!: string | null;
 };
 
 export class DeleteEventDto {
