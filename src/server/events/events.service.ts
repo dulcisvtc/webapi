@@ -35,6 +35,7 @@ export class EventsService {
         document.departure = data.departure;
         document.slotId = data.slotId ?? "";
         document.slotImage = data.slotImage ?? "";
+        document.note = data.note ?? "";
 
         const TMPEvent = await this.getTMPEvent(data.eventId);
 
@@ -47,7 +48,8 @@ export class EventsService {
             meetup: data.meetup,
             departure: data.departure,
             slot_id: data.slotId,
-            slot_image: data.slotImage
+            slot_image: data.slotImage,
+            note: data.note
         };
 
         if (document.isNew) {
