@@ -8,6 +8,7 @@
         "build:watch": "tsc -w",
         "dev": "tsc-watch --noClear --onSuccess \"yarn start\"",
         "start": "node --no-warnings .",
+        "postversion": "git push && git push --tags",
         "mm": "migrate-mongo",
         "mm:up": "migrate-mongo up",
         "mm:down": "migrate-mongo down",
