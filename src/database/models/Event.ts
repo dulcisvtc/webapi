@@ -9,7 +9,7 @@ class EventSchema {
     @prop({ type: Number, default: 0 }) departure!: number;
     @prop({ type: String }) slotId?: string;
     @prop({ type: String }) slotImage?: string;
-    @prop({ type: String }) note?: string;
+    @prop({ type: String }) notes?: string;
 };
 
 export type EventDocument = DocumentType<EventSchema>;

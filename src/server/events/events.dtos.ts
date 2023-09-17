@@ -27,7 +27,7 @@ export class PostEventDto {
     @IsString()
     @ValidateIf((_, v) => v !== null)
     @MaxLength(1000)
-    note!: string | null;
+    notes!: string | null;
 };
 
 export class DeleteEventDto {

@@ -35,7 +35,7 @@ export class EventsService {
         document.departure = data.departure;
         document.slotId = data.slotId ?? "";
         document.slotImage = data.slotImage ?? "";
-        document.note = data.note ?? "";
+        document.notes = data.notes ?? "";
 
         const TMPEvent = await this.getTMPEvent(data.eventId);
 
@@ -49,7 +49,7 @@ export class EventsService {
             departure: data.departure,
             slot_id: data.slotId,
             slot_image: data.slotImage,
-            note: data.note
+            note: data.notes
         };
 
         if (document.isNew) {
