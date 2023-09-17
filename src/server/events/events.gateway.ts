@@ -58,7 +58,8 @@ export class EventsGateway {
                 meetup: event.meetup,
                 departure: event.departure,
                 slot_id: event.slotId,
-                slot_image: event.slotImage
+                slot_image: event.slotImage,
+                notes: event.notes
             };
 
             client.emit("new event", wsEvent);

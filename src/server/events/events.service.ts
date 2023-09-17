@@ -49,7 +49,7 @@ export class EventsService {
             departure: data.departure,
             slot_id: data.slotId,
             slot_image: data.slotImage,
-            note: data.notes
+            notes: data.notes
         };
 
         if (document.isNew) {
