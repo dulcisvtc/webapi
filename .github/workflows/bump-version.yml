@@ -21,9 +21,10 @@ jobs:
 
       - name: Automated Version Bump
         id: version-bump
-        uses: djohts/gh-action-bump-version@master
+        uses: phips28/gh-action-bump-version@master
         with:
           tag-prefix: 'v'
+          skip-push: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -34,3 +35,11 @@ jobs:
         env:
           NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
         run: echo "new tag $NEW_TAG"
+
+      - name: Push
+        uses: CasperWA/push-protected@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
+          unprotect_reviews: true
+          tags: true
