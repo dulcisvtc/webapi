@@ -95,7 +95,7 @@
   dependencies:
     sparse-bitfield "^3.0.3"
 
-"@nestjs/cache-manager@^2.1.0":
+"@nestjs/cache-manager@2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@nestjs/cache-manager/-/cache-manager-2.1.0.tgz#e4dadc4ba9c02c059db4dac5e0b5513466e2895a"
   integrity sha512-9kep3a8Mq5cMuXN/anGhSYc0P48CRBXk5wyJJRBFxhNkCH8AIzZF4CASGVDIEMmm3OjVcEUHojjyJwCODS17Qw==
@@ -539,7 +539,7 @@ bytes@3.1.2:
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.2.tgz#8b0beeb98605adf1b128fa4386403c009e0221a5"
   integrity sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==
 
-cache-manager-redis-yet@^4.1.2:
+cache-manager-redis-yet@4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/cache-manager-redis-yet/-/cache-manager-redis-yet-4.1.2.tgz#fa04df1a979a42585393a7a9918168978a7211ec"
   integrity sha512-pM2K1ZlOv8gQpE1Z5mcDrfLj5CsNKVRiYua/SZ12j7LEDgfDeFVntI6JSgIw0siFSR/9P/FpG30scI3frHwibA==
@@ -553,7 +553,7 @@ cache-manager-redis-yet@^4.1.2:
     cache-manager "^5.2.2"
     redis "^4.6.7"
 
-cache-manager@^5.2.2, cache-manager@^5.2.3:
+cache-manager@5.2.3, cache-manager@^5.2.2:
   version "5.2.3"
   resolved "https://registry.yarnpkg.com/cache-manager/-/cache-manager-5.2.3.tgz#b6a8b4469c57fdfdae1deed7f81ea9e057c7eade"
   integrity sha512-9OErI8fksFkxAMJ8Mco0aiZSdphyd90HcKiOMJQncSlU1yq/9lHHxrT8PDayxrmr9IIIZPOAEfXuGSD7g29uog==
@@ -1646,7 +1646,7 @@ readable-stream@~1.0.31:
     isarray "0.0.1"
     string_decoder "~0.10.x"
 
-redis@^4.6.7, redis@^4.6.9:
+redis@4.6.9, redis@^4.6.7:
   version "4.6.9"
   resolved "https://registry.yarnpkg.com/redis/-/redis-4.6.9.tgz#461e942d9853f9ee928a7641f101a330b9b421c4"
   integrity sha512-upWaKM5V+BnHflcTaaKAiErpqpIQSgTDMYCCthS+vyKBQV2HqaJTfAoNsuB+3/m9rdMjmbZobjqRSPum9lz4ew==
