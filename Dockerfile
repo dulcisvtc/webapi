@@ -1,5 +1,5 @@
 # base image
-FROM node:18-alpine@sha256:3482a20c97e401b56ac50ba8920cc7b5b2022bfc6aa7d4e4c231755770cf892f AS base
+FROM node:18-alpine@sha256:cae3c14513af4cd8cbfd27e0a7b105ec2fadb75860fe9526c0b6502ebc402f4d AS base
 
 # install dependencies
 FROM base AS deps
