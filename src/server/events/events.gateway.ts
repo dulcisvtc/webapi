@@ -3,6 +3,7 @@ import { ConnectedSocket, SubscribeMessage, WebSocketGateway, WebSocketServer, W
 import type { Server, Socket } from "socket.io";
 import { getSessionInfo, getUserDocumentBySteamId } from "../../database";
 import Permissions from "../../lib/Permissions";
+import { TMPService } from "../tmp/tmp.service";
 import { EventsService } from "./events.service";
 
 @Injectable()
@@ -15,7 +16,8 @@ import { EventsService } from "./events.service";
 export class EventsGateway {
     constructor(
         @Inject(forwardRef(() => EventsService))
-        private eventsService: EventsService
+        private eventsService: EventsService,
+        private tmpService: TMPService
     ) { };
 
     @WebSocketServer()
@@ -47,7 +49,7 @@ export class EventsGateway {
         const events = await this.eventsService.getEvents();
 
         const promises = events.map(async (event) => {
-            const TMPEvent = await this.eventsService.getTMPEvent(event.id);
+            const TMPEvent = (await this.tmpService.getEvent(event.id)).response;
 
             const wsEvent = {
                 id: event.id,

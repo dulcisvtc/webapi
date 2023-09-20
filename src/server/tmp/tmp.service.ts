@@ -1,5 +1,7 @@
+import { CacheTTL } from "@nestjs/cache-manager";
 import { Injectable } from "@nestjs/common";
 import type { APICompanyMembers, APICompanyNews, APIGameEvent } from "@truckersmp_official/api-types/v2";
+import ms from "ms";
 import http from "../../lib/http";
 
 @Injectable()
@@ -16,6 +18,7 @@ export class TMPService {
         return data;
     };
 
+    @CacheTTL(ms("30m"))
     async getEvent(id: number): Promise<{ response: APIGameEvent }> {
         const data = (await http.get<{ response: APIGameEvent }>(`https://api.truckersmp.com/v2/events/${id}`)).data;
 
