@@ -1,7 +1,6 @@
 import { Inject, Injectable, forwardRef } from "@nestjs/common";
-import type { APIGameEvent } from "@truckersmp_official/api-types/v2";
 import { Event, getEventDocument } from "../../database";
-import http from "../../lib/http";
+import { TMPService } from "../tmp/tmp.service";
 import type { PostEventDto } from "./events.dtos";
 import { EventsGateway } from "./events.gateway";
 
@@ -9,19 +8,14 @@ import { EventsGateway } from "./events.gateway";
 export class EventsService {
     constructor(
         @Inject(forwardRef(() => EventsGateway))
-        private eventsGateway: EventsGateway
+        private eventsGateway: EventsGateway,
+        private tmpService: TMPService
     ) { };
 
     public async getEvents() {
         const events = await Event.find({}, "-_id -__v").sort({ departure: 1 }).lean();
 
         return events;
-    };
-
-    public async getTMPEvent(eventId: number) {
-        const TMPEvent = (await http.get<{ response: APIGameEvent }>(`https://api.truckersmp.com/v2/events/${eventId}`, { retry: 5 })).data.response;
-
-        return TMPEvent;
     };
 
     public async postEvent(
@@ -37,7 +31,7 @@ export class EventsService {
         document.slotImage = data.slotImage ?? "";
         document.notes = data.notes ?? "";
 
-        const TMPEvent = await this.getTMPEvent(data.eventId);
+        const TMPEvent = (await this.tmpService.getEvent(data.eventId)).response;
 
         const wsEvent = {
             id: data.eventId,

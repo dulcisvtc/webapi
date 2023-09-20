@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { AuthModule } from "../auth/auth.module";
+import { TMPService } from "../tmp/tmp.service";
 import { EventsController } from "./events.controller";
 import { EventsGateway } from "./events.gateway";
 import { EventsService } from "./events.service";
@@ -10,7 +11,8 @@ import { EventsService } from "./events.service";
     providers: [
         AuthModule,
         EventsService,
-        EventsGateway
+        EventsGateway,
+        TMPService
     ]
 })
 export class EventsModule { };
