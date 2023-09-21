@@ -1,0 +1,45 @@
+import { CacheInterceptor, CacheModule } from "@nestjs/cache-manager";
+import { Module } from "@nestjs/common";
+import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
+import { redisStore } from "cache-manager-redis-yet";
+import type { RedisClientOptions } from "redis";
+import config from "../../config";
+import { PermissionsGuard } from "../guards/auth.guard";
+import { AuthModule } from "./auth.module";
+import { EventsModule } from "./events.module";
+import { RootModule } from "./root.module";
+import { SlotsModule } from "./slots.module";
+import { StaffModule } from "./staff.module";
+import { TMPModule } from "./tmp.module";
+import { UsersModule } from "./users.module";
+import { WebhookModule } from "./webhook.module";
+
+@Module({
+    imports: [
+        AuthModule,
+        CacheModule.register<RedisClientOptions>({
+            store: redisStore,
+            socket: {
+                host: config.redis.host,
+                port: config.redis.port
+            },
+            password: config.redis.password,
+            isGlobal: true
+        }),
+        EventsModule,
+        RootModule,
+        SlotsModule,
+        StaffModule,
+        TMPModule,
+        UsersModule,
+        WebhookModule
+    ],
+    providers: [{
+        provide: APP_INTERCEPTOR,
+        useClass: CacheInterceptor,
+    }, {
+        provide: APP_GUARD,
+        useClass: PermissionsGuard
+    }]
+})
+export class AppModule { };
