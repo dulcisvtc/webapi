@@ -7,6 +7,7 @@ import config from "../../config";
 import { PermissionsGuard } from "../guards/auth.guard";
 import { AuthModule } from "./auth.module";
 import { EventsModule } from "./events.module";
+import { LeaderboardModule } from "./leaderboard.module";
 import { RootModule } from "./root.module";
 import { SlotsModule } from "./slots.module";
 import { StaffModule } from "./staff.module";
@@ -27,6 +28,7 @@ import { WebhookModule } from "./webhook.module";
             isGlobal: true
         }),
         EventsModule,
+        LeaderboardModule,
         RootModule,
         SlotsModule,
         StaffModule,
