@@ -8,7 +8,7 @@ import { registerCommands } from "./handlers/commands";
 import { eventsTicker } from "./handlers/events";
 import BannedJob from "./jobs/BannedJob";
 import MetricsJob from "./jobs/MetricsJob";
-import SessionCleanupJob from "./jobs/SessionCleanupJob";
+// import SessionCleanupJob from "./jobs/SessionCleanupJob";
 import updateSlots from "./lib/updateSlots";
 import { getLogger } from "./logger";
 import { bootstrap } from "./server/main";
@@ -60,11 +60,11 @@ for (const eventFileName of readdirSync(join(__dirname, "events")).filter((name)
 
 connection.then(() => {
     databaseLogger.info("Connected to database.");
-    return void client.login(config.token);
+    // return void client.login(config.token);
 });
 
 bootstrap().then(() => {
-    SessionCleanupJob.start();
+    // SessionCleanupJob.start();
 });
 
 process.on("unhandledRejection", (e) => generalLogger.error(`unhandledRejection:\n${inspect(e)}`));
