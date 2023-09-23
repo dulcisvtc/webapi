@@ -3,8 +3,8 @@ import { ConnectedSocket, SubscribeMessage, WebSocketGateway, WebSocketServer, W
 import type { Server, Socket } from "socket.io";
 import { getSessionInfo, getUserDocumentBySteamId } from "../../database";
 import Permissions from "../../lib/Permissions";
-import { TMPService } from "../services/tmp.service";
 import { EventsService } from "../services/events.service";
+import { TMPService } from "../services/tmp.service";
 
 @Injectable()
 @WebSocketGateway({
