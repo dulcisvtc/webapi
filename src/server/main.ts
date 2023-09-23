@@ -12,7 +12,7 @@ export async function bootstrap() {
         rawBody: true
     });
 
-    app.use(morgan(":remote-addr [:date] \":method :url HTTP/:http-version\" :status :res[content-length] - :response-time ms"))
+    app.use(morgan("[:date] \":method :url HTTP/:http-version\" :status :res[content-length] - :response-time ms"))
 
     app.useGlobalPipes(new ValidationPipe());
 
