@@ -330,12 +330,12 @@
   resolved "https://registry.yarnpkg.com/@types/luxon/-/luxon-3.3.2.tgz#f6e3524c2486b949a4db445e85d93c8e9886dfe2"
   integrity sha512-l5cpE57br4BIjK+9BSkFBOsWtwv6J9bJpC7gdXIzZyI0vuKvNTk0wZZrkQxMGsUAuGW9+WMNWF2IJMD7br2yeQ==
 
-"@types/migrate-mongo@10.0.0":
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/@types/migrate-mongo/-/migrate-mongo-10.0.0.tgz#3f6fe3d612a8f7cf5b23fe029e8be113cca12596"
-  integrity sha512-8wb39thwU72RHzkALNs6bfIFipdXebyLtE7/vztPfgMPExCh5IV+FDUcjzcsEfc4PG/JBtnUZY0DBzqGURirUg==
+"@types/migrate-mongo@10.0.1":
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/@types/migrate-mongo/-/migrate-mongo-10.0.1.tgz#ef90f9d0af3e590154a54f5651f2573369d6568d"
+  integrity sha512-Iaij37AI6EAHn24uDcEdobUPjyvYCmJwDoZSYxW1hvcaytgsrPMqSinLZzZ4lQAKXcu1uD/3h6jPYgAd4W18Ag==
   dependencies:
-    mongodb "^5.3.0"
+    mongodb "^6.1.0"
 
 "@types/mime@*":
   version "3.0.1"
@@ -562,6 +562,11 @@ bson@^5.4.0:
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/bson/-/bson-5.4.0.tgz#0eea77276d490953ad8616b483298dbff07384c6"
   integrity sha512-WRZ5SQI5GfUuKnPTNmAYPiKIof3ORXAF4IRU5UcgmivNIon01rWQlw5RUH954dpu8yGL8T59YShVddIPaU/gFA==
+
+bson@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/bson/-/bson-6.1.0.tgz#ea7c98b90540e1632173da6b1f70187827e6ae8c"
+  integrity sha512-yiQ3KxvpVoRpx1oD1uPz4Jit9tAVTJgjdmjDKtUErkOoL9VNoF8Dd58qtAOL5E40exx2jvAT9sqdRSK/r+SHlA==
 
 buffer-from@^1.0.0:
   version "1.1.2"
@@ -1405,7 +1410,7 @@ mongodb-connection-string-url@^2.6.0:
     "@types/whatwg-url" "^8.2.1"
     whatwg-url "^11.0.0"
 
-mongodb@5.8.1, mongodb@^5.3.0:
+mongodb@5.8.1:
   version "5.8.1"
   resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-5.8.1.tgz#dc201adfbd6c6d73401cdcf12ebdb75f14771faf"
   integrity sha512-wKyh4kZvm6NrCPH8AxyzXm3JBoEf4Xulo0aUWh3hCgwgYJxyQ1KLST86ZZaSWdj6/kxYUA3+YZuyADCE61CMSg==
@@ -1415,6 +1420,15 @@ mongodb@5.8.1, mongodb@^5.3.0:
     socks "^2.7.1"
   optionalDependencies:
     "@mongodb-js/saslprep" "^1.1.0"
+
+mongodb@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-6.1.0.tgz#5144bee74d50746f7b0ed68dbb974f31e1b40900"
+  integrity sha512-AvzNY0zMkpothZ5mJAaIo2bGDjlJQqqAbn9fvtVgwIIUPEfdrqGxqNjjbuKyrgQxg2EvCmfWdjq+4uj96c0YPw==
+  dependencies:
+    "@mongodb-js/saslprep" "^1.1.0"
+    bson "^6.1.0"
+    mongodb-connection-string-url "^2.6.0"
 
 mongoose@7.5.3:
   version "7.5.3"
