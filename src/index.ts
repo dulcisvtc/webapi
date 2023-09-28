@@ -50,7 +50,7 @@ client.once("ready", () => {
     });
 });
 
-for (const eventFileName of readdirSync(join(__dirname, "events")).filter((name) => name.endsWith(".js"))) {
+for (const eventFileName of readdirSync(join(__dirname, "events"))) {
     const eventFile = require(`./events/${eventFileName}`).default;
     const eventName = eventFileName.split(".")[0]!;
 

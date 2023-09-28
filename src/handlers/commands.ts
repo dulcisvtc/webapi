@@ -23,7 +23,7 @@ export function registerCommands(guild: Guild) {
 };
 
 function loadCommands() {
-    const commandFileNames = readdirSync(join(__dirname, "..", "commands")).filter((name) => name.endsWith(".js"));
+    const commandFileNames = readdirSync(join(__dirname, "..", "commands"));
 
     commandFileNames.map((name) => {
         const command = require(`../commands/${name}`).default as Command;
