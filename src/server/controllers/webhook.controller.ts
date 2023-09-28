@@ -1,4 +1,4 @@
-import { Controller, Post, RawBodyRequest, Req } from "@nestjs/common";
+import { Controller, Post, type RawBodyRequest, Req } from "@nestjs/common";
 import type { Request } from "express";
 import { WebhookService } from "../services/webhook.service";
 

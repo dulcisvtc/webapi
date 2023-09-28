@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, RawBodyRequest } from "@nestjs/common";
+import { ForbiddenException, Injectable, type RawBodyRequest } from "@nestjs/common";
 import crypto from "crypto";
 import type { Request } from "express";
 import config from "../../config";
