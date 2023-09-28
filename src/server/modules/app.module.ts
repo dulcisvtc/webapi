@@ -1,6 +1,7 @@
 import { CacheInterceptor, CacheModule } from "@nestjs/cache-manager";
 import { Module } from "@nestjs/common";
 import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
+import { ScheduleModule } from "@nestjs/schedule";
 import { redisStore } from "cache-manager-redis-yet";
 import type { RedisClientOptions } from "redis";
 import config from "../../config";
@@ -11,6 +12,7 @@ import { LeaderboardModule } from "./leaderboard.module";
 import { RootModule } from "./root.module";
 import { SlotsModule } from "./slots.module";
 import { StaffModule } from "./staff.module";
+import { TasksModule } from "./tasks.module";
 import { TMPModule } from "./tmp.module";
 import { UsersModule } from "./users.module";
 import { WebhookModule } from "./webhook.module";
@@ -30,8 +32,10 @@ import { WebhookModule } from "./webhook.module";
         EventsModule,
         LeaderboardModule,
         RootModule,
+        ScheduleModule.forRoot(),
         SlotsModule,
         StaffModule,
+        TasksModule,
         TMPModule,
         UsersModule,
         WebhookModule
