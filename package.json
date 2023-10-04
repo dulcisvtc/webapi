@@ -16,7 +16,7 @@
         "mm:status": "migrate-mongo status"
     },
     "dependencies": {
-        "@napi-rs/canvas": "^0.1.44",
+        "@napi-rs/canvas": "0.1.44",
         "@nestjs/cache-manager": "2.1.0",
         "@nestjs/common": "10.2.6",
         "@nestjs/core": "10.2.6",
@@ -46,7 +46,7 @@
         "redis": "4.6.10",
         "reflect-metadata": "0.1.13",
         "rxjs": "7.8.1",
-        "sharp": "^0.32.6",
+        "sharp": "0.32.6",
         "socket.io": "4.7.2",
         "text-table": "0.2.0",
         "tracksim.js": "1.1.2",
