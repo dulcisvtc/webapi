@@ -19,6 +19,8 @@ export default {
         attending: process.env["EVENTS_ATTENDING_CHANNEL"]!
     },
 
+    trackedRoles: process.env["TRACKED_ROLES"]!.split(","),
+
     discordOauth: {
         clientId: process.env["DISCORD_CLIENT_ID"]!,
         clientSecret: process.env["DISCORD_CLIENT_SECRET"]!,
