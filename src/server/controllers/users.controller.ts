@@ -23,8 +23,8 @@ export class UsersController {
     async findUserBanner(
         @Param() { query }: GetUserBannerParams
     ) {
-        // const cached = await this.cacheManager.get<string>(`${query}-banner`);
-        // if (cached) return new StreamableFile(Buffer.from(cached, "base64"));
+        const cached = await this.cacheManager.get<string>(`${query}-banner`);
+        if (cached) return new StreamableFile(Buffer.from(cached, "base64"));
 
         const banner = await this.usersService.getUserBanner(query);
         await this.cacheManager.set(`${query}-banner`, banner.toString("base64"), ms("1h"));
