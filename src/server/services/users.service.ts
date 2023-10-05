@@ -1,4 +1,4 @@
-import { createCanvas, loadImage } from "@napi-rs/canvas";
+import { GlobalFonts, createCanvas, loadImage } from "@napi-rs/canvas";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import sharp from "sharp";
 import { guild } from "../..";
@@ -17,6 +17,9 @@ export class UsersService {
         const user = await User.findOne({ $text: { $search: query } }, "-_id -__v").lean();
 
         if (!user) throw new NotFoundException("User not found");
+
+        GlobalFonts.registerFromPath("files/OpenSans-Bold.ttf", "Open Sans");
+        GlobalFonts.registerFromPath("files/OpenSans-Regular.ttf", "Open Sans");
 
         const [member, bg, [{ truck }], [{ litres }], jobs] = await Promise.all([
             guild!.members.fetch(user.discord_id),
