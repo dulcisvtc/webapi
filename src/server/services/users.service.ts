@@ -98,8 +98,6 @@ export class UsersService {
         ctx.fillText(`${role?.name ?? "Unknown"}`, 1246, 251);
         // User role end
 
-        console.log("ae")
-
         return canvas.toBuffer("image/png");
     };
 
