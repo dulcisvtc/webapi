@@ -695,7 +695,15 @@ cache-manager-redis-yet@4.1.2:
     cache-manager "^5.2.2"
     redis "^4.6.7"
 
-cache-manager@5.2.3, cache-manager@^5.2.2:
+cache-manager@5.2.4:
+  version "5.2.4"
+  resolved "https://registry.yarnpkg.com/cache-manager/-/cache-manager-5.2.4.tgz#01bebe2cc6bef993e3e959d59d3a25a3f2658df1"
+  integrity sha512-gkuCjug16NdGvKm/sydxGVx17uffrSWcEe2xraBtwRCgdYcFxwJAla4OYpASAZT2yhSoxgDiWL9XH6IAChcZJA==
+  dependencies:
+    lodash.clonedeep "^4.5.0"
+    lru-cache "^10.0.1"
+
+cache-manager@^5.2.2:
   version "5.2.3"
   resolved "https://registry.yarnpkg.com/cache-manager/-/cache-manager-5.2.3.tgz#b6a8b4469c57fdfdae1deed7f81ea9e057c7eade"
   integrity sha512-9OErI8fksFkxAMJ8Mco0aiZSdphyd90HcKiOMJQncSlU1yq/9lHHxrT8PDayxrmr9IIIZPOAEfXuGSD7g29uog==
@@ -1458,6 +1466,11 @@ loglevel@^1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.8.1.tgz#5c621f83d5b48c54ae93b6156353f555963377b4"
   integrity sha512-tCRIJM51SHjAayKwC+QAg8hT8vg6z7GSgLJKGvzuPb1Wc+hLzqtuVLxp6/HzSPOozuK+8ErAhy7U/sVzw8Dgfg==
+
+lru-cache@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-10.0.1.tgz#0a3be479df549cca0e5d693ac402ff19537a6b7a"
+  integrity sha512-IJ4uwUTi2qCccrioU6g9g/5rvvVl13bsdczUUcqbciD9iLr095yj8DQKdObriEvuNSx325N1rV1O0sJFszx75g==
 
 lru-cache@^6.0.0:
   version "6.0.0"
