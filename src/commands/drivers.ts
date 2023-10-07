@@ -22,7 +22,7 @@ export default {
                 .setDescription("Add a driver.")
                 .addUserOption((o) => o.setName("user").setDescription("Driver's Discord account.").setRequired(true))
                 .addStringOption((o) => o.setName("steamid").setDescription("Driver's SteamID.").setRequired(true))
-                .addStringOption((o) => o.setName("position").setDescription("User's current position.").setRequired(true))
+                .addStringOption((o) => o.setName("position").setDescription("User's current position."))
                 .addBooleanOption((o) => o.setName("memberupdate").setDescription("for development purposes. ignore this."))
         )
         .addSubcommand((c) =>
@@ -67,6 +67,7 @@ export default {
 
             const member = interaction.options.getMember("user");
             const steamId = interaction.options.getString("steamid", true);
+            const position = interaction.options.getString("position") || "Public";
 
             if (!member) return interaction.editReply({
                 embeds: [{
@@ -103,7 +104,7 @@ export default {
                         await webhook.send({
                             embeds: [{
                                 title: "Member Update",
-                                description: `**[${interaction.options.getString("position")}]** ${member} has joined Dulcis Logistics as a driver.`,
+                                description: `**[${position}]** ${member} has joined Dulcis Logistics as a driver.`,
                                 color: 0x7d7a7a
                             }]
                         });
