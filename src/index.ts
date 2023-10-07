@@ -6,7 +6,6 @@ import config from "./config";
 import { connection } from "./database";
 import { registerCommands } from "./handlers/commands";
 import { eventsTicker } from "./handlers/events";
-import BannedJob from "./jobs/BannedJob";
 import MetricsJob from "./jobs/MetricsJob";
 import updateSlots from "./lib/updateSlots";
 import { getLogger } from "./logger";
@@ -33,7 +32,6 @@ client.once("ready", () => {
     discordLogger.info(`Logged in as ${client.user!.tag}`);
 
     eventsTicker.start();
-    BannedJob.start();
     MetricsJob.start();
 
     guild = client.guilds.cache.get(config.guild)!;
