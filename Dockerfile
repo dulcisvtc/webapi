@@ -30,5 +30,6 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/files ./files
 COPY package.json ./
+COPY migrate-mongo-config.js ./
 
 ENTRYPOINT [ "/bin/sh", "-c", "yarn mm:up && yarn start" ]
