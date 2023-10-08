@@ -77,8 +77,8 @@ export class TasksService {
             if (pages.indexOf(page) + 1 !== pages.length) await sleep(500);
         };
 
-        await User.updateMany({ steam_id: { $in: notBanned }, banNotified: true }, { banNotified: false });
-        await User.updateMany({ steam_id: { $in: banned }, banNotified: false }, { banNotified: true });
+        await User.updateMany({ steam_id: { $in: notBanned } }, { banNotified: false });
+        await User.updateMany({ steam_id: { $in: banned } }, { banNotified: true });
     };
 
     @Cron(CronExpression.EVERY_MINUTE)
