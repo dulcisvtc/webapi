@@ -7,6 +7,7 @@ import type { RedisClientOptions } from "redis";
 import config from "../../config";
 import { PermissionsGuard } from "../guards/auth.guard";
 import { AuthModule } from "./auth.module";
+import { DownloadsModule } from "./downlods.module";
 import { EventsModule } from "./events.module";
 import { LeaderboardModule } from "./leaderboard.module";
 import { RootModule } from "./root.module";
@@ -29,6 +30,7 @@ import { WebhookModule } from "./webhook.module";
             password: config.redis.password,
             isGlobal: true
         }),
+        DownloadsModule,
         EventsModule,
         LeaderboardModule,
         RootModule,

@@ -16,7 +16,7 @@ class WarnSchema {
 };
 
 @modelOptions({ schemaOptions: { collection: "users" }, options: { allowMixed: Severity.ALLOW } })
-class UserSchema {
+export class UserSchema {
     @prop({ type: String, unique: true, required: true }) steam_id!: string;
     @prop({ type: String, unique: true, required: true }) discord_id!: string;
     @prop({ type: String, required: true }) username!: string;

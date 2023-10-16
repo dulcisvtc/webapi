@@ -2,7 +2,8 @@ const permissions = [
     "Access",
     "ManageEvents",
     "ManageUsers",
-    "ManageSlots"
+    "ManageSlots",
+    "ManageDownloads"
 ] as const;
 
 type PermissionFlags = typeof permissions[number];

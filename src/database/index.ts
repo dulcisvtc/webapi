@@ -5,6 +5,7 @@ export const connection = mongoose.connect(config.database_uri, {
     authSource: "admin"
 });
 
+export * from "./models/Download";
 export * from "./models/Event";
 export * from "./models/Global";
 export * from "./models/Jobs";

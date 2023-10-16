@@ -317,6 +317,14 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node18-strictest/-/node18-strictest-1.0.0.tgz#d7c49f29ef95c47182995bd2bfcf8c177512a8de"
   integrity sha512-bOuNKwO4Fzbt+Su5wqI9zNHwx5C25gLnutwVQA1sBZk0cW8UjVPVcwzIUhJIIJDUx7zDEbAwdCD2HfvIsV8dYg==
 
+"@typegoose/auto-increment@^3.6.0":
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/@typegoose/auto-increment/-/auto-increment-3.6.0.tgz#b4633f1f94a447ad74031a13c241e499d86dc95a"
+  integrity sha512-R+1Tw+JSmLKqnKsKM21B3a/W+oJr/CpC6w53exuwU6jYqnzEgy5JZtGdLHe4Wz0Q0+P5cswtbj2wBHAWCbyDFw==
+  dependencies:
+    loglevel "^1.8.1"
+    tslib "^2.6.2"
+
 "@typegoose/typegoose@11.6.0":
   version "11.6.0"
   resolved "https://registry.yarnpkg.com/@typegoose/typegoose/-/typegoose-11.6.0.tgz#e192f333d86e6cfc16e80f5a8d30eac99b33cde9"
@@ -1612,6 +1620,11 @@ mongodb@^6.1.0:
     "@mongodb-js/saslprep" "^1.1.0"
     bson "^6.1.0"
     mongodb-connection-string-url "^2.6.0"
+
+mongoose-autopopulate@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/mongoose-autopopulate/-/mongoose-autopopulate-1.0.1.tgz#05092e05d61c08ee868bcd0b8b05334ea36a046b"
+  integrity sha512-39rN0QQinA1iz/8JNVKM3MNq/zZrjStiWi8jA15diUC2nnJsvEgRXEir4L4D1azYxY+gBTuqEzLqd7Y+MC6pHQ==
 
 mongoose@7.6.2:
   version "7.6.2"

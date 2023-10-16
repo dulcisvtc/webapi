@@ -76,4 +76,15 @@ export class AuthService {
             permissions: document.permissions
         };
     };
+
+    async getUserDocument(access_token: string) {
+        const session = await getSessionInfo(access_token);
+
+        if (!session) throw new UnauthorizedException();
+
+        const document = await getUserDocumentBySteamId(session.steamId);
+        if (!document) throw new NotFoundException("User not found");
+
+        return document;
+    };
 };
