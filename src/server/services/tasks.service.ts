@@ -10,6 +10,8 @@ import http from "../../lib/http";
 import { getLogger } from "../../logger";
 import { TasksGateway } from "../gateways/tasks.gateway";
 
+const generalLogger = getLogger("general", true);
+
 @Injectable()
 export class TasksService {
     constructor(private tasksGateway: TasksGateway) { };
@@ -36,7 +38,10 @@ export class TasksService {
                         .catch(() => ({ data: { response: null } }))
                 ).data.response;
 
-                if (!TMPPlayer) return;
+                if (!TMPPlayer) {
+                    generalLogger.error(`Failed to fetch TMP player ${driver.steam_id}`);
+                    return;
+                };
 
                 if (!TMPPlayer.banned) {
                     notBanned.push(driver.steam_id);
