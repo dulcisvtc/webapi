@@ -1,5 +1,5 @@
 # base image
-FROM node:18-alpine@sha256:da5e0ec240388344a75ba2b61d87a39043ebe140a7d681f4ef903a9b6d2e22fa AS base
+FROM node:18-alpine@sha256:0fe7402d11d8c85474c6ec6f9c9c8048cd0549c95535832b7f0735a4b47690a5 AS base
 RUN npm i --force -g yarn
 
 # install dependencies
