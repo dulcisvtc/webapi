@@ -2,10 +2,12 @@ import { CacheInterceptor, CacheModule } from "@nestjs/cache-manager";
 import { Module } from "@nestjs/common";
 import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { ScheduleModule } from "@nestjs/schedule";
+import { ThrottlerModule } from "@nestjs/throttler";
 import { redisStore } from "cache-manager-redis-yet";
 import type { RedisClientOptions } from "redis";
 import config from "../../config";
 import { PermissionsGuard } from "../guards/auth.guard";
+import { ThrottlerBehindProxyGuard } from "../guards/throttle.guard";
 import { AuthModule } from "./auth.module";
 import { DownloadsModule } from "./downlods.module";
 import { EventsModule } from "./events.module";
@@ -20,7 +22,6 @@ import { WebhookModule } from "./webhook.module";
 
 @Module({
     imports: [
-        AuthModule,
         CacheModule.register<RedisClientOptions>({
             store: redisStore,
             socket: {
@@ -30,6 +31,20 @@ import { WebhookModule } from "./webhook.module";
             password: config.redis.password,
             isGlobal: true
         }),
+        ThrottlerModule.forRoot([{
+            name: "short",
+            ttl: 1000,
+            limit: 4,
+        }, {
+            name: "medium",
+            ttl: 10000,
+            limit: 20
+        }, {
+            name: "long",
+            ttl: 60000,
+            limit: 100
+        }]),
+        AuthModule,
         DownloadsModule,
         EventsModule,
         LeaderboardModule,
@@ -48,6 +63,9 @@ import { WebhookModule } from "./webhook.module";
     }, {
         provide: APP_GUARD,
         useClass: PermissionsGuard
+    }, {
+        provide: APP_GUARD,
+        useClass: ThrottlerBehindProxyGuard
     }]
 })
 export class AppModule { };
