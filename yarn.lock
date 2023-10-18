@@ -324,10 +324,10 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node18-strictest/-/node18-strictest-1.0.0.tgz#d7c49f29ef95c47182995bd2bfcf8c177512a8de"
   integrity sha512-bOuNKwO4Fzbt+Su5wqI9zNHwx5C25gLnutwVQA1sBZk0cW8UjVPVcwzIUhJIIJDUx7zDEbAwdCD2HfvIsV8dYg==
 
-"@typegoose/auto-increment@3.6.0":
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/@typegoose/auto-increment/-/auto-increment-3.6.0.tgz#b4633f1f94a447ad74031a13c241e499d86dc95a"
-  integrity sha512-R+1Tw+JSmLKqnKsKM21B3a/W+oJr/CpC6w53exuwU6jYqnzEgy5JZtGdLHe4Wz0Q0+P5cswtbj2wBHAWCbyDFw==
+"@typegoose/auto-increment@3.6.1":
+  version "3.6.1"
+  resolved "https://registry.yarnpkg.com/@typegoose/auto-increment/-/auto-increment-3.6.1.tgz#b750fbfe0bd175a5b63a853d41b80b5a613b8782"
+  integrity sha512-WLSCc0TvVungjrOZSbCFlmTU14j4ob23i1/OI4JUKOILWn7AQFhAaDsCODB9ywcLdkXtZgWXJJsbtwtrfsdzpA==
   dependencies:
     loglevel "^1.8.1"
     tslib "^2.6.2"
