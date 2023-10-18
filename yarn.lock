@@ -477,10 +477,10 @@
     "@types/mime" "*"
     "@types/node" "*"
 
-"@types/text-table@0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@types/text-table/-/text-table-0.2.3.tgz#c9b0c8df377e10d16795381c2117b718562cae8b"
-  integrity sha512-MUW7DN7e178wJ2dB9rHuhwUWRUJGrl8fCng37BEWV0r2r5VpzkRFRiMfnX6sjXlu4tMn41lrjzsVh/z1XrKc+A==
+"@types/text-table@0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@types/text-table/-/text-table-0.2.4.tgz#d70d484b573728b479ed5c9c4942b37f1af816d8"
+  integrity sha512-jxT2kMVKXQole5LryYWdaRzmSxEQPyWAjYRO77TyqEfp1YEnNV5Dq4h4OlUDLrZkiYbQHzYQMKbsz4bgPCpaug==
 
 "@types/triple-beam@^1.3.2":
   version "1.3.2"
