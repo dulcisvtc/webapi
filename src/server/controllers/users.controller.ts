@@ -27,7 +27,7 @@ export class UsersController {
         if (cached) return new StreamableFile(Buffer.from(cached, "base64"));
 
         const banner = await this.usersService.getUserBanner(query);
-        await this.cacheManager.set(`${query}-banner`, banner.toString("base64"), ms("1h"));
+        await this.cacheManager.set(`${query}-banner`, banner.toString("base64"), ms("7d"));
 
         return new StreamableFile(banner);
     };
