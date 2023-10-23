@@ -1,18 +1,9 @@
-import { DocumentType, getModelForClass, modelOptions, prop, PropType, Severity } from "@typegoose/typegoose";
+import { DocumentType, getModelForClass, modelOptions, prop, Severity } from "@typegoose/typegoose";
 
 @modelOptions({ schemaOptions: { _id: false }, options: { allowMixed: Severity.ALLOW } })
 class LeaderboardSchema {
     @prop({ type: Number, default: 0 }) monthly_mileage!: number;
     @prop({ type: Number, default: 0 }) alltime_mileage!: number;
-};
-
-@modelOptions({ schemaOptions: { _id: false }, options: { allowMixed: Severity.ALLOW } })
-class WarnSchema {
-    @prop({ type: String, required: true }) id!: string;
-    @prop({ type: String, required: true }) userId!: string;
-    @prop({ type: String, required: true }) createdById!: string;
-    @prop({ type: String, default: "None" }) description!: string;
-    @prop({ type: Number, required: true }) createdTimestamp!: number;
 };
 
 @modelOptions({ schemaOptions: { collection: "users" }, options: { allowMixed: Severity.ALLOW } })
@@ -23,7 +14,6 @@ export class UserSchema {
     @prop({ type: Number, default: 0 }) permissions!: number;
     @prop({ type: Number, default: 0 }) experience!: number;
     @prop({ type: LeaderboardSchema, default: {} }) leaderboard!: LeaderboardSchema;
-    @prop({ type: WarnSchema, default: {} }, PropType.MAP) warns!: Map<string, WarnSchema>;
     @prop({ type: Boolean, default: false }) banNotified!: boolean;
 };
 

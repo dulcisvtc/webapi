@@ -1,7 +1,8 @@
 import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import { botlogs } from "..";
-import { generateId } from "../constants/functions";
 import { getUserDocumentByDiscordId } from "../database";
+import { Warn } from "../database";
+import { isDocument } from "@typegoose/typegoose";
 
 export default {
     data: new SlashCommandBuilder()
@@ -18,8 +19,7 @@ export default {
             c
                 .setName("remove")
                 .setDescription("Remove a warning.")
-                .addUserOption((o) => o.setName("user").setDescription("Driver's Discord account.").setRequired(true))
-                .addStringOption((o) => o.setName("id").setDescription("Warn ID.").setRequired(true))
+                .addIntegerOption((o) => o.setName("id").setDescription("Warn ID.").setRequired(true))
         )
         .addSubcommand((c) =>
             c
@@ -41,26 +41,23 @@ export default {
                     ephemeral: true,
                 });
 
+            const authorDocument = await getUserDocumentByDiscordId(interaction.user.id)!;
             const description = interaction.options.getString("description", true);
-            const id = generateId(6);
 
-            document.warns.set(id, {
-                id,
-                userId: user.id,
-                createdById: interaction.user.id,
+            const warn = await Warn.create({
+                user: document,
                 description,
-                createdTimestamp: Date.now(),
+                createdBy: authorDocument
             });
-            await document.save();
 
             await interaction.reply({
-                content: `Added warn to ${user} (${user.tag}) with description: ${description}`,
+                content: `Warn \`${warn._id}\` created for ${user} (\`${user.tag}\`)`,
                 ephemeral: true,
             });
 
             return void await botlogs?.send({
                 embeds: [{
-                    title: `warn ${id} added`,
+                    title: `warn ${warn._id} created`,
                     author: {
                         name: interaction.user.tag,
                         icon_url: interaction.user.displayAvatarURL()
@@ -75,39 +72,39 @@ export default {
                 }]
             });
         } else if (command === "remove") {
-            if (!document)
+            const id = interaction.options.getInteger("id", true);
+
+            const warn = await Warn.findById(id);
+
+            if (!warn) {
                 return interaction.reply({
-                    content: "This user is not registered in the database.",
-                    ephemeral: true,
+                    content: "This warn does not exist.",
+                    ephemeral: true
                 });
-
-            const id = interaction.options.getString("id", true);
-
-            if (!document.warns.has(id))
-                return interaction.reply({
-                    content: "This user does not have a warn with this ID.",
-                    ephemeral: true,
-                });
-
-            document.warns.delete(id);
-            await document.save();
+            };
 
             await interaction.reply({
-                content: `Removed warn from ${user} (${user.tag}) with ID: ${id}`,
-                ephemeral: true,
+                content: [
+                    `Warn \`${id}\` removed for ${user} (\`${user.tag}\`):`,
+                    "```json",
+                    JSON.stringify(warn.toJSON(), null, 4),
+                    "```"
+                ].join("\n"),
+                ephemeral: true
             });
 
             return void await botlogs?.send({
                 embeds: [{
-                    title: `warn ${id} removed`,
+                    title: `warn ${id} deleted`,
                     author: {
                         name: interaction.user.tag,
                         icon_url: interaction.user.displayAvatarURL()
                     },
-                    fields: [{
-                        name: "discord user",
-                        value: `${user} \`${user.tag}\` (\`${user.id}\`)`
-                    }]
+                    description: [
+                        "```json",
+                        JSON.stringify(warn.toJSON(), null, 4),
+                        "```"
+                    ].join("\n")
                 }]
             });
         } else if (command === "list") {
@@ -117,9 +114,9 @@ export default {
                     ephemeral: true,
                 });
 
-            const warns = document.warns;
+            const warns = await Warn.find({ user: document }).sort({ createdAt: -1 }).exec();
 
-            if (!warns.size)
+            if (!warns.length)
                 return interaction.reply({
                     content: "This user does not have any warns.",
                     ephemeral: true,
@@ -128,13 +125,13 @@ export default {
             const embed = new EmbedBuilder()
                 .setTitle(`Warns for ${user.tag}`)
 
-            for (const [id, warn] of warns) {
-                const createdById = warn.createdById;
-                const createdTimestamp = Math.round(warn.createdTimestamp / 1000);
+            for (const warn of warns) {
+                const createdById = isDocument(warn.createdBy) ? warn.createdBy.discord_id : null;
+                const createdTimestamp = Math.round(warn.createdAt / 1000);
                 const description = warn.description;
 
                 embed.addFields({
-                    name: `Warn ID: ${id}`,
+                    name: `Warn ID: ${warn._id}`,
                     value: `Created by: <@${createdById}>\nCreated at: <t:${createdTimestamp}:F>\nDescription: ${description}`
                 });
             };

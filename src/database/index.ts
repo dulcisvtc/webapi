@@ -12,6 +12,7 @@ export * from "./models/Jobs";
 export * from "./models/Session";
 export * from "./models/Slot";
 export * from "./models/User";
+export * from "./models/Warn";
 export * from "./models/Wordchannel";
 
 export * from "./event";
