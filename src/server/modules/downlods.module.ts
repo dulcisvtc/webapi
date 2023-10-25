@@ -4,8 +4,8 @@ import { DownloadsService } from "../services/downloads.service";
 import { AuthModule } from "./auth.module";
 
 @Module({
-    imports: [AuthModule],
-    controllers: [DownloadsController],
-    providers: [DownloadsService]
+  imports: [AuthModule],
+  controllers: [DownloadsController],
+  providers: [DownloadsService],
 })
-export class DownloadsModule { };
+export class DownloadsModule {}

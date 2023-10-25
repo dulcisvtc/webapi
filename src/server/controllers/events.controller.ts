@@ -5,26 +5,22 @@ import { EventsService } from "../services/events.service";
 
 @Controller("events")
 export class EventsController {
-    constructor(private eventsService: EventsService) { };
+  constructor(private eventsService: EventsService) {}
 
-    @Get()
-    public getEvents() {
-        return this.eventsService.getEvents();
-    };
+  @Get()
+  public getEvents() {
+    return this.eventsService.getEvents();
+  }
 
-    @Post()
-    @RequirePermissions("ManageEvents")
-    public postEvent(
-        @Body() postEventDto: PostEventDto
-    ) {
-        return this.eventsService.postEvent(postEventDto);
-    };
+  @Post()
+  @RequirePermissions("ManageEvents")
+  public postEvent(@Body() postEventDto: PostEventDto) {
+    return this.eventsService.postEvent(postEventDto);
+  }
 
-    @Delete()
-    @RequirePermissions("ManageEvents")
-    public deleteEvent(
-        @Body() data: DeleteEventDto
-    ) {
-        return this.eventsService.deleteEvent(data.eventId);
-    };
-};
+  @Delete()
+  @RequirePermissions("ManageEvents")
+  public deleteEvent(@Body() data: DeleteEventDto) {
+    return this.eventsService.deleteEvent(data.eventId);
+  }
+}

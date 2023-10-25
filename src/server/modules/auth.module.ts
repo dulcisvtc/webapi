@@ -4,14 +4,8 @@ import { PermissionsGuard } from "../guards/auth.guard";
 import { AuthService } from "../services/auth.service";
 
 @Module({
-    controllers: [AuthController],
-    providers: [
-        AuthService,
-        PermissionsGuard
-    ],
-    exports: [
-        AuthService,
-        PermissionsGuard
-    ]
+  controllers: [AuthController],
+  providers: [AuthService, PermissionsGuard],
+  exports: [AuthService, PermissionsGuard],
 })
-export class AuthModule { };
+export class AuthModule {}

@@ -21,51 +21,59 @@ import { UsersModule } from "./users.module";
 import { WebhookModule } from "./webhook.module";
 
 @Module({
-    imports: [
-        CacheModule.register<RedisClientOptions>({
-            store: redisStore,
-            socket: {
-                host: config.redis.host,
-                port: config.redis.port
-            },
-            password: config.redis.password,
-            isGlobal: true
-        }),
-        ThrottlerModule.forRoot([{
-            name: "short",
-            ttl: 1000,
-            limit: 4,
-        }, {
-            name: "medium",
-            ttl: 10000,
-            limit: 20
-        }, {
-            name: "long",
-            ttl: 60000,
-            limit: 100
-        }]),
-        AuthModule,
-        DownloadsModule,
-        EventsModule,
-        LeaderboardModule,
-        RootModule,
-        ScheduleModule.forRoot(),
-        SlotsModule,
-        StaffModule,
-        TasksModule,
-        TMPModule,
-        UsersModule,
-        WebhookModule
-    ],
-    providers: [{
-        provide: APP_INTERCEPTOR,
-        useClass: CacheInterceptor,
-    }, {
-        provide: APP_GUARD,
-        useClass: PermissionsGuard
-    }, {
-        provide: APP_GUARD,
-        useClass: ThrottlerBehindProxyGuard
-    }]
+  imports: [
+    CacheModule.register<RedisClientOptions>({
+      store: redisStore,
+      socket: {
+        host: config.redis.host,
+        port: config.redis.port,
+      },
+      password: config.redis.password,
+      isGlobal: true,
+    }),
+    ThrottlerModule.forRoot([
+      {
+        name: "short",
+        ttl: 1000,
+        limit: 4,
+      },
+      {
+        name: "medium",
+        ttl: 10000,
+        limit: 20,
+      },
+      {
+        name: "long",
+        ttl: 60000,
+        limit: 100,
+      },
+    ]),
+    AuthModule,
+    DownloadsModule,
+    EventsModule,
+    LeaderboardModule,
+    RootModule,
+    ScheduleModule.forRoot(),
+    SlotsModule,
+    StaffModule,
+    TasksModule,
+    TMPModule,
+    UsersModule,
+    WebhookModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionsGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerBehindProxyGuard,
+    },
+  ],
 })
-export class AppModule { };
+export class AppModule {}

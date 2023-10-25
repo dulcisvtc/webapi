@@ -2,11 +2,11 @@ import { DocumentType, getModelForClass, modelOptions, prop, PropType, Severity 
 
 @modelOptions({ schemaOptions: { collection: "wordchannels" }, options: { allowMixed: Severity.ALLOW } })
 class WordchannelSchema {
-    @prop({ type: String, default: "" }) word!: string;
-    @prop({ type: String, default: "" }) user!: string;
-    @prop({ type: String, default: "" }) message!: string;
-    @prop({ type: Map, default: {} }, PropType.MAP) leaderboard!: Map<string, number>;
-};
+  @prop({ type: String, default: "" }) word!: string;
+  @prop({ type: String, default: "" }) user!: string;
+  @prop({ type: String, default: "" }) message!: string;
+  @prop({ type: Map, default: {} }, PropType.MAP) leaderboard!: Map<string, number>;
+}
 
 export type WordchannelDocument = DocumentType<WordchannelSchema>;
 

@@ -6,28 +6,28 @@ import type { Command } from "../../types";
 export const commands = new Map<string, Command>();
 
 export default function handleCommand(interaction: ChatInputCommandInteraction<"cached">) {
-    const command = commands.get(interaction.commandName);
+  const command = commands.get(interaction.commandName);
 
-    if (!command) return;
+  if (!command) return;
 
-    command.execute(interaction);
-};
+  command.execute(interaction);
+}
 
 export function registerCommands(guild: Guild) {
-    loadCommands();
+  loadCommands();
 
-    const cmds: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
-    for (const command of commands.values()) cmds.push(command.data);
+  const cmds: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
+  for (const command of commands.values()) cmds.push(command.data);
 
-    return guild.commands.set(cmds);
-};
+  return guild.commands.set(cmds);
+}
 
 function loadCommands() {
-    const commandFileNames = readdirSync(join(__dirname, "..", "commands"));
+  const commandFileNames = readdirSync(join(__dirname, "..", "commands"));
 
-    commandFileNames.map((name) => {
-        const command = require(`../commands/${name}`).default as Command;
+  commandFileNames.map((name) => {
+    const command = require(`../commands/${name}`).default as Command;
 
-        commands.set(command.data.name, command);
-    });
+    commands.set(command.data.name, command);
+  });
 }
