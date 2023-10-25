@@ -16,46 +16,46 @@ const generalLogger = getLogger("general", true);
 
 export const admens = ["419892040726347776", "736719142345900195"];
 export const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMembers,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent
-    ]
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+  ],
 });
 
 export let guild: Guild | null = null;
 export let botlogs: TextChannel | null = null;
 
 client.once("ready", () => {
-    discordLogger.info(`Logged in as ${client.user!.tag}`);
+  discordLogger.info(`Logged in as ${client.user!.tag}`);
 
-    eventsTicker.start();
+  eventsTicker.start();
 
-    guild = client.guilds.cache.get(config.guild)!;
-    botlogs = guild.channels.cache.get(config.botlogs_channel)! as TextChannel;
+  guild = client.guilds.cache.get(config.guild)!;
+  botlogs = guild.channels.cache.get(config.botlogs_channel)! as TextChannel;
 
-    guild.members.fetch().then(() => {
-        discordLogger.info("Fetched members.");
-    });
-    registerCommands(guild).then((commands) => {
-        discordLogger.info(`Registered ${commands.size} commands.`)
-    });
-    updateSlots(client).then(() => {
-        generalLogger.info("Updated slots.");
-    });
+  guild.members.fetch().then(() => {
+    discordLogger.info("Fetched members.");
+  });
+  registerCommands(guild).then((commands) => {
+    discordLogger.info(`Registered ${commands.size} commands.`);
+  });
+  updateSlots(client).then(() => {
+    generalLogger.info("Updated slots.");
+  });
 });
 
 for (const eventFileName of readdirSync(join(__dirname, "events"))) {
-    const eventFile = require(`./events/${eventFileName}`).default;
-    const eventName = eventFileName.split(".")[0]!;
+  const eventFile = require(`./events/${eventFileName}`).default;
+  const eventName = eventFileName.split(".")[0]!;
 
-    client[eventFile.once ? "once" : "on"](eventName, (...params) => eventFile.execute(...params));
-};
+  client[eventFile.once ? "once" : "on"](eventName, (...params) => eventFile.execute(...params));
+}
 
 connection.then(() => {
-    databaseLogger.info("Connected to database.");
-    return void client.login(config.token);
+  databaseLogger.info("Connected to database.");
+  return void client.login(config.token);
 });
 
 bootstrap();

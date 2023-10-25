@@ -3,10 +3,10 @@ import { Staff, StaffService } from "../services/staff.service";
 
 @Controller("staff")
 export class StaffController {
-    constructor(private staffService: StaffService) { };
+  constructor(private staffService: StaffService) {}
 
-    @Get()
-    async findStaff(): Promise<Staff[]> {
-        return await this.staffService.getStaff();
-    };
-};
+  @Get()
+  async findStaff(): Promise<Staff[]> {
+    return await this.staffService.getStaff();
+  }
+}

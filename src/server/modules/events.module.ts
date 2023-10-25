@@ -6,13 +6,8 @@ import { EventsGateway } from "../gateways/events.gateway";
 import { EventsService } from "../services/events.service";
 
 @Module({
-    imports: [AuthModule],
-    controllers: [EventsController],
-    providers: [
-        AuthModule,
-        EventsService,
-        EventsGateway,
-        TMPService
-    ]
+  imports: [AuthModule],
+  controllers: [EventsController],
+  providers: [AuthModule, EventsService, EventsGateway, TMPService],
 })
-export class EventsModule { };
+export class EventsModule {}

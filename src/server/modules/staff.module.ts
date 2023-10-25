@@ -3,7 +3,7 @@ import { StaffService } from "../services/staff.service";
 import { StaffController } from "../controllers/staff.controller";
 
 @Module({
-    controllers: [StaffController],
-    providers: [StaffService],
+  controllers: [StaffController],
+  providers: [StaffService],
 })
-export class StaffModule { };
+export class StaffModule {}

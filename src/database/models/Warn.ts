@@ -7,15 +7,15 @@ import { UserSchema } from "./User";
 @plugin(AutoIncrementID, {})
 @modelOptions({ schemaOptions: { collection: "warns" }, options: { allowMixed: Severity.ALLOW } })
 class WarnSchema {
-    @prop() _id!: number;
+  @prop() _id!: number;
 
-    @prop({ autopopulate: true, ref: () => UserSchema }) user!: Ref<UserSchema>;
+  @prop({ autopopulate: true, ref: () => UserSchema }) user!: Ref<UserSchema>;
 
-    @prop({ type: String, default: "None" }) description!: string;
+  @prop({ type: String, default: "None" }) description!: string;
 
-    @prop({ type: Number, default: Date.now }) createdAt!: number;
-    @prop({ autopopulate: true, ref: () => UserSchema }) createdBy!: Ref<UserSchema>;
-};
+  @prop({ type: Number, default: Date.now }) createdAt!: number;
+  @prop({ autopopulate: true, ref: () => UserSchema }) createdBy!: Ref<UserSchema>;
+}
 
 export type WarnDocument = DocumentType<WarnSchema>;
 

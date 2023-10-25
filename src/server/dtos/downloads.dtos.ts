@@ -4,30 +4,30 @@ import type { Tag } from "../types/downloads";
 const Tags: Tag[] = ["localmod", "saveedit", "interface"];
 
 export class PostPatchDownloadsDto {
-    @IsString()
-    @IsNotEmpty()
-    name!: string;
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    description!: string;
+  @IsString()
+  @IsNotEmpty()
+  description!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    downloadUrl!: string;
+  @IsString()
+  @IsNotEmpty()
+  downloadUrl!: string;
 
-    @IsString()
-    @IsNotEmpty()
-    imageUrl!: string;
+  @IsString()
+  @IsNotEmpty()
+  imageUrl!: string;
 
-    @IsString({ each: true })
-    @IsNotEmpty({ each: true })
-    @IsIn(Tags, { each: true })
-    tags!: Tag[];
-};
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  @IsIn(Tags, { each: true })
+  tags!: Tag[];
+}
 
 export class PatchDeleteDownloadsUriDto {
-    @IsNumberString()
-    @IsNotEmpty()
-    id!: number;
-};
+  @IsNumberString()
+  @IsNotEmpty()
+  id!: number;
+}

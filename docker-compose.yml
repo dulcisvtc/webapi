@@ -1,8 +1,8 @@
 version: "3.9"
 
 services:
-    api:
-        build: .
-        restart: always
-        ports:
-            - $PORT:3000
+  api:
+    build: .
+    restart: always
+    ports:
+      - $PORT:3000
