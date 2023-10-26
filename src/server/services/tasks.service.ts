@@ -228,12 +228,11 @@ export class TasksService {
 
       // Update data
       axios.put(`https://discord.com/api/v10/users/@me/applications/${config.discordOauth.clientId}/role-connection`, {
-        platform_name: "TEST123",
+        platform_name: "Dulcis Logistics Driver's Hub",
         platform_username: driver.username,
         metadata: {
           kms: driver.leaderboard.alltime_mileage,
-          jobs: jobs.length,
-          joined: "2010-10-10", //TODO: get join date
+          jobs: jobs.length
         },
       });
     });
