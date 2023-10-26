@@ -223,7 +223,7 @@ export class TasksService {
       let driver = await getUserDocumentByDiscordId(linkedRoleUser.discord_id);
       if (!driver) throw new Error("Could not find driver.");
 
-      let jobs = await Jobs.find({ driver: { steam_id: driver.steam_id } });
+      let jobs = await Jobs.find({ "driver.steam_id": driver.steam_id });
       if (!jobs) throw new Error("Could not find jobs");
 
       // Update data
