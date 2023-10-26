@@ -1,4 +1,5 @@
 import { Controller, Get, Param, ParseIntPipe } from "@nestjs/common";
+import { SkipThrottle } from "@nestjs/throttler";
 import type { APICompanyMembers, APIGameEvent } from "@truckersmp_official/api-types/v2";
 import { TMPService } from "../services/tmp.service";
 
@@ -12,6 +13,7 @@ export class TMPController {
   }
 
   @Get("event/:id")
+  @SkipThrottle()
   async findEvent(
     @Param("id", new ParseIntPipe())
     id: number
