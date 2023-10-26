@@ -1,5 +1,10 @@
 Linked Role Metadata to be one-off PUT to `https://discord.com/api/v10/applications/CLIENTID/role-connections/metadata`
 
+Header:
+Authorization: Bot [TOKEN]
+
+Body:
+
 ```
 [
 	{
@@ -13,12 +18,6 @@ Linked Role Metadata to be one-off PUT to `https://discord.com/api/v10/applicati
 		"name": "Jobs Completed",
 		"description": "Jobs Completed",
 		"type": 3
-	},
-	{
-		"key": "joined",
-		"name": "Driver Since",
-		"description": "Driver Since",
-		"type": 6
 	}
 ]
 ```
