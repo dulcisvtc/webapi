@@ -34,19 +34,8 @@ import { WebhookModule } from "./webhook.module";
     }),
     ThrottlerModule.forRoot([
       {
-        name: "short",
-        ttl: 1000,
-        limit: 4,
-      },
-      {
-        name: "medium",
-        ttl: 10000,
-        limit: 20,
-      },
-      {
-        name: "long",
-        ttl: 60000,
-        limit: 100,
+        ttl: 5000,
+        limit: 15,
       },
     ]),
     AuthModule,
