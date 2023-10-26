@@ -227,14 +227,22 @@ export class TasksService {
       if (!jobs) throw new Error("Could not find jobs");
 
       // Update data
-      axios.put(`https://discord.com/api/v10/users/@me/applications/${config.discordOauth.clientId}/role-connection`, {
-        platform_name: "Dulcis Logistics Driver's Hub",
-        platform_username: driver.username,
-        metadata: {
-          kms: driver.leaderboard.alltime_mileage,
-          jobs: jobs.length
+      axios.put(
+        `https://discord.com/api/v10/users/@me/applications/${config.discordOauth.clientId}/role-connection`,
+        {
+          platform_name: "Dulcis Logistics Driver's Hub",
+          platform_username: driver.username,
+          metadata: {
+            kms: driver.leaderboard.alltime_mileage,
+            jobs: jobs.length,
+          },
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${linkedRoleUser.access_token}`,
+          },
+        }
+      );
     });
   }
 }
