@@ -1,6 +1,6 @@
-import { CacheInterceptor, CacheModule } from "@nestjs/cache-manager";
+import { CacheModule } from "@nestjs/cache-manager";
 import { Module } from "@nestjs/common";
-import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
+import { APP_GUARD } from "@nestjs/core";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ThrottlerModule } from "@nestjs/throttler";
 import { redisStore } from "cache-manager-redis-yet";
@@ -62,10 +62,10 @@ import { WebhookModule } from "./webhook.module";
     WebhookModule,
   ],
   providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
-    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: CacheInterceptor,
+    // },
     {
       provide: APP_GUARD,
       useClass: PermissionsGuard,
