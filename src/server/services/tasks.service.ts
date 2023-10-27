@@ -242,7 +242,7 @@ export class TasksService {
             platform_name: "Dulcis Logistics Driver's Hub",
             platform_username: driver.username,
             metadata: {
-              kms: Math.round(driver.leaderboard.alltime_mileage),
+              kms: driver.leaderboard.alltime_mileage,
               jobs: jobs,
             },
           },
