@@ -1,5 +1,5 @@
 import { inspect } from "util";
-import { User, type UserDocument } from ".";
+import { LinkedRoleUser, User, type UserDocument } from ".";
 import { getLogger } from "../logger";
 
 const dbLogger = getLogger("database", true);
@@ -29,6 +29,8 @@ export function getUserDocumentByDiscordId(discordId: string): Promise<UserDocum
 
 export async function resetUserDocument(steamId: string): Promise<void> {
   const user = await getUserDocumentBySteamId(steamId);
+  await LinkedRoleUser.deleteOne({ discord_id: user.discord_id });
+
   dbLogger.debug(`Reset user document for ${steamId}:\n${inspect(user, { depth: Infinity })}`);
   return void user.deleteOne();
 }

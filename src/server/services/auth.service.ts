@@ -11,9 +11,12 @@ import {
   updateOrCreateLinkedRoleUser,
 } from "../../database";
 import type { PostAuthLoginResponse, PostAuthLogoutResponse, SessionInfoResponse, UserInfoResponse } from "../types/auth";
+import { UsersService } from "./users.service";
 
 @Injectable()
 export class AuthService {
+  constructor(private usersService: UsersService) {}
+
   discordOauth = new OAuth({
     clientId: config.discordOauth.clientId,
     clientSecret: config.discordOauth.clientSecret,
@@ -36,6 +39,7 @@ export class AuthService {
       : `https://cdn.discordapp.com/embed/avatars/0.png`;
     const session = await createSession(document.steam_id, avatar_url);
     await updateOrCreateLinkedRoleUser(discordUser.id, token.access_token, token.refresh_token);
+    await this.usersService.updateUserMetadata(document.discord_id);
 
     return {
       access_token: session.access_token,

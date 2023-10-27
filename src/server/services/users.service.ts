@@ -1,12 +1,16 @@
 import { GlobalFonts, createCanvas, loadImage } from "@napi-rs/canvas";
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { Routes } from "discord.js";
 import sharp from "sharp";
-import { guild } from "../..";
-import { Jobs, User } from "../../database";
+import { inspect } from "util";
+import { client, guild } from "../..";
 import config from "../../config";
+import { Jobs, LinkedRoleUser, User, getUserDocumentByDiscordId } from "../../database";
 
 @Injectable()
 export class UsersService {
+  logger = new Logger(UsersService.name);
+
   async getUsers() {
     const users = await User.find({}, "-_id -__v").lean();
 
@@ -107,5 +111,35 @@ export class UsersService {
     if (!user) throw new NotFoundException("User not found");
 
     return user;
+  }
+
+  async updateUserMetadata(discord_id: string): Promise<boolean> {
+    const linkedRoleUser = await LinkedRoleUser.findOne({ discord_id });
+    if (!linkedRoleUser) return false;
+
+    const document = await getUserDocumentByDiscordId(discord_id);
+    if (!document) return false;
+
+    const jobs = await Jobs.find({ "driver.steam_id": document.steam_id }).count();
+
+    return !!(await client.rest
+      .put(Routes.userApplicationRoleConnection(config.discordOauth.clientId), {
+        body: {
+          platform_name: "Dulcis Logistics Driver's Hub",
+          platform_username: document.username,
+          metadata: {
+            kms: document.leaderboard.alltime_mileage,
+            jobs: jobs,
+          },
+        },
+        headers: {
+          Authorization: `Bearer ${linkedRoleUser.access_token}`,
+        },
+      })
+      .catch((err) => {
+        this.logger.error(
+          `Failed to update linked role for ${linkedRoleUser.discord_id} ${err.response?.status}: ${inspect(err.response?.data)}`
+        );
+      }));
   }
 }

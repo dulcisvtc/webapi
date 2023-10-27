@@ -2,22 +2,14 @@ import { Injectable, Logger } from "@nestjs/common";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import type { APIPlayer } from "@truckersmp_official/api-types/v2";
 import OAuth from "discord-oauth2";
-import { Routes } from "discord.js";
+import ms from "ms";
 import { setTimeout as sleep } from "timers/promises";
 import { inspect } from "util";
-import { botlogs, client } from "../..";
+import { botlogs } from "../..";
 import config from "../../config";
 import { latestFromMap, paginate } from "../../constants/functions";
 import { isCurrentMonth, isToday } from "../../constants/time";
-import {
-  Jobs,
-  Session,
-  User,
-  getGlobalDocument,
-  getLinkedRoleUsers,
-  getUserDocumentByDiscordId,
-  updateOrCreateLinkedRoleUser,
-} from "../../database";
+import { Jobs, LinkedRoleUser, Session, User, getGlobalDocument, updateOrCreateLinkedRoleUser } from "../../database";
 import http from "../../lib/http";
 import { getLogger } from "../../logger";
 import { TasksGateway } from "../gateways/tasks.gateway";
@@ -193,18 +185,19 @@ export class TasksService {
     this.metricsLogger.debug(`Metrics job took ${now - then}ms ${JSON.stringify(d)}`);
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES) // Discord rate limit is 10k/10min, so unless we have 5k drivers, we're good.
-  async updateLinkedRoles() {
-    this.metricsLogger.debug("Updating linked roles");
+  @Cron("0 1 0 * * *") // minute past midnight to prevent scenarios where this could be accidentally skipped due to container update
+  async updateUserTokens() {
+    this.logger.debug("Refreshing user tokens");
+    const then = Date.now();
 
-    const linkedRoleUsers = await getLinkedRoleUsers();
+    const linkedRoleUsers = await LinkedRoleUser.find({
+      lastRefreshed: {
+        $lt: new Date(Date.now() - ms("24h")),
+      },
+    }).lean();
 
-    if (!linkedRoleUsers) throw new Error("Failed to fetch linked role users");
-
-    linkedRoleUsers.forEach(async (linkedRoleUser) => {
-      // Refresh Token if required
-      if (Date.now() - linkedRoleUser.lastRefreshed.getTime() > 72000000) {
-        // 72000000ms = 20 hours
+    const res = await Promise.all(
+      linkedRoleUsers.map(async (linkedRoleUser) => {
         const discordOauth = new OAuth({
           clientId: config.discordOauth.clientId,
           clientSecret: config.discordOauth.clientSecret,
@@ -221,41 +214,20 @@ export class TasksService {
             this.logger.error(`Failed to refresh token for ${linkedRoleUser.discord_id}: ${inspect(err.response)}`);
           });
 
-        if (!token) return;
+        if (!token) return linkedRoleUser.discord_id;
 
-        linkedRoleUser = await updateOrCreateLinkedRoleUser(linkedRoleUser.discord_id, token.access_token, token.refresh_token);
-      }
+        await updateOrCreateLinkedRoleUser(linkedRoleUser.discord_id, token.access_token, token.refresh_token);
+        return "";
+      })
+    );
 
-      const driver = await getUserDocumentByDiscordId(linkedRoleUser.discord_id);
-      if (!driver) {
-        this.logger.error(`Could not find driver ${linkedRoleUser.discord_id}`);
-        return;
-      }
+    const gd = res.filter((r) => !r).length;
+    const bd = res.filter((r) => r);
 
-      const jobs = await Jobs.find({ "driver.steam_id": driver.steam_id }).count();
-
-      // Update data
-      client.rest
-        .put(Routes.userApplicationRoleConnection(config.discordOauth.clientId), {
-          body: {
-            platform_name: "Dulcis Logistics Driver's Hub",
-            platform_username: driver.username,
-            metadata: {
-              kms: driver.leaderboard.alltime_mileage,
-              jobs: jobs,
-            },
-          },
-          headers: {
-            Authorization: `Bearer ${linkedRoleUser.access_token}`,
-          },
-        })
-        .catch((err) => {
-          this.logger.error(
-            `Failed to update linked role for ${linkedRoleUser.discord_id} ${err.response?.status}: ${inspect(
-              err.response?.data
-            )}`
-          );
-        });
-    });
+    const now = Date.now();
+    this.logger.debug(
+      `Refreshed ${res.length} (${gd} successful / ${bd.length} failed) user tokens in ${now - then}ms` +
+        (bd.length ? `. Failing: ${bd.join(", ")}` : "")
+    );
   }
 }
