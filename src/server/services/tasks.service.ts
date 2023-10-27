@@ -1,11 +1,11 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import type { APIPlayer } from "@truckersmp_official/api-types/v2";
-import axios, { AxiosError } from "axios";
 import OAuth from "discord-oauth2";
+import { Routes } from "discord.js";
 import { setTimeout as sleep } from "timers/promises";
 import { inspect } from "util";
-import { botlogs } from "../..";
+import { botlogs, client } from "../..";
 import config from "../../config";
 import { latestFromMap, paginate } from "../../constants/functions";
 import { isCurrentMonth, isToday } from "../../constants/time";
@@ -235,10 +235,9 @@ export class TasksService {
       const jobs = await Jobs.find({ "driver.steam_id": driver.steam_id }).count();
 
       // Update data
-      axios
-        .put(
-          `https://discord.com/api/v10/users/@me/applications/${config.discordOauth.clientId}/role-connection`,
-          {
+      client.rest
+        .put(Routes.userApplicationRoleConnection(config.discordOauth.clientId), {
+          body: {
             platform_name: "Dulcis Logistics Driver's Hub",
             platform_username: driver.username,
             metadata: {
@@ -246,24 +245,16 @@ export class TasksService {
               jobs: jobs,
             },
           },
-          {
-            headers: {
-              Authorization: `Bearer ${linkedRoleUser.access_token}`,
-            },
-          }
-        )
+          headers: {
+            Authorization: `Bearer ${linkedRoleUser.access_token}`,
+          },
+        })
         .catch((err) => {
-          if (err instanceof AxiosError) {
-            if (err.response?.status === 429) {
-              this.logger.error(`Discord rate limit hit for ${linkedRoleUser.discord_id}`);
-            } else {
-              this.logger.error(
-                `Failed to update linked role for ${linkedRoleUser.discord_id} ${err.response?.status}: ${inspect(
-                  err.response?.data
-                )}`
-              );
-            }
-          }
+          this.logger.error(
+            `Failed to update linked role for ${linkedRoleUser.discord_id} ${err.response?.status}: ${inspect(
+              err.response?.data
+            )}`
+          );
         });
     });
   }
