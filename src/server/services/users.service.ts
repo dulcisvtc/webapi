@@ -137,9 +137,13 @@ export class UsersService {
         },
       })
       .catch((err) => {
-        this.logger.error(
-          `Failed to update linked role for ${linkedRoleUser.discord_id} ${err.response?.status}: ${inspect(err.response?.data)}`
-        );
+        err.response
+          ? this.logger.error(
+              `Failed to update linked role for ${linkedRoleUser.discord_id} ${err.response?.status}: ${inspect(
+                err.response?.data
+              )}`
+            )
+          : this.logger.error(`Failed to update linked role for ${linkedRoleUser.discord_id}: ${inspect(err)}`);
       }));
   }
 }
