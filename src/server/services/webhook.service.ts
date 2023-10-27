@@ -36,7 +36,7 @@ export class WebhookService {
       },
       start_timestamp: new Date(body.data.object.start_time).getTime(),
       stop_timestamp: new Date(body.data.object.stop_time).getTime(),
-      driven_distance: body.data.object.driven_distance,
+      driven_distance: Math.ceil(body.data.object.driven_distance),
       fuel_used: body.data.object.fuel_used,
       cargo: {
         name: body.data.object.cargo.name,
