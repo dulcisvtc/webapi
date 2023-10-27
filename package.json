@@ -64,7 +64,7 @@
     "@types/migrate-mongo": "10.0.3",
     "@types/morgan": "1.9.7",
     "@types/ms": "0.7.33",
-    "@types/node": "18.18.7",
+    "@types/node": "20.8.9",
     "@types/text-table": "0.2.4",
     "copyfiles": "2.4.1",
     "tsc-watch": "6.0.4",
