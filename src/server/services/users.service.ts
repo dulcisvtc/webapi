@@ -1,9 +1,9 @@
 import { GlobalFonts, createCanvas, loadImage } from "@napi-rs/canvas";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
-import { Routes } from "discord.js";
+import { REST, Routes } from "discord.js";
 import sharp from "sharp";
 import { inspect } from "util";
-import { client, guild } from "../..";
+import { guild } from "../..";
 import config from "../../config";
 import { Jobs, LinkedRoleUser, User, getUserDocumentByDiscordId } from "../../database";
 
@@ -122,7 +122,9 @@ export class UsersService {
 
     const jobs = await Jobs.find({ "driver.steam_id": document.steam_id }).count();
 
-    return !!(await client.rest
+    const rest = new REST({ authPrefix: "Bearer" }).setToken(linkedRoleUser.access_token);
+
+    return !!(await rest
       .put(Routes.userApplicationRoleConnection(config.discordOauth.clientId), {
         body: {
           platform_name: "Dulcis Logistics Driver's Hub",
@@ -132,10 +134,6 @@ export class UsersService {
             jobs: jobs,
           },
         },
-        headers: {
-          Authorization: `Bearer ${linkedRoleUser.access_token}`,
-        },
-        authPrefix: "Bearer",
       })
       .catch((err) => {
         err.response
