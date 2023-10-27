@@ -1,8 +1,12 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import type { APIPlayer } from "@truckersmp_official/api-types/v2";
+import axios, { AxiosError } from "axios";
+import OAuth from "discord-oauth2";
 import { setTimeout as sleep } from "timers/promises";
+import { inspect } from "util";
 import { botlogs } from "../..";
+import config from "../../config";
 import { latestFromMap, paginate } from "../../constants/functions";
 import { isCurrentMonth, isToday } from "../../constants/time";
 import {
@@ -10,16 +14,13 @@ import {
   Session,
   User,
   getGlobalDocument,
-  getUserDocumentByDiscordId,
   getLinkedRoleUsers,
+  getUserDocumentByDiscordId,
   updateOrCreateLinkedRoleUser,
 } from "../../database";
 import http from "../../lib/http";
 import { getLogger } from "../../logger";
 import { TasksGateway } from "../gateways/tasks.gateway";
-import OAuth from "discord-oauth2";
-import config from "../../config";
-import axios, { AxiosError } from "axios";
 
 const generalLogger = getLogger("general", true);
 
@@ -27,7 +28,8 @@ const generalLogger = getLogger("general", true);
 export class TasksService {
   constructor(private tasksGateway: TasksGateway) {}
 
-  logger = getLogger("metrics", true);
+  metricsLogger = getLogger("metrics", true);
+  logger = new Logger(TasksService.name);
 
   @Cron(CronExpression.EVERY_10_SECONDS)
   async cleanupSessions() {
@@ -188,12 +190,12 @@ export class TasksService {
     const then = parseInt(timestamp);
     const now = Date.now();
 
-    this.logger.debug(`Metrics job took ${now - then}ms ${JSON.stringify(d)}`);
+    this.metricsLogger.debug(`Metrics job took ${now - then}ms ${JSON.stringify(d)}`);
   }
 
   @Cron(CronExpression.EVERY_5_MINUTES) // Discord rate limit is 10k/10min, so unless we have 5k drivers, we're good.
   async updateLinkedRoles() {
-    this.logger.debug("Updating linked roles");
+    this.metricsLogger.debug("Updating linked roles");
 
     const linkedRoleUsers = await getLinkedRoleUsers();
 
@@ -216,25 +218,21 @@ export class TasksService {
             scope: "identity role_connections.write",
           })
           .catch((err) => {
-            this.logger.error(
-              `Failed to refresh token for ${linkedRoleUser.discord_id} ${err.response?.status}: ${JSON.stringify(
-                err.response?.data
-              )}`
-            );
+            this.logger.error(`Failed to refresh token for ${linkedRoleUser.discord_id}: ${inspect(err)}`);
           });
 
         if (!token) return;
 
-        if (!token.access_token || !token.refresh_token) throw new Error("Failed to refresh token");
-
         linkedRoleUser = await updateOrCreateLinkedRoleUser(linkedRoleUser.discord_id, token.access_token, token.refresh_token);
       }
 
-      let driver = await getUserDocumentByDiscordId(linkedRoleUser.discord_id);
-      if (!driver) throw new Error("Could not find driver.");
+      const driver = await getUserDocumentByDiscordId(linkedRoleUser.discord_id);
+      if (!driver) {
+        this.logger.error(`Could not find driver ${linkedRoleUser.discord_id}`);
+        return;
+      }
 
-      let jobs = await Jobs.find({ "driver.steam_id": driver.steam_id });
-      if (!jobs) throw new Error("Could not find jobs");
+      const jobs = await Jobs.find({ "driver.steam_id": driver.steam_id }).count();
 
       // Update data
       axios
@@ -245,7 +243,7 @@ export class TasksService {
             platform_username: driver.username,
             metadata: {
               kms: Math.round(driver.leaderboard.alltime_mileage),
-              jobs: jobs.length,
+              jobs: jobs,
             },
           },
           {
@@ -260,7 +258,7 @@ export class TasksService {
               this.logger.error(`Discord rate limit hit for ${linkedRoleUser.discord_id}`);
             } else {
               this.logger.error(
-                `Failed to update linked role for ${linkedRoleUser.discord_id} ${err.response?.status}: ${JSON.stringify(
+                `Failed to update linked role for ${linkedRoleUser.discord_id} ${err.response?.status}: ${inspect(
                   err.response?.data
                 )}`
               );
