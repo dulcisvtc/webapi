@@ -218,7 +218,7 @@ export class TasksService {
             scope: "identity role_connections.write",
           })
           .catch((err) => {
-            this.logger.error(`Failed to refresh token for ${linkedRoleUser.discord_id}: ${inspect(err)}`);
+            this.logger.error(`Failed to refresh token for ${linkedRoleUser.discord_id}: ${inspect(err.response)}`);
           });
 
         if (!token) return;
