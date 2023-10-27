@@ -19,7 +19,7 @@ import { getLogger } from "../../logger";
 import { TasksGateway } from "../gateways/tasks.gateway";
 import OAuth from "discord-oauth2";
 import config from "../../config";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const generalLogger = getLogger("general", true);
 
@@ -209,11 +209,21 @@ export class TasksService {
           redirectUri: config.discordOauth.redirectUri,
         });
 
-        const token = await discordOauth.tokenRequest({
-          refreshToken: linkedRoleUser.refresh_token,
-          grantType: "refresh_token",
-          scope: "identity role_connections.write",
-        });
+        const token = await discordOauth
+          .tokenRequest({
+            refreshToken: linkedRoleUser.refresh_token,
+            grantType: "refresh_token",
+            scope: "identity role_connections.write",
+          })
+          .catch((err) => {
+            this.logger.error(
+              `Failed to refresh token for ${linkedRoleUser.discord_id} ${err.response?.status}: ${JSON.stringify(
+                err.response?.data
+              )}`
+            );
+          });
+
+        if (!token) return;
 
         if (!token.access_token || !token.refresh_token) throw new Error("Failed to refresh token");
 
@@ -227,22 +237,36 @@ export class TasksService {
       if (!jobs) throw new Error("Could not find jobs");
 
       // Update data
-      axios.put(
-        `https://discord.com/api/v10/users/@me/applications/${config.discordOauth.clientId}/role-connection`,
-        {
-          platform_name: "Dulcis Logistics Driver's Hub",
-          platform_username: driver.username,
-          metadata: {
-            kms: Math.round(driver.leaderboard.alltime_mileage),
-            jobs: jobs.length,
+      axios
+        .put(
+          `https://discord.com/api/v10/users/@me/applications/${config.discordOauth.clientId}/role-connection`,
+          {
+            platform_name: "Dulcis Logistics Driver's Hub",
+            platform_username: driver.username,
+            metadata: {
+              kms: Math.round(driver.leaderboard.alltime_mileage),
+              jobs: jobs.length,
+            },
           },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${linkedRoleUser.access_token}`,
-          },
-        }
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${linkedRoleUser.access_token}`,
+            },
+          }
+        )
+        .catch((err) => {
+          if (err instanceof AxiosError) {
+            if (err.response?.status === 429) {
+              this.logger.error(`Discord rate limit hit for ${linkedRoleUser.discord_id}`);
+            } else {
+              this.logger.error(
+                `Failed to update linked role for ${linkedRoleUser.discord_id} ${err.response?.status}: ${JSON.stringify(
+                  err.response?.data
+                )}`
+              );
+            }
+          }
+        });
     });
   }
 }
