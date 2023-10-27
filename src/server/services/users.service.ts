@@ -135,6 +135,7 @@ export class UsersService {
         headers: {
           Authorization: `Bearer ${linkedRoleUser.access_token}`,
         },
+        authPrefix: "Bearer",
       })
       .catch((err) => {
         err.response
