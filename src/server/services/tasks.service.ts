@@ -215,7 +215,7 @@ export class TasksService {
           .tokenRequest({
             refreshToken: linkedRoleUser.refresh_token,
             grantType: "refresh_token",
-            scope: "identity role_connections.write",
+            scope: "identify role_connections.write",
           })
           .catch((err) => {
             this.logger.error(`Failed to refresh token for ${linkedRoleUser.discord_id}: ${inspect(err.response)}`);
