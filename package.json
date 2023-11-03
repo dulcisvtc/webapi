@@ -28,7 +28,7 @@
     "@nestjs/websockets": "10.2.8",
     "@truckersmp_official/api-types": "1.0.1",
     "@typegoose/auto-increment": "3.6.1",
-    "@typegoose/typegoose": "11.6.0",
+    "@typegoose/typegoose": "11.7.0",
     "axios": "1.6.0",
     "cache-manager": "5.2.4",
     "cache-manager-redis-yet": "4.1.2",
