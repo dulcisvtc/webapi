@@ -63,7 +63,7 @@
     "@types/json-bigint": "1.0.4",
     "@types/migrate-mongo": "10.0.4",
     "@types/morgan": "1.9.9",
-    "@types/ms": "0.7.33",
+    "@types/ms": "0.7.34",
     "@types/node": "20.8.10",
     "@types/text-table": "0.2.4",
     "copyfiles": "2.4.1",
