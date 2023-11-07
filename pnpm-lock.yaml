@@ -125,8 +125,8 @@ devDependencies:
     specifier: 1.0.0
     version: 1.0.0
   '@types/dedent':
-    specifier: 0.7.1
-    version: 0.7.1
+    specifier: 0.7.2
+    version: 0.7.2
   '@types/express':
     specifier: 4.17.20
     version: 4.17.20
@@ -654,8 +654,8 @@ packages:
       '@types/node': 20.8.10
     dev: false
 
-  /@types/dedent@0.7.1:
-    resolution: {integrity: sha512-NKo033xLkoVCgUobq+FS1S3J6kwWeOcyqEBc2r2oi9J/dKncY11J9VgS0Giv7T4rxVt/MajUVcFppT2TPJA2Cg==}
+  /@types/dedent@0.7.2:
+    resolution: {integrity: sha512-kRiitIeUg1mPV9yH4VUJ/1uk2XjyANfeL8/7rH1tsjvHeO9PJLBHJIYsFWmAvmGj5u8rj+1TZx7PZzW2qLw3Lw==}
     dev: true
 
   /@types/express-serve-static-core@4.17.39:
