@@ -134,8 +134,8 @@ devDependencies:
     specifier: 1.0.4
     version: 1.0.4
   '@types/migrate-mongo':
-    specifier: 10.0.3
-    version: 10.0.3
+    specifier: 10.0.4
+    version: 10.0.4
   '@types/morgan':
     specifier: 1.9.9
     version: 1.9.9
@@ -688,8 +688,8 @@ packages:
     resolution: {integrity: sha512-/BJF3NT0pRMuxrenr42emRUF67sXwcZCd+S1ksG/Fcf9O7C3kKCY4uJSbKBE4KDUIYr3WMsvfmWD8hRjXExBJQ==}
     dev: false
 
-  /@types/migrate-mongo@10.0.3:
-    resolution: {integrity: sha512-2Kag188LjKdjL4i6wlXTv4z1VNCk3v0Gyp1N0CtlGG2UqQyurKT2/PcShQG3xdPiA/yo1EHKw1nZ48iAyYEd0A==}
+  /@types/migrate-mongo@10.0.4:
+    resolution: {integrity: sha512-+9JAzkIbxgox33wCT18bdpZ6ASYo1qwbf4Gg8kTbqvT48ajosSbZBGg94Vsy3baFzT6+DUXWylY/DcoOWOPNRg==}
     dependencies:
       '@types/node': 20.8.10
       mongodb: 6.2.0
