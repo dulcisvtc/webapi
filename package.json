@@ -46,7 +46,7 @@
     "morgan": "1.10.0",
     "ms": "2.1.3",
     "node-steam-openid": "1.2.0",
-    "redis": "4.6.10",
+    "redis": "4.6.11",
     "reflect-metadata": "0.1.13",
     "rxjs": "7.8.1",
     "sharp": "0.32.6",
