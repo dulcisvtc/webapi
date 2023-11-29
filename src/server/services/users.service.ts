@@ -50,7 +50,7 @@ export class UsersService {
         },
         { $project: { _id: 0, litres: "$litres" } },
       ]) as unknown as Promise<[{ litres: number }]>,
-      Jobs.find({ "driver.steam_id": user.steam_id }).count(),
+      Jobs.find({ "driver.steam_id": user.steam_id }).countDocuments(),
     ]);
     const pfp = await loadImage(member.user.displayAvatarURL({ extension: "png", size: 512 })).then(async (i) => {
       const w = 204;
@@ -120,7 +120,7 @@ export class UsersService {
     const document = await getUserDocumentByDiscordId(discord_id);
     if (!document) return false;
 
-    const jobs = await Jobs.find({ "driver.steam_id": document.steam_id }).count();
+    const jobs = await Jobs.find({ "driver.steam_id": document.steam_id }).countDocuments();
 
     const rest = new REST({ authPrefix: "Bearer" }).setToken(linkedRoleUser.access_token);
 

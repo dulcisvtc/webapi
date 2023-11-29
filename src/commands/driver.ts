@@ -23,7 +23,7 @@ export default {
 
     const mdist = Math.round(document.leaderboard.monthly_mileage);
     const adist = Math.round(document.leaderboard.alltime_mileage);
-    const jobs = await Jobs.find({ "driver.steam_id": document.steam_id }).count();
+    const jobs = await Jobs.find({ "driver.steam_id": document.steam_id }).countDocuments();
 
     if (!user) user = await interaction.client.users.fetch(document.discord_id);
 

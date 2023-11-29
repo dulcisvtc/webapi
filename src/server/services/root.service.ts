@@ -6,7 +6,7 @@ import { GlobalDocument, Jobs, User, getGlobalDocument } from "../../database";
 @Injectable()
 export class RootService {
   async getStats(): Promise<Stats> {
-    const drivers = await User.count();
+    const drivers = await User.countDocuments();
     const jobs = await Jobs.find({}, "driven_distance fuel_used stop_timestamp -_id").lean();
 
     let mjobs = 0;
