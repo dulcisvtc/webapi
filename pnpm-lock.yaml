@@ -37,10 +37,10 @@ dependencies:
     version: 1.0.1
   '@typegoose/auto-increment':
     specifier: 3.6.1
-    version: 3.6.1(mongoose@7.6.5)
+    version: 3.6.1(mongoose@7.6.6)
   '@typegoose/typegoose':
     specifier: 11.7.1
-    version: 11.7.1(mongoose@7.6.5)
+    version: 11.7.1(mongoose@7.6.6)
   axios:
     specifier: 1.6.2
     version: 1.6.2
@@ -78,11 +78,11 @@ dependencies:
     specifier: 2.29.4
     version: 2.29.4
   mongoose:
-    specifier: 7.6.5
-    version: 7.6.5
+    specifier: 7.6.6
+    version: 7.6.6
   mongoose-autopopulate:
     specifier: 1.1.0
-    version: 1.1.0(mongoose@7.6.5)
+    version: 1.1.0(mongoose@7.6.6)
   morgan:
     specifier: 1.10.0
     version: 1.10.0
@@ -655,18 +655,18 @@ packages:
     deprecated: TypeScript 5.0 supports combining TSConfigs using array syntax in extends
     dev: true
 
-  /@typegoose/auto-increment@3.6.1(mongoose@7.6.5):
+  /@typegoose/auto-increment@3.6.1(mongoose@7.6.6):
     resolution: {integrity: sha512-WLSCc0TvVungjrOZSbCFlmTU14j4ob23i1/OI4JUKOILWn7AQFhAaDsCODB9ywcLdkXtZgWXJJsbtwtrfsdzpA==}
     engines: {node: '>=14.17.0'}
     peerDependencies:
       mongoose: ~7.6.1
     dependencies:
       loglevel: 1.8.1
-      mongoose: 7.6.5
+      mongoose: 7.6.6
       tslib: 2.6.2
     dev: false
 
-  /@typegoose/typegoose@11.7.1(mongoose@7.6.5):
+  /@typegoose/typegoose@11.7.1(mongoose@7.6.6):
     resolution: {integrity: sha512-+tFasAsrn7mSEpHJvRcmEpCaupntiaCFImd2w/swEj8Sx5v3YTrwdKV2hjesZhIoLIMSQ+CrsNo+Y9RqTnmRig==}
     engines: {node: '>=14.17.0'}
     peerDependencies:
@@ -674,7 +674,7 @@ packages:
     dependencies:
       lodash: 4.17.21
       loglevel: 1.8.1
-      mongoose: 7.6.5
+      mongoose: 7.6.6
       reflect-metadata: 0.1.13
       semver: 7.5.4
       tslib: 2.6.2
@@ -1898,8 +1898,8 @@ packages:
       '@types/whatwg-url': 8.2.2
       whatwg-url: 11.0.0
 
-  /mongodb@5.9.0:
-    resolution: {integrity: sha512-g+GCMHN1CoRUA+wb1Agv0TI4YTSiWr42B5ulkiAfLLHitGK1R+PkSAf3Lr5rPZwi/3F04LiaZEW0Kxro9Fi2TA==}
+  /mongodb@5.9.1:
+    resolution: {integrity: sha512-NBGA8AfJxGPeB12F73xXwozt8ZpeIPmCUeWRwl9xejozTXFes/3zaep9zhzs1B/nKKsw4P3I4iPfXl3K7s6g+Q==}
     engines: {node: '>=14.20.1'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.188.0
@@ -1957,21 +1957,21 @@ packages:
       bson: 6.2.0
       mongodb-connection-string-url: 2.6.0
 
-  /mongoose-autopopulate@1.1.0(mongoose@7.6.5):
+  /mongoose-autopopulate@1.1.0(mongoose@7.6.6):
     resolution: {integrity: sha512-nTlTMlu1fLQ1bmJT7ILKbZmPGt2fHErLO4UJwzMDsHSigjtUYz0l3nvFhg511QkOkZcKBRzOnPn3DmmLIUENzg==}
     peerDependencies:
       mongoose: 6.x || 7.x || 8.0.0-rc0 || 8.x
     dependencies:
-      mongoose: 7.6.5
+      mongoose: 7.6.6
     dev: false
 
-  /mongoose@7.6.5:
-    resolution: {integrity: sha512-ElHgGWVKQUawKBn0DXuHmSd3W5w5Kb8JUbDNQH30odhYCDKq9GCh+E1/SuN8jZGxrHgFyLrvYxLSpC36BpqS+w==}
+  /mongoose@7.6.6:
+    resolution: {integrity: sha512-xZDNhnpSUJH1r72g42ai4StVoLmcaLD74Gv6vbEqOKKDEphAjMCZxzS5WU8hFUZAogt8eocvPf/1um8jvkkZGQ==}
     engines: {node: '>=14.20.1'}
     dependencies:
       bson: 5.5.1
       kareem: 2.5.1
-      mongodb: 5.9.0
+      mongodb: 5.9.1
       mpath: 0.9.0
       mquery: 5.0.0
       ms: 2.1.3
