@@ -27,10 +27,13 @@ export function getUserDocumentByDiscordId(discordId: string): Promise<UserDocum
   });
 }
 
-export async function resetUserDocument(steamId: string): Promise<void> {
-  const user = await getUserDocumentBySteamId(steamId);
+export async function resetUserDocument(steamId: string): Promise<boolean> {
+  const user = await getUserDocumentBySteamId(steamId, true);
+  if (!user) return false;
+
+  await user.deleteOne();
   await LinkedRoleUser.deleteOne({ discord_id: user.discord_id });
 
   dbLogger.debug(`Reset user document for ${steamId}:\n${inspect(user, { depth: Infinity })}`);
-  return void user.deleteOne();
+  return true;
 }

@@ -280,7 +280,7 @@ export default {
       const reason = interaction.options.getString("reason", true);
       const type = interaction.options.getString("type", true);
 
-      await resetUserDocument(steamId);
+      const res = await resetUserDocument(steamId);
       const updated = await Jobs.updateMany(
         { "driver.steam_id": steamId },
         {
@@ -293,7 +293,9 @@ export default {
           },
         }
       );
-      await append(`✅ Deleted database document and updated ${updated.modifiedCount} jobs. Trying to remove driver role...`);
+      await append(
+        `✅ User document ${res ? "deleted" : "not found"}. ${updated.modifiedCount}/${updated.matchedCount} jobs updated.`
+      );
 
       const role = await member?.roles.remove(config.driver_role, `Driver removed by ${interaction.user.tag}`).catch(() => null);
       let roletext = "✅ Driver role removed.";
