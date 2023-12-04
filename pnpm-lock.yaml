@@ -90,8 +90,8 @@ dependencies:
     specifier: 2.1.3
     version: 2.1.3
   node-steam-openid:
-    specifier: 1.2.0
-    version: 1.2.0
+    specifier: 1.2.1
+    version: 1.2.1
   redis:
     specifier: 4.6.11
     version: 4.6.11
@@ -2147,10 +2147,10 @@ packages:
       whatwg-url: 5.0.0
     dev: false
 
-  /node-steam-openid@1.2.0:
-    resolution: {integrity: sha512-FeRF//j/4Mko/XPOX2SnPumDmH0qRwBDmoP0P5WFPXNbhzKumBqczbKWrxDMQkxSnuWl1c2sAJEHzcXMmsEuxg==}
+  /node-steam-openid@1.2.1:
+    resolution: {integrity: sha512-uD7VIACH6WO+AWlHr2GGvIN0foao2IihP4AW5KaV5SwcLlI2DgtI7ddSczoTqo0chbeZmoAxjMRi6irVYeIsKg==}
     dependencies:
-      axios: 0.21.4
+      axios: 1.6.2
       openid: 2.0.10
       url: 0.11.3
     transitivePeerDependencies:
