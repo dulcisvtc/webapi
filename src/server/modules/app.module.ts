@@ -29,7 +29,6 @@ import { WebhookModule } from "./webhook.module";
         port: config.redis.port,
       },
       password: config.redis.password,
-      isGlobal: true,
       ttl: 1,
     }),
     ThrottlerModule.forRoot([
