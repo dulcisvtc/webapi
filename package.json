@@ -24,7 +24,7 @@
     "@nestjs/platform-express": "10.2.10",
     "@nestjs/platform-socket.io": "10.2.10",
     "@nestjs/schedule": "4.0.0",
-    "@nestjs/throttler": "5.0.1",
+    "@nestjs/throttler": "5.1.0",
     "@nestjs/websockets": "10.2.10",
     "@truckersmp_official/api-types": "1.0.1",
     "@typegoose/auto-increment": "4.0.0",
