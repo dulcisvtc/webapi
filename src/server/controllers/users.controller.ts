@@ -2,7 +2,7 @@ import { CACHE_MANAGER } from "@nestjs/cache-manager";
 import { Controller, Get, Header, Inject, Param, StreamableFile, ValidationPipe } from "@nestjs/common";
 import type { Cache } from "cache-manager";
 import ms from "ms";
-import type { GetUserBannerParams } from "../dtos/users.dtos";
+import { GetUserBannerParams } from "../dtos/users.dtos";
 import { UsersService } from "../services/users.service";
 
 @Controller("users")

@@ -24,6 +24,7 @@
     "@nestjs/platform-express": "10.2.10",
     "@nestjs/platform-socket.io": "10.2.10",
     "@nestjs/schedule": "4.0.0",
+    "@nestjs/swagger": "^7.1.17",
     "@nestjs/throttler": "5.1.0",
     "@nestjs/websockets": "10.2.10",
     "@truckersmp_official/api-types": "1.0.1",
@@ -67,8 +68,8 @@
     "@types/node": "20.10.4",
     "@types/text-table": "0.2.5",
     "copyfiles": "2.4.1",
-    "tsc-watch": "6.0.4",
     "prettier": "3.1.1",
+    "tsc-watch": "6.0.4",
     "typescript": "5.3.3"
   }
 }
