@@ -50,7 +50,7 @@
     "redis": "4.6.11",
     "reflect-metadata": "0.1.14",
     "rxjs": "7.8.1",
-    "sharp": "0.33.0",
+    "sharp": "0.33.1",
     "socket.io": "4.7.2",
     "text-table": "0.2.0",
     "tracksim.js": "1.1.2",
