@@ -20,6 +20,7 @@ export class SlotsService {
             return {
               name: location.name,
               slots: location.slots,
+              imageUrl: location.imageUrl,
             };
           });
         });
@@ -47,6 +48,7 @@ export class SlotsService {
         return {
           name: location.name,
           slots: location.slots,
+          imageUrl: location.imageUrl,
         };
       });
     });
@@ -133,5 +135,6 @@ export type EventSlots = {
   locations: {
     name: string;
     slots: Record<string, { vtcId: number; displayName: string; taken: boolean }>;
+    imageUrl: string;
   }[];
 };
