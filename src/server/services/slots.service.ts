@@ -11,27 +11,7 @@ export class SlotsService {
   async getAllEventSlots(): Promise<EventSlots[]> {
     const documents = await Slot.find().lean();
 
-    const eventSlots = await Promise.all(
-      documents.map(async (document) => {
-        const eventName = (await getTMPEvent(document.eventId)).name;
-
-        const locations = document.chunks.flatMap((chunk) => {
-          return chunk.locations.map((location) => {
-            return {
-              name: location.name,
-              slots: location.slots,
-              imageUrl: location.imageUrl,
-            };
-          });
-        });
-
-        return {
-          eventId: document.eventId,
-          eventName,
-          locations,
-        };
-      })
-    );
+    const eventSlots = await Promise.all(documents.map((document) => this.getEventSlots(document.eventId)));
 
     return eventSlots;
   }
