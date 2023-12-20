@@ -114,6 +114,7 @@ export class WebhookService {
       user.save(),
       this.cacheManager.del(`${user.steam_id}-banner`),
       this.cacheManager.del(`${user.discord_id}-banner`),
+      this.cacheManager.del(`${user.username}-banner`),
       this.usersService.updateUserMetadata(user.discord_id),
     ]);
 
