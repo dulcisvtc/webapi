@@ -18,7 +18,7 @@ export default {
 
     if (!document) return interaction.reply({ content: "The selected user is not a driver.", ephemeral: true });
 
-    const ephemeral = !!interaction.channel?.permissionsFor(interaction.member).has(PermissionFlagsBits.SendMessages);
+    const ephemeral = !interaction.channel?.permissionsFor(interaction.member).has(PermissionFlagsBits.SendMessages);
     await interaction.deferReply({ ephemeral });
 
     const mdist = Math.round(document.leaderboard.monthly_mileage);
