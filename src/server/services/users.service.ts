@@ -135,7 +135,7 @@ export class UsersService {
           },
         },
       })
-      .catch((err) => {
+      .catch(async (err) => {
         err.response
           ? this.logger.error(
               `Failed to update linked role for ${linkedRoleUser.discord_id} ${err.response?.status}: ${inspect(
@@ -143,6 +143,10 @@ export class UsersService {
               )}`
             )
           : this.logger.error(`Failed to update linked role for ${linkedRoleUser.discord_id}: ${inspect(err)}`);
+
+        if (err.response?.status === 401) {
+          await linkedRoleUser.deleteOne();
+        }
       }));
   }
 }
