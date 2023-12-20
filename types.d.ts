@@ -1,3 +1,6 @@
+// @napi-rs/canvas doesn't work normally without this
+/// <reference lib="dom" />
+
 export interface JobSchema {
   job_id?: number;
   ts_job_id?: number;
