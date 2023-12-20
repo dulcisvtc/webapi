@@ -4,7 +4,7 @@ import handleCommand from "../handlers/commands";
 
 export default {
   execute: (interaction: Interaction<"cached">) => {
-    if (interaction.isChatInputCommand()) return handleCommand(interaction);
+    if (interaction.isChatInputCommand() || interaction.isContextMenuCommand()) return handleCommand(interaction as any);
     if (interaction.isAutocomplete()) return handleAutocomplete(interaction);
   },
 };
