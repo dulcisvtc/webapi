@@ -10,6 +10,7 @@
     "start": "node --no-warnings .",
     "test": "tsc --noEmit",
     "preversion": "pnpm test",
+    "postversion": "git push && git push --tags",
     "mm": "migrate-mongo",
     "mm:up": "migrate-mongo up",
     "mm:down": "migrate-mongo down",
