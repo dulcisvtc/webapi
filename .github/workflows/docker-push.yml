@@ -18,6 +18,7 @@ jobs:
   push:
     name: Build and Push
     runs-on: ubuntu-latest
+    if: contains(github.ref, 'refs/tags/')
 
     steps:
       - name: Checkout repository
