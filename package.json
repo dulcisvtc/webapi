@@ -1,6 +1,6 @@
 {
   "name": "@dulcis/api",
-  "version": "3.10.1",
+  "version": "3.11.0",
   "main": "dist/",
   "scripts": {
     "build": "tsc",
@@ -10,7 +10,6 @@
     "start": "node --no-warnings .",
     "test": "tsc --noEmit",
     "preversion": "pnpm test",
-    "postversion": "git push && git push --tags",
     "mm": "migrate-mongo",
     "mm:up": "migrate-mongo up",
     "mm:down": "migrate-mongo down",
@@ -68,6 +67,7 @@
     "@types/ms": "0.7.34",
     "@types/node": "20.10.5",
     "@types/text-table": "0.2.5",
+    "bumpp": "9.2.1",
     "copyfiles": "2.4.1",
     "prettier": "3.1.1",
     "tsc-watch": "6.0.4",
