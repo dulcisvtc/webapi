@@ -49,5 +49,7 @@ export default {
       message.attachments.size
     )
       await message.react("✅");
+
+    if (message.channelId === "1056213949642715136") await message.react("😋");
   },
 };
