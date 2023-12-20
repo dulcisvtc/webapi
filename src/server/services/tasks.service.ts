@@ -53,9 +53,6 @@ export class TasksService {
           if (!TMPPlayer.banned) {
             notBanned.push(driver.steam_id);
           } else {
-            const newUntil = TMPPlayer.bannedUntil ? TMPPlayer.bannedUntil.split(" ").join("T") + "Z" : null;
-            const ok = newUntil ? Math.round(new Date(newUntil).getTime() / 1000) : null;
-
             banned.push(driver.steam_id);
 
             if (!driver.banNotified) {
@@ -63,16 +60,14 @@ export class TasksService {
                 steamId: driver.steam_id,
                 discordId: driver.discord_id,
                 tmpId: TMPPlayer.id,
-                until: ok ? ok * 1000 : 0,
+                until: 0,
               });
 
               await botlogs!.send({
                 embeds: [
                   {
                     title: "Banned Driver",
-                    description: `**[${TMPPlayer.name}](https://truckersmp.com/user/${
-                      TMPPlayer.id
-                    })** has been banned from TruckersMP ${ok ? `until <t:${ok}:F>` : "for permanent"}`,
+                    description: `**[${TMPPlayer.name}](https://truckersmp.com/user/${TMPPlayer.id})** has been banned from TruckersMP.`,
                     color: 0x2f3136,
                     fields: [
                       {
