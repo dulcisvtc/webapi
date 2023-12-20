@@ -152,7 +152,7 @@ devDependencies:
     specifier: 0.2.5
     version: 0.2.5
   bumpp:
-    specifier: ^9.2.1
+    specifier: 9.2.1
     version: 9.2.1
   copyfiles:
     specifier: 2.4.1
