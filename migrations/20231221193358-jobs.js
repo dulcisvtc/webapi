@@ -18,7 +18,7 @@ module.exports = {
         delete job.ts_job_id;
       }
 
-      await job.save();
+      await Jobs.updateOne({ _id: job._id }, { $set: job });
     }
   },
 
