@@ -2,8 +2,10 @@
 /// <reference lib="dom" />
 
 export interface JobSchema {
-  job_id?: number;
-  ts_job_id?: number;
+  source: {
+    id?: number;
+    name?: "navio" | "tracksim";
+  };
   driver: {
     id?: number;
     steam_id?: string;

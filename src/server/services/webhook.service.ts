@@ -30,7 +30,10 @@ export class WebhookService {
       throw new ForbiddenException("Invalid signature");
 
     const job: JobSchema = {
-      ts_job_id: body.data.object.id,
+      source: {
+        id: body.data.object.id,
+        name: "tracksim",
+      },
       driver: {
         id: body.data.object.driver.id,
         steam_id: body.data.object.driver.steam_id,
@@ -56,8 +59,8 @@ export class WebhookService {
 
     if (job.driven_distance < 1) return { message: "OK" };
 
-    if (await Jobs.exists({ ts_job_id: job.ts_job_id })) {
-      jobsLogger.warn(`Job ${job.ts_job_id} already exists in database.`);
+    if (await Jobs.exists({ "source.id": job.source.id, "source.name": job.source.name })) {
+      jobsLogger.warn(`Job ${job.source.id} already exists in database.`);
       return { message: "OK" };
     }
 
