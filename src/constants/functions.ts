@@ -1,4 +1,4 @@
-import type { APICompany, APIGameEvent } from "@truckersmp_official/api-types/v2";
+import type { APICompany, APIGameEvent, APIPlayer } from "@truckersmp_official/api-types/v2";
 import axios from "axios";
 import crypto from "crypto";
 import type { GuildTextBasedChannel, Message, TextChannel } from "discord.js";
@@ -10,7 +10,7 @@ export function queueDelete(messages: Message[]): void {
 
   const bulk = bulks.get(channel.id);
   if (!bulk && messages.length === 1) {
-    void messages[0]?.delete();
+    void messages[0]!.delete();
     bulks.set(channel.id, []);
   } else if (bulk) return void bulk.push(...messages);
   else bulks.set(channel.id, messages);
@@ -75,6 +75,11 @@ export const latestFromMap = <T>(map: Map<string, T>): [string, T | null] => {
 
 export const getTMPEvent = async (eventId: number): Promise<APIGameEvent> => {
   const res = await axios.get(`https://api.truckersmp.com/v2/events/${eventId}`, { retry: 3 });
+  return res.data.response;
+};
+
+export const getTMPPlayer = async (tmpIdOrSteamId: string | number): Promise<APIPlayer> => {
+  const res = await axios.get(`https://api.truckersmp.com/v2/player/${tmpIdOrSteamId}`, { retry: 3 });
   return res.data.response;
 };
 
