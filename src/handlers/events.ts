@@ -51,17 +51,17 @@ eventsTicker.on("tick", async () => {
               }
             });
           if (!apiEvent) return;
-          const departureDate = new Date(event.departure);
+          const ge = new Date().getDate() > new Date(event.departure).getDate() ? "~~" : "";
 
-          let string = [
-            `**${formatTimestamp(departureDate.getTime())}**`,
+          let row = [
+            ge,
+            `**${formatTimestamp(event.departure)}**`,
             "-",
             `[${apiEvent.data.response.name}](https://truckersmp.com/events/${event.id})`,
+            ge,
           ].join(" ");
 
-          if (Date.now() > event.departure + 1000 * 60 * 60 * 6) string = `~~${string}~~`;
-
-          return string;
+          return row;
         })
         .filter(async (e) => !!(await e))
     )
@@ -71,7 +71,7 @@ eventsTicker.on("tick", async () => {
   const message = (await calendarChannel.messages.fetch({ limit: 5 })).find((m) => m.author.id === client.user!.id);
 
   const calendarEmbed = new EmbedBuilder()
-    .setTitle(`Event calendar for ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long" })}`)
+    .setTitle(`Event calendar for ${new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}`)
     .setDescription(calendarDescription || "Empty.")
     .setFooter({ text: "Last update" })
     .setTimestamp();
@@ -93,21 +93,9 @@ eventsTicker.on("tick", async () => {
     (m) => m.author.id === client.user!.id && m.embeds.length
   );
 
-  const todayEvents = events.filter((event) => {
-    return isToday(event.departure);
-  });
+  const selectedEvent = events.find((event) => isToday(event.departure));
 
-  if (!todayEvents.length) return attendingMessage?.delete();
-
-  const selectedEvent =
-    todayEvents.length === 1
-      ? todayEvents[0]!
-      : todayEvents.reduce((prev, curr) => {
-          const prevDeparture = new Date(prev.departure);
-          const currDeparture = new Date(curr.departure);
-
-          return Math.abs(prevDeparture.getTime() - Date.now()) < Math.abs(currDeparture.getTime() - Date.now()) ? prev : curr;
-        });
+  if (!selectedEvent) return attendingMessage?.delete();
 
   const apiEvent = await axios
     .get<{ response: APIGameEvent }>(APIWebRoutes.event(selectedEvent.id), { retry: 10 })
