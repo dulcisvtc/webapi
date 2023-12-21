@@ -2,24 +2,14 @@ module.exports = {
   async up(db, client) {
     const Jobs = db.collection("jobs");
 
-    const jobs = await Jobs.find({}).toArray();
-
-    for (const job of jobs) {
-      job.source = {};
-      if (job.job_id) {
-        job.source.id = job.job_id;
-        job.source.name = "navio";
-
-        delete job.job_id;
-      } else if (job.ts_job_id) {
-        job.source.id = job.ts_job_id;
-        job.source.name = "tracksim";
-
-        delete job.ts_job_id;
-      }
-
-      await Jobs.updateOne({ _id: job._id }, { $set: job });
-    }
+    await Jobs.updateMany(
+      { job_id: { $exists: true } }, //
+      { $rename: { job_id: "source.id" }, $set: { "source.name": "navio" } }
+    );
+    await Jobs.updateMany(
+      { ts_job_id: { $exists: true } },
+      { $rename: { ts_job_id: "source.id" }, $set: { "source.name": "tracksim" } }
+    );
   },
 
   async down(db, client) {},
