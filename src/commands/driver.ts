@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from "discord.js";
-import { getUserDocumentByDiscordId, getUserDocumentBySteamId, Jobs, UserDocument } from "../database";
+import { getTMPPlayer } from "../constants/functions";
+import { Jobs, UserDocument, getUserDocumentByDiscordId, getUserDocumentBySteamId } from "../database";
 
 export default {
   data: new SlashCommandBuilder()
@@ -11,6 +12,8 @@ export default {
   execute: async (interaction: ChatInputCommandInteraction<"cached">) => {
     let user = interaction.options.getUser("user");
     const steamid = interaction.options.getString("steamid");
+
+    if (user && steamid) return interaction.reply({ content: "You can only specify one of the options.", ephemeral: true });
 
     let document: UserDocument | null;
     if (steamid) document = await getUserDocumentBySteamId(steamid, true);
@@ -24,6 +27,7 @@ export default {
     const mdist = Math.round(document.leaderboard.monthly_mileage);
     const adist = Math.round(document.leaderboard.alltime_mileage);
     const jobs = await Jobs.find({ "driver.steam_id": document.steam_id }).countDocuments();
+    const player = await getTMPPlayer(document.steam_id).catch(() => null);
 
     if (!user) user = await interaction.client.users.fetch(document.discord_id);
 
@@ -33,7 +37,7 @@ export default {
         [
           `**Discord:** ${`${user} (${user.tag})`}`,
           `**SteamID:** ${document.steam_id}`,
-          `[**TruckersMP Search**](https://truckersmp.com/user/search?search=${document.steam_id})`,
+          `**TMPID:** ${player?.id} ([**TruckersMP Profile**](https://truckersmp.com/user/${player?.id}))`,
           `**Username:** ${document.username}`,
           `**Monthly mileage:** ${mdist.toLocaleString()}km`,
           `**Total mileage:** ${adist.toLocaleString()}km`,
