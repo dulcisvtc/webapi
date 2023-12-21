@@ -2,7 +2,7 @@ module.exports = {
   async up(db, client) {
     const Jobs = db.collection("jobs");
 
-    const jobs = await Jobs.find({});
+    const jobs = await Jobs.find({}).toArray();
 
     for (const job of jobs) {
       job.source = {};
