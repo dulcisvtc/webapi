@@ -21,16 +21,15 @@ class CargoSchema {
   @prop({ type: Number }) damage!: number;
 }
 
-@plugin(AutoIncrementID)
+@plugin(AutoIncrementID, {})
 @modelOptions({ schemaOptions: { collection: "jobs", versionKey: false } })
-@index({ id: 1 }, { unique: true })
 @index({ "driver.steam_id": 1 })
 @index({ start_timestamp: 1 })
 @index({ stop_timestamp: 1 })
 @index({ driven_distance: 1 })
 @index({ fuel_used: 1 })
 class JobSchema {
-  public _id!: number;
+  @prop() _id!: number;
   @prop({ type: () => SourceSchema, default: {} }) source!: SourceSchema;
   @prop({ type: () => DriverSchema, default: {} }) driver!: DriverSchema;
   @prop({ type: Number }) start_timestamp!: number;
