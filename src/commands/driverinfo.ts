@@ -5,6 +5,7 @@ import {
   EmbedBuilder,
   PermissionFlagsBits,
 } from "discord.js";
+import { getTMPPlayer } from "../constants/functions";
 import { Jobs, getUserDocumentByDiscordId } from "../database";
 
 export default {
@@ -26,6 +27,7 @@ export default {
     const mdist = Math.round(document.leaderboard.monthly_mileage);
     const adist = Math.round(document.leaderboard.alltime_mileage);
     const jobs = await Jobs.find({ "driver.steam_id": document.steam_id }).countDocuments();
+    const player = await getTMPPlayer(document.steam_id).catch(() => null);
 
     const embed = new EmbedBuilder()
       .setTitle("Driver info")
@@ -33,7 +35,7 @@ export default {
         [
           `**Discord:** ${`${user} (${user.tag})`}`,
           `**SteamID:** ${document.steam_id}`,
-          `[**TruckersMP Search**](https://truckersmp.com/user/search?search=${document.steam_id})`,
+          `**TMPID:** ${player?.id} ([**TruckersMP Profile**](https://truckersmp.com/user/${player?.id}))`,
           `**Username:** ${document.username}`,
           `**Monthly mileage:** ${mdist.toLocaleString()}km`,
           `**Total mileage:** ${adist.toLocaleString()}km`,
