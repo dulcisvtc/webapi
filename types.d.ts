@@ -71,7 +71,7 @@ export interface TrackSimJobWebhookObject {
         language: string;
         had_police_enabled: false;
       };
-      multiplayer: {
+      multiplayer: ?{
         mode: string;
         meta: {
           player_id: number;
@@ -128,7 +128,6 @@ export interface TrackSimJobWebhookObject {
       };
       trailers: [];
       events: [];
-      route: [];
     };
   };
 }
