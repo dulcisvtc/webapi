@@ -1,3 +1,3 @@
 set -e
 
-yarn mm:up && yarn start
+pnpm mm:up && pnpm start
