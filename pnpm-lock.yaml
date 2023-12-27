@@ -45,8 +45,8 @@ dependencies:
     specifier: 12.0.0
     version: 12.0.0(mongoose@8.0.3)
   axios:
-    specifier: 1.6.2
-    version: 1.6.2
+    specifier: 1.6.3
+    version: 1.6.3
   cache-manager:
     specifier: 5.3.2
     version: 5.3.2
@@ -1202,8 +1202,8 @@ packages:
       - debug
     dev: false
 
-  /axios@1.6.2:
-    resolution: {integrity: sha512-7i24Ri4pmDRfJTR7LDBhsOTtcm+9kjX5WiY1X3wIisx6G9So3pfMkEiU7emUBe46oceVImccTEM3k6C5dbVW8A==}
+  /axios@1.6.3:
+    resolution: {integrity: sha512-fWyNdeawGam70jXSVlKl+SUNVcL6j6W79CuSIPfi6HnDUmSCH6gyUys/HrqHeA/wU0Az41rRgean494d0Jb+ww==}
     dependencies:
       follow-redirects: 1.15.3
       form-data: 4.0.0
@@ -2567,7 +2567,7 @@ packages:
   /node-steam-openid@1.2.1:
     resolution: {integrity: sha512-uD7VIACH6WO+AWlHr2GGvIN0foao2IihP4AW5KaV5SwcLlI2DgtI7ddSczoTqo0chbeZmoAxjMRi6irVYeIsKg==}
     dependencies:
-      axios: 1.6.2
+      axios: 1.6.3
       openid: 2.0.10
       url: 0.11.3
     transitivePeerDependencies:
@@ -3196,7 +3196,7 @@ packages:
   /tracksim.js@1.1.2:
     resolution: {integrity: sha512-X+t1KJXzpNfacr/A2Gt1E1uy0ibDOqCGn1hminEOPmB1VwRQbeTGYveGL5/gUmEAXklvwSqSiLkil4BPNGRsDQ==}
     dependencies:
-      axios: 1.6.2
+      axios: 1.6.3
       tslib: 2.6.2
     transitivePeerDependencies:
       - debug
