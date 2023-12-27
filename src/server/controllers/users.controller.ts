@@ -30,11 +30,11 @@ export class UsersController {
     return new StreamableFile(banner);
   }
 
-  @Get(":discordId")
+  @Get(":discordOrSteamId")
   async findUser(
-    @Param("discordId", new ValidationPipe({ expectedType: String }))
-    discordId: string
+    @Param("discordOrSteamId", new ValidationPipe({ expectedType: String }))
+    discordOrSteamId: string
   ) {
-    return await this.usersService.getUser(discordId);
+    return await this.usersService.getUser(discordOrSteamId);
   }
 }
