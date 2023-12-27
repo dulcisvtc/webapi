@@ -105,8 +105,11 @@ export class UsersService {
     return canvas.toBuffer("image/png");
   }
 
-  async getUser(discordId: string) {
-    const user = await User.findOne({ discord_id: discordId }, "-_id -__v").lean();
+  async getUser(discordOrSteamId: string) {
+    const user = await User.findOne(
+      { $or: [{ discord_id: discordOrSteamId }, { steam_id: discordOrSteamId }] },
+      "-_id -__v"
+    ).lean();
 
     if (!user) throw new NotFoundException("User not found");
 
