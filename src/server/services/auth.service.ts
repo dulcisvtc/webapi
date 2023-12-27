@@ -34,6 +34,9 @@ export class AuthService {
     const document = await getUserDocumentByDiscordId(discordUser.id);
     if (!document) throw new NotFoundException("User not found");
 
+    document.avatar = discordUser.avatar;
+    await document.save();
+
     const avatar_url = discordUser.avatar
       ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`
       : `https://cdn.discordapp.com/embed/avatars/0.png`;

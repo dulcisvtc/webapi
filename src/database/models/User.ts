@@ -21,6 +21,7 @@ export class UserSchema {
   @prop({ type: Number, default: 0 }) experience!: number;
   @prop({ type: LeaderboardSchema, default: {} }) leaderboard!: LeaderboardSchema;
   @prop({ type: Boolean, default: false }) banNotified!: boolean;
+  @prop({ type: String }) avatar?: string | null | undefined;
 }
 
 export type UserDocument = DocumentType<UserSchema>;
