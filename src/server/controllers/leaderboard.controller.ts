@@ -1,15 +1,16 @@
-import { Controller, Get } from "@nestjs/common";
+import { CacheInterceptor, CacheTTL } from "@nestjs/cache-manager";
+import { Controller, Get, UseInterceptors } from "@nestjs/common";
+import ms from "ms";
 import { LeaderboardService } from "../services/leaderboard.service";
 import type { LeaderboardUser } from "../types/leaderboard";
-import { CacheTTL } from "@nestjs/cache-manager";
-import ms from "ms";
 
 @Controller("leaderboard")
+@UseInterceptors(CacheInterceptor)
+@CacheTTL(ms("1m"))
 export class LeaderboardController {
   constructor(private leaderboardService: LeaderboardService) {}
 
   @Get("monthly")
-  @CacheTTL(ms("1m"))
   async getMonthly(): Promise<LeaderboardUser[]> {
     const leaderboard = await this.leaderboardService.getMonthly();
 
@@ -17,7 +18,6 @@ export class LeaderboardController {
   }
 
   @Get("alltime")
-  @CacheTTL(ms("1m"))
   async getAllTime(): Promise<LeaderboardUser[]> {
     const leaderboard = await this.leaderboardService.getAllTime();
 
