@@ -9,7 +9,7 @@ dependencies:
     specifier: 0.1.44
     version: 0.1.44
   '@nestjs/bull':
-    specifier: ^10.0.1
+    specifier: 10.0.1
     version: 10.0.1(@nestjs/common@10.3.0)(@nestjs/core@10.3.0)(bull@4.12.2)
   '@nestjs/cache-manager':
     specifier: 2.2.0
@@ -51,7 +51,7 @@ dependencies:
     specifier: 1.6.5
     version: 1.6.5
   bull:
-    specifier: ^4.12.2
+    specifier: 4.12.2
     version: 4.12.2
   cache-manager:
     specifier: 5.4.0
