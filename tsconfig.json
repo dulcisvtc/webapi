@@ -1,9 +1,6 @@
 {
   "extends": ["@tsconfig/node20/tsconfig.json", "@tsconfig/strictest/tsconfig.json"],
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["ES2022"],
-    "module": "commonjs",
     "rootDir": "./src",
     "checkJs": false,
     "allowJs": false,
@@ -12,6 +9,6 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "ignoreDeprecations": "5.0",
+    "isolatedModules": false,
   },
 }
