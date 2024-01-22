@@ -1,7 +1,4 @@
-import { InjectQueue } from "@nestjs/bull";
-import { CACHE_MANAGER } from "@nestjs/cache-manager";
-import { ForbiddenException, Inject, Injectable, type RawBodyRequest } from "@nestjs/common";
-import type { Queue } from "bull";
+import { ForbiddenException, Injectable, type RawBodyRequest } from "@nestjs/common";
 import crypto from "crypto";
 import { EmbedBuilder, escapeMarkdown, type GuildTextBasedChannel } from "discord.js";
 import type { Request } from "express";
@@ -11,18 +8,13 @@ import type { JobSchema, TrackSimJobWebhookObject } from "../../../types";
 import config from "../../config";
 import { Jobs, getUserDocumentBySteamId } from "../../database";
 import { getLogger } from "../../logger";
-import { GenerateBannerJobData } from "../types/users";
 import { UsersService } from "./users.service";
 
 const jobsLogger = getLogger("jobs", true);
 
 @Injectable()
 export class WebhookService {
-  constructor(
-    @Inject(CACHE_MANAGER)
-    private usersService: UsersService,
-    @InjectQueue("users") private readonly usersQueue: Queue<GenerateBannerJobData>
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   async handleTracksim(req: RawBodyRequest<Request>, body: TrackSimJobWebhookObject): Promise<any> {
     const rawBody = req.rawBody?.toString().trim();
@@ -117,7 +109,7 @@ export class WebhookService {
     await Promise.all([
       channel.send({ embeds: [embed] }).catch((e) => jobsLogger.error(`Failed to send job delivered message:\n${inspect(e)}`)),
       user.save(),
-      this.usersQueue.add("generate_banner", { steamId: user.steam_id }, { jobId: user.steam_id }),
+      this.usersService.addToBannerQueue(user.steam_id),
       this.usersService.updateUserMetadata(user.discord_id),
     ]);
 

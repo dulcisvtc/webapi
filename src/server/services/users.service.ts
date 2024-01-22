@@ -1,15 +1,20 @@
 import { GlobalFonts, createCanvas, loadImage } from "@napi-rs/canvas";
+import { InjectQueue } from "@nestjs/bull";
 import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { Queue } from "bull";
 import { REST, Routes } from "discord.js";
 import sharp from "sharp";
 import { inspect } from "util";
 import { guild } from "../..";
 import config from "../../config";
 import { Jobs, LinkedRoleUser, User, getUserDocumentByDiscordId } from "../../database";
+import { GenerateBannerJobData } from "../types/users";
 
 @Injectable()
 export class UsersService {
-  logger = new Logger(UsersService.name);
+  constructor(@InjectQueue("users") private usersQueue: Queue<GenerateBannerJobData>) {}
+
+  private readonly logger = new Logger(UsersService.name);
 
   async getUsers() {
     const users = await User.find({}, "-_id -__v").lean();
@@ -151,5 +156,9 @@ export class UsersService {
           await linkedRoleUser.deleteOne();
         }
       }));
+  }
+
+  async addToBannerQueue(steamId: string) {
+    return await this.usersQueue.add("generate_banner", { steamId: steamId }, { jobId: steamId });
   }
 }
