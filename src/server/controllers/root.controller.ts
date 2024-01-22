@@ -1,5 +1,7 @@
-import { BadRequestException, Controller, Get, Query } from "@nestjs/common";
+import { CacheInterceptor, CacheTTL } from "@nestjs/cache-manager";
+import { BadRequestException, Controller, Get, Query, UseInterceptors } from "@nestjs/common";
 import { isURL } from "class-validator";
+import ms from "ms";
 import type { GlobalDocument } from "../../database";
 import { RootService, Stats } from "../services/root.service";
 
@@ -8,16 +10,22 @@ export class RootController {
   constructor(private rootService: RootService) {}
 
   @Get("stats")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(ms("5m"))
   async findStats(): Promise<Stats> {
     return await this.rootService.getStats();
   }
 
   @Get("metrics")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(ms("5m"))
   async findMetrics(): Promise<GlobalDocument["metrics"]> {
     return await this.rootService.getMetrics();
   }
 
   @Get("jobs")
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(ms("1m"))
   async findJobs(
     @Query("limit") limit?: string,
     @Query("skip") skip?: string,
