@@ -17,8 +17,8 @@ export class UsersService {
     return users;
   }
 
-  async getUserBanner(query: string) {
-    const user = await User.findOne({ $text: { $search: query } }, "-_id -__v").lean();
+  async getUserBanner(steamId: string) {
+    const user = await User.findOne({ steam_id: steamId }, "-_id -__v").lean();
 
     if (!user) throw new NotFoundException("User not found");
 

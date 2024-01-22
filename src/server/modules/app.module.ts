@@ -1,3 +1,4 @@
+import { BullModule } from "@nestjs/bull";
 import { CacheModule } from "@nestjs/cache-manager";
 import { Module } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
@@ -22,6 +23,13 @@ import { WebhookModule } from "./webhook.module";
 
 @Module({
   imports: [
+    BullModule.forRoot({
+      redis: {
+        host: config.redis.host,
+        port: config.redis.port,
+        password: config.redis.password,
+      },
+    }),
     CacheModule.register<RedisClientOptions>({
       store: redisStore,
       socket: {

@@ -21,11 +21,13 @@ export class UsersController {
   @Get(":query/banner.png")
   @Header("Content-Type", "image/png")
   async findUserBanner(@Param() { query }: GetUserBannerParams) {
-    const cached = await this.cacheManager.get<string>(`${query}-banner`);
+    const { steam_id: steamId } = await this.usersService.getUser(query);
+
+    const cached = await this.cacheManager.get<string>(`${steamId}-banner`);
     if (cached) return new StreamableFile(Buffer.from(cached, "base64"));
 
-    const banner = await this.usersService.getUserBanner(query);
-    await this.cacheManager.set(`${query}-banner`, banner.toString("base64"), ms("7d"));
+    const banner = await this.usersService.getUserBanner(steamId);
+    await this.cacheManager.set(`${steamId}-banner`, banner.toString("base64"), ms("7d"));
 
     return new StreamableFile(banner);
   }

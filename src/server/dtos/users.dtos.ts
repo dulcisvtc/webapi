@@ -1,9 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsNumberString } from "class-validator";
 
 export class GetUserBannerParams {
   @ApiProperty()
-  @IsString()
+  @IsNumberString()
   @IsNotEmpty()
   query!: string;
 }
