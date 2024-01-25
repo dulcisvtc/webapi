@@ -45,8 +45,8 @@ dependencies:
     specifier: 12.1.0
     version: 12.1.0(mongoose@8.1.0)
   axios:
-    specifier: 1.6.5
-    version: 1.6.5
+    specifier: 1.6.7
+    version: 1.6.7
   cache-manager:
     specifier: 5.4.0
     version: 5.4.0
@@ -1128,8 +1128,8 @@ packages:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
     dev: false
 
-  /axios@1.6.5:
-    resolution: {integrity: sha512-Ii012v05KEVuUoFWmMW/UQv9aRIc3ZwkWDcM+h5Il8izZCtRVpDUfwpoFf7eOtajT3QiGR4yDUx7lPqHJULgbg==}
+  /axios@1.6.7:
+    resolution: {integrity: sha512-/hDJGff6/c7u0hDkvkGxR/oy6CbCs8ziCsC7SqmhjfozqiJGc8Z11wrv9z9lYfY4K8l+H9TpjcMDX0xOZmx+RA==}
     dependencies:
       follow-redirects: 1.15.4
       form-data: 4.0.0
@@ -2482,7 +2482,7 @@ packages:
   /node-steam-openid@1.2.1:
     resolution: {integrity: sha512-uD7VIACH6WO+AWlHr2GGvIN0foao2IihP4AW5KaV5SwcLlI2DgtI7ddSczoTqo0chbeZmoAxjMRi6irVYeIsKg==}
     dependencies:
-      axios: 1.6.5
+      axios: 1.6.7
       openid: 2.0.11
       url: 0.11.3
     transitivePeerDependencies:
@@ -2584,7 +2584,7 @@ packages:
     resolution: {integrity: sha512-JAq4HWu9W9CYk83KOP4f8zwGfwwMrFOz9AAlji7h1oLGag+/ZqyfqKror0/TTHM1OV2mBpqNAv8CAPIhEDWB2A==}
     engines: {node: '>= 0.6.0'}
     dependencies:
-      axios: 1.6.5
+      axios: 1.6.7
       qs: 6.11.2
     transitivePeerDependencies:
       - debug
@@ -3157,7 +3157,7 @@ packages:
   /tracksim.js@1.1.2:
     resolution: {integrity: sha512-X+t1KJXzpNfacr/A2Gt1E1uy0ibDOqCGn1hminEOPmB1VwRQbeTGYveGL5/gUmEAXklvwSqSiLkil4BPNGRsDQ==}
     dependencies:
-      axios: 1.6.5
+      axios: 1.6.7
       tslib: 2.6.2
     transitivePeerDependencies:
       - debug
