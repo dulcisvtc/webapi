@@ -43,7 +43,7 @@
     "json-bigint": "1.0.0",
     "migrate-mongo": "11.0.0",
     "moment": "2.30.1",
-    "mongoose": "8.1.0",
+    "mongoose": "8.1.1",
     "mongoose-autopopulate": "1.1.0",
     "morgan": "1.10.0",
     "ms": "2.1.3",
