@@ -63,8 +63,8 @@ dependencies:
     specifier: 1.5.1
     version: 1.5.1
   discord-oauth2:
-    specifier: 2.12.0
-    version: 2.12.0
+    specifier: 2.12.1
+    version: 2.12.1
   discord.js:
     specifier: 14.14.1
     version: 14.14.1
@@ -1606,8 +1606,8 @@ packages:
     resolution: {integrity: sha512-o/dXNFfhBpYHpQFdT6FWzeO7pKc838QeeZ9d91CfVAtpr5XLK4B/zYxQbYgPdoMiTDvJfzcsLW5naXgmHGDNXw==}
     dev: false
 
-  /discord-oauth2@2.12.0:
-    resolution: {integrity: sha512-95XsrTvuHUGndvkWmk7n3pgQyIheXLOdqx8WPS99FUyYOlne4unkT3N9t67zj33thJvvn6U/wzH8cauhDD8nhA==}
+  /discord-oauth2@2.12.1:
+    resolution: {integrity: sha512-/Um39bRxVjcGHUu1YaTLangZvZveXjsX4BNsa1Iyd6OQG0jL972IBQGKD0mYqQswxC3bT+hqWSouabfI2RdaZA==}
     dev: false
 
   /discord.js@14.14.1:
