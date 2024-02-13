@@ -39,7 +39,7 @@
     "dedent": "1.5.1",
     "discord-oauth2": "2.12.1",
     "discord.js": "14.14.1",
-    "dotenv": "16.4.2",
+    "dotenv": "16.4.4",
     "json-bigint": "1.0.0",
     "migrate-mongo": "11.0.0",
     "moment": "2.30.1",
