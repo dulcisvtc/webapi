@@ -47,7 +47,7 @@ export class RootService {
   async getJobs(limit: number, skip: number, steamids: string[]): Promise<any> {
     const filter = steamids.length ? { "driver.steam_id": { $in: steamids } } : {};
 
-    const jobs = await Jobs.find(filter, "-_id -__v").sort({ stop_timestamp: -1 }).skip(skip).limit(limit).lean();
+    const jobs = await Jobs.find(filter, "-__v").sort({ stop_timestamp: -1 }).skip(skip).limit(limit).lean();
 
     return jobs;
   }
