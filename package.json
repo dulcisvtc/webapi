@@ -29,7 +29,7 @@
     "@nestjs/throttler": "5.1.2",
     "@nestjs/websockets": "10.3.3",
     "@truckersmp_official/api-types": "1.0.1",
-    "@typegoose/auto-increment": "4.1.0",
+    "@typegoose/auto-increment": "4.2.0",
     "@typegoose/typegoose": "12.2.0",
     "axios": "1.6.7",
     "cache-manager": "5.4.0",
