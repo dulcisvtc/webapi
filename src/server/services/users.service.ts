@@ -89,7 +89,7 @@ export class UsersService {
 
     // User name
     ctx.font = "regular 100px Open Sans";
-    ctx.fillText(member.user.username, 1246, 172);
+    ctx.fillText(user.username, 1246, 172);
     // User name end
 
     // User role
