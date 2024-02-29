@@ -18,7 +18,7 @@ export class LeaderboardService {
       {
         $group: {
           _id: "$driver.steam_id",
-          driven_distance: { $sum: "$driven_distance" },
+          distance: { $sum: "$driven_distance" },
         },
       },
       {
@@ -32,7 +32,7 @@ export class LeaderboardService {
       { $set: { username: { $arrayElemAt: ["$user.username", 0] } } },
       { $unwind: "$user" },
       { $unset: "user" },
-      { $sort: { driven_distance: -1 } },
+      { $sort: { distance: -1 } },
       {
         $group: {
           _id: null,
@@ -51,6 +51,15 @@ export class LeaderboardService {
         },
       },
       { $replaceRoot: { newRoot: "$results" } },
+      {
+        $project: {
+          _id: 0,
+          steamId: "$_id",
+          username: 1,
+          distance: 1,
+          position: 1,
+        },
+      },
     ]);
 
     return users;
