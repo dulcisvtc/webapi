@@ -1,6 +1,7 @@
 import { CacheInterceptor, CacheTTL } from "@nestjs/cache-manager";
-import { Controller, Get, UseInterceptors } from "@nestjs/common";
+import { Controller, Get, Query, UseInterceptors } from "@nestjs/common";
 import ms from "ms";
+import { MonthlyLeaderboardQueryParams } from "../dtos/leaderboard.dtos";
 import { LeaderboardService } from "../services/leaderboard.service";
 import type { LeaderboardUser } from "../types/leaderboard";
 
@@ -11,8 +12,13 @@ export class LeaderboardController {
   constructor(private leaderboardService: LeaderboardService) {}
 
   @Get("monthly")
-  async getMonthly(): Promise<LeaderboardUser[]> {
-    const leaderboard = await this.leaderboardService.getMonthly();
+  async getMonthly(@Query() params: MonthlyLeaderboardQueryParams): Promise<LeaderboardUser[]> {
+    const [paramYear, paramMonth] = params.month?.split("-") ?? [undefined, undefined];
+
+    const year = paramYear ? parseInt(paramYear, 10) : new Date().getUTCFullYear();
+    const month = paramMonth ? parseInt(paramMonth, 10) - 1 : new Date().getUTCMonth();
+
+    const leaderboard = await this.leaderboardService.getMonthly(year, month);
 
     return leaderboard;
   }
