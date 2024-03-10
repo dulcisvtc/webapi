@@ -95,7 +95,7 @@ eventsTicker.on("tick", async () => {
 
   const selectedEvent = events.find((event) => isToday(event.departure));
 
-  if (!selectedEvent) return attendingMessage?.delete();
+  if (!selectedEvent) return attendingMessage?.delete().then(() => attendingChannel.bulkDelete(10));
 
   const apiEvent = await axios
     .get<{ response: APIGameEvent }>(APIWebRoutes.event(selectedEvent.id), { retry: 10 })
