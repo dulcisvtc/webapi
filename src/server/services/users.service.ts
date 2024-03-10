@@ -18,6 +18,8 @@ export class UsersService {
   }
 
   async getUserBanner(query: string) {
+    const startOfMonth = Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth());
+
     const user = await User.findOne({ $text: { $search: query } }, "-_id -__v").lean();
 
     if (!user) throw new NotFoundException("User not found");
@@ -25,7 +27,20 @@ export class UsersService {
     GlobalFonts.registerFromPath("files/OpenSans-Bold.ttf", "Open Sans");
     GlobalFonts.registerFromPath("files/OpenSans-Regular.ttf", "Open Sans");
 
-    const [member, bg, [{ truck }], [{ litres }], jobs] = await Promise.all([
+    console.log(
+      await Jobs.aggregate([
+        { $match: { "driver.steam_id": user.steam_id, stop_timestamp: { $gte: startOfMonth } } },
+        {
+          $group: {
+            _id: null,
+            monthly: { $sum: "$driven_distance" },
+          },
+        },
+        { $project: { _id: 0, monthly: "$monthly" } },
+      ])
+    );
+
+    const [member, bg, [{ truck }], [{ litres }], jobs, ge] = await Promise.all([
       guild!.members.fetch(user.discord_id),
       loadImage("https://i.proxied.host/u/HtWDnP.png"),
       Jobs.aggregate([
@@ -51,7 +66,18 @@ export class UsersService {
         { $project: { _id: 0, litres: "$litres" } },
       ]) as unknown as Promise<[{ litres: number }]>,
       Jobs.find({ "driver.steam_id": user.steam_id }).countDocuments(),
+      Jobs.aggregate<{ monthly: number }>([
+        { $match: { "driver.steam_id": user.steam_id, stop_timestamp: { $gte: startOfMonth } } },
+        {
+          $group: {
+            _id: null,
+            monthly: { $sum: "$driven_distance" },
+          },
+        },
+        { $project: { _id: 0, monthly: "$monthly" } },
+      ]),
     ]);
+
     const pfp = await loadImage(member.user.displayAvatarURL({ extension: "png", size: 512 })).then(async (i) => {
       const w = 204;
       const r = w / 2;
@@ -65,6 +91,8 @@ export class UsersService {
           .toBuffer()
       );
     });
+
+    const monthlyDistance = ge[0]?.monthly ?? 0;
 
     const canvas = createCanvas(1920, 350);
     const ctx = canvas.getContext("2d");
@@ -80,7 +108,7 @@ export class UsersService {
 
     // Stats
     ctx.font = "regular 40px Open Sans";
-    ctx.fillText(`${user.leaderboard.monthly_mileage.toLocaleString()} KM`, 346, 58);
+    ctx.fillText(`${monthlyDistance.toLocaleString()} KM`, 346, 58);
     ctx.fillText(`${user.leaderboard.alltime_mileage.toLocaleString()} KM`, 292, 123);
     ctx.fillText(`${truck}`, 338, 190);
     ctx.fillText(`${Math.round(litres).toLocaleString()} L`, 217, 256);
