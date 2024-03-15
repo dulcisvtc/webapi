@@ -67,7 +67,7 @@
     "@types/migrate-mongo": "10.0.4",
     "@types/morgan": "1.9.9",
     "@types/ms": "0.7.34",
-    "@types/node": "20.11.27",
+    "@types/node": "20.11.28",
     "@types/text-table": "0.2.5",
     "bumpp": "9.4.0",
     "copyfiles": "2.4.1",
