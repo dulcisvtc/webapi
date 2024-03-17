@@ -1,4 +1,5 @@
-import { Controller, Get, Header, Param, StreamableFile, ValidationPipe } from "@nestjs/common";
+import { Controller, Get, Param, Res, StreamableFile, ValidationPipe } from "@nestjs/common";
+import { Response } from "express";
 import { GetUserBannerParams } from "../dtos/users.dtos";
 import { UsersService } from "../services/users.service";
 
@@ -12,11 +13,13 @@ export class UsersController {
   }
 
   @Get(":query/banner.png")
-  @Header("Content-Type", "image/png")
-  async findUserBanner(@Param() { query }: GetUserBannerParams) {
-    const banner = await this.usersService.getUserCachedBanner(query);
+  async findUserBanner(@Param() { query }: GetUserBannerParams, @Res({ passthrough: true }) res: Response) {
+    const { buffer, cache } = await this.usersService.getUserCachedBanner(query);
 
-    return new StreamableFile(banner);
+    res.setHeader("Content-Type", "image/png");
+    if (cache) res.status(304);
+
+    return new StreamableFile(buffer, { type: "image/png" });
   }
 
   @Get(":discordOrSteamId")

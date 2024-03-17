@@ -129,12 +129,12 @@ export class UsersService {
     if (!user) throw new NotFoundException("User not found");
 
     const cached = await this.cacheManager.get<string>(`${user.steam_id}-banner`);
-    if (cached) return Buffer.from(cached, "base64");
+    if (cached) return { buffer: Buffer.from(cached, "base64"), cache: true };
 
     const banner = await this.getUserBanner(user);
     await this.cacheManager.set(`${user.steam_id}-banner`, banner.toString("base64"), ms("7d"));
 
-    return banner;
+    return { buffer: banner, cache: false };
   }
 
   async getUser(discordOrSteamId: string) {
