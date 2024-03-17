@@ -14,7 +14,10 @@ const discordLogger = getLogger("discord", true);
 const databaseLogger = getLogger("database", true);
 const generalLogger = getLogger("general", true);
 
-export const admens = ["419892040726347776", "736719142345900195", "251055152667164676", "313465742106296340"];
+export const admens = [
+  "251055152667164676", // Tolley
+  "313465742106296340", // djoh
+];
 export const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
