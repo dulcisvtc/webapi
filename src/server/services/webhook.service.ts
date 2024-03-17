@@ -116,8 +116,6 @@ export class WebhookService {
       channel.send({ embeds: [embed] }).catch((e) => jobsLogger.error(`Failed to send job delivered message:\n${inspect(e)}`)),
       user.save(),
       this.cacheManager.del(`${user.steam_id}-banner`),
-      this.cacheManager.del(`${user.discord_id}-banner`),
-      this.cacheManager.del(`${user.username}-banner`),
       this.usersService.updateUserMetadata(user.discord_id),
     ]);
 
