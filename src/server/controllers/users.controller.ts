@@ -14,10 +14,10 @@ export class UsersController {
 
   @Get(":query/banner.png")
   async findUserBanner(@Param() { query }: GetUserBannerParams, @Res({ passthrough: true }) res: Response) {
-    const { buffer, cache } = await this.usersService.getUserCachedBanner(query);
+    const { buffer /* cache */ } = await this.usersService.getUserCachedBanner(query);
 
     res.setHeader("Content-Type", "image/png");
-    if (cache) res.status(304);
+    // if (cache) res.status(304);
 
     return new StreamableFile(buffer, { type: "image/png" });
   }
