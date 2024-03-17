@@ -1,14 +1,22 @@
 import { GlobalFonts, createCanvas, loadImage } from "@napi-rs/canvas";
-import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { CACHE_MANAGER } from "@nestjs/cache-manager";
+import { Inject, Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { Cache } from "cache-manager";
 import { REST, Routes } from "discord.js";
+import ms from "ms";
 import sharp from "sharp";
 import { inspect } from "util";
 import { guild } from "../..";
 import config from "../../config";
-import { Jobs, LinkedRoleUser, User, getUserDocumentByDiscordId } from "../../database";
+import { Jobs, LinkedRoleUser, User, UserDocument, getUserDocumentByDiscordId } from "../../database";
 
 @Injectable()
 export class UsersService {
+  constructor(
+    @Inject(CACHE_MANAGER)
+    private cacheManager: Cache
+  ) {}
+
   logger = new Logger(UsersService.name);
 
   async getUsers() {
@@ -17,12 +25,8 @@ export class UsersService {
     return users;
   }
 
-  async getUserBanner(query: string) {
+  async getUserBanner(user: UserDocument) {
     const startOfMonth = Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth());
-
-    const user = await User.findOne({ $text: { $search: query } }, "-_id -__v").lean();
-
-    if (!user) throw new NotFoundException("User not found");
 
     GlobalFonts.registerFromPath("files/OpenSans-Bold.ttf", "Open Sans");
     GlobalFonts.registerFromPath("files/OpenSans-Regular.ttf", "Open Sans");
@@ -131,6 +135,19 @@ export class UsersService {
     // User role end
 
     return canvas.toBuffer("image/png");
+  }
+
+  async getUserCachedBanner(query: string) {
+    const user = await User.findOne({ $or: [{ discord_id: query }, { steam_id: query }] });
+    if (!user) throw new NotFoundException("User not found");
+
+    const cached = await this.cacheManager.get<string>(`${user.steam_id}-banner`);
+    if (cached) return Buffer.from(cached, "base64");
+
+    const banner = await this.getUserBanner(user);
+    await this.cacheManager.set(`${user.steam_id}-banner`, banner.toString("base64"), ms("7d"));
+
+    return banner;
   }
 
   async getUser(discordOrSteamId: string) {

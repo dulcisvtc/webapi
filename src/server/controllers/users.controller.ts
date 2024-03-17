@@ -1,17 +1,10 @@
-import { CACHE_MANAGER } from "@nestjs/cache-manager";
-import { Controller, Get, Header, Inject, Param, StreamableFile, ValidationPipe } from "@nestjs/common";
-import type { Cache } from "cache-manager";
-import ms from "ms";
+import { Controller, Get, Header, Param, StreamableFile, ValidationPipe } from "@nestjs/common";
 import { GetUserBannerParams } from "../dtos/users.dtos";
 import { UsersService } from "../services/users.service";
 
 @Controller("users")
 export class UsersController {
-  constructor(
-    private usersService: UsersService,
-    @Inject(CACHE_MANAGER)
-    private cacheManager: Cache
-  ) {}
+  constructor(private usersService: UsersService) {}
 
   @Get()
   async findUsers() {
@@ -21,11 +14,7 @@ export class UsersController {
   @Get(":query/banner.png")
   @Header("Content-Type", "image/png")
   async findUserBanner(@Param() { query }: GetUserBannerParams) {
-    const cached = await this.cacheManager.get<string>(`${query}-banner`);
-    if (cached) return new StreamableFile(Buffer.from(cached, "base64"));
-
-    const banner = await this.usersService.getUserBanner(query);
-    await this.cacheManager.set(`${query}-banner`, banner.toString("base64"), ms("7d"));
+    const banner = await this.usersService.getUserCachedBanner(query);
 
     return new StreamableFile(banner);
   }
