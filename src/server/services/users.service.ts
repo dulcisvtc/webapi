@@ -31,19 +31,6 @@ export class UsersService {
     GlobalFonts.registerFromPath("files/OpenSans-Bold.ttf", "Open Sans");
     GlobalFonts.registerFromPath("files/OpenSans-Regular.ttf", "Open Sans");
 
-    console.log(
-      await Jobs.aggregate([
-        { $match: { "driver.steam_id": user.steam_id, stop_timestamp: { $gte: startOfMonth } } },
-        {
-          $group: {
-            _id: null,
-            monthly: { $sum: "$driven_distance" },
-          },
-        },
-        { $project: { _id: 0, monthly: "$monthly" } },
-      ])
-    );
-
     const [member, bg, [{ truck }], [{ litres }], jobs, ge] = await Promise.all([
       guild!.members.fetch(user.discord_id),
       loadImage("https://i.proxied.host/u/HtWDnP.png"),
