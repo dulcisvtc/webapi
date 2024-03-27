@@ -164,8 +164,8 @@ devDependencies:
     specifier: 3.2.5
     version: 3.2.5
   tsc-watch:
-    specifier: 6.0.4
-    version: 6.0.4(typescript@5.4.3)
+    specifier: 6.1.0
+    version: 6.1.0(typescript@5.4.3)
   typescript:
     specifier: 5.4.3
     version: 5.4.3
@@ -3162,8 +3162,8 @@ packages:
     resolution: {integrity: sha512-ufKpbmrugz5Aou4wcr5Wc1UUFWOLhq+Fm6qa6P0w0K5Qw2yhaUoiWszhCVuNQyNwrlGiscHOmqYoAox1PtvgjA==}
     dev: false
 
-  /tsc-watch@6.0.4(typescript@5.4.3):
-    resolution: {integrity: sha512-cHvbvhjO86w2aGlaHgSCeQRl+Aqw6X6XN4sQMPZKF88GoP30O+oTuh5lRIJr5pgFWrRpF1AgXnJJ2DoFEIPHyg==}
+  /tsc-watch@6.1.0(typescript@5.4.3):
+    resolution: {integrity: sha512-bNjUt25O/qZb4Yb+PyrnKnJzu4rpCtGHGb0HE737mGnfxrRDbILxsUM1321o87Bl00BETZ0Ry+wDEJbYzcxRTA==}
     engines: {node: '>=12.12.0'}
     hasBin: true
     peerDependencies:
